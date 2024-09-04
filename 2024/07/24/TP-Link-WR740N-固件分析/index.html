@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="TP-Link WR740N 固件分析固件名：wr740nv1_en_3_12_4_up.bin  型号：TP-link wr740N 版本：v1_en_3_12_4 测试环境：Ubuntu 18.04  binwalk -Me wr740nv1_en_3_12_4_up.bin 解包 查看文件系统  firmwalker 枚举 1sudo .&#x2F;firmwalker.sh ~&#x2F;Desktop&#x2F;_w">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TP-Link_WR740N_固件分析">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/07/24/TP-Link-WR740N-%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="TP-Link WR740N 固件分析固件名：wr740nv1_en_3_12_4_up.bin  型号：TP-link wr740N 版本：v1_en_3_12_4 测试环境：Ubuntu 18.04  binwalk -Me wr740nv1_en_3_12_4_up.bin 解包 查看文件系统  firmwalker 枚举 1sudo .&#x2F;firmwalker.sh ~&#x2F;Desktop&#x2F;_w">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730161416092.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163116259.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730162724725.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730162853004.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163429255.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163229873.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163352780.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163600867.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730164110580.png">
+<meta property="article:published_time" content="2024-07-24T03:40:02.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:40:28.109Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730161416092.png">
+  
+  
+  
+  <title>TP-Link_WR740N_固件分析 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="TP-Link_WR740N_固件分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 11:40" pubdate>
+          2024年7月24日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">TP-Link_WR740N_固件分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="TP-Link-WR740N-固件分析"><a href="#TP-Link-WR740N-固件分析" class="headerlink" title="TP-Link WR740N 固件分析"></a>TP-Link WR740N 固件分析</h3><p>固件名：wr740nv1_en_3_12_4_up.bin</p>
+<ul>
+<li>型号：TP-link wr740N</li>
+<li>版本：v1_en_3_12_4</li>
+<li>测试环境：Ubuntu 18.04</li>
+</ul>
+<p>binwalk -Me wr740nv1_en_3_12_4_up.bin 解包</p>
+<p>查看文件系统</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730161416092.png" srcset="/img/loading.gif" lazyload alt="image-20240730161416092"></p>
+<p>firmwalker 枚举</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> ./firmwalker.sh ~/Desktop/_wr740nv1_en_3_12_4_up.bin.extracted/squashfs-root/<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><code class="hljs bash">***Firmware Directory***<br>/home/iot/Desktop/_wr740nv1_en_3_12_4_up.bin.extracted/squashfs-root/<br>***Search <span class="hljs-keyword">for</span> password files***<br><span class="hljs-comment">##################################### passwd</span><br>etc/passwd<br><br><span class="hljs-comment">##################################### shadow</span><br>etc/shadow<br><br>-------------------- admin --------------------<br>etc/services:kerberos-adm	749/tcp			<span class="hljs-comment"># Kerberos `kadmin&#x27; (v5)</span><br>etc/services:kerberos-master	751/tcp			<span class="hljs-comment"># Kerberos admin server tcp</span><br>etc/services:kerberos-master	751/udp			<span class="hljs-comment"># Kerberos admin server udp</span><br>web/help/RestoreDefaultCfgHelpRpm.htm:&lt;lI&gt;Default Password&lt;B&gt; - admin&lt;/B&gt;.&lt;/lI&gt;<br>web/help/RestoreDefaultCfgHelpRpm.htm:&lt;lI&gt;Default User Name&lt;B&gt; - admin&lt;/B&gt;.&lt;/lI&gt;<br>web/userRpm/AccessDenied.htm:      Please reset the device to the factory default settings <span class="hljs-keyword">if</span> you have forgotten your username or password. The default username and password are both <span class="hljs-built_in">set</span> as &lt;B&gt;&amp;quot;admin&amp;quot;&lt;/B&gt;.&lt;BR&gt;<br><br>-------------------- root --------------------<br>etc/group:root:x:0:<br>etc/passwd:Admin:x:0:0:root:/root:/bin/sh<br>etc/passwd:ap71:x:500:0:Linux User,,,:/root:/bin/sh<br>etc/passwd:root:x:0:0:root:/root:/bin/sh<br>etc/shadow:root:$1$<span class="hljs-variable">$zdlNHiCDxYDfeF4MZL</span>.H3/:10933:0:99999:7:::<br><br>-------------------- password --------------------<br>etc/services:shell		514/tcp		cmd		<span class="hljs-comment"># no passwords used</span><br><br>-------------------- passwd --------------------<br>etc/nsswitch.conf:passwd:		compat<br>etc/services:kpasswd		761/tcp		kpwd	<span class="hljs-comment"># BSD Kerberos `passwd&#x27;</span><br>web/userRpm/AutoEmailRpm.htm:              &lt;TD class=<span class="hljs-string">&quot;Item&quot;</span>&gt;&amp;nbsp;&amp;nbsp;&lt;SPAN  <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_passwd&quot;</span>&gt;Password:&lt;/SPAN&gt;&lt;/TD&gt;<br>web/userRpm/AutoEmailRpm.htm:              &lt;TD class=<span class="hljs-string">&quot;Item&quot;</span>&gt;&lt;SPAN <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_comfirm_passwd&quot;</span>&gt;Confirm The Password:&lt;/SPAN&gt;&lt;/TD&gt;<br>web/userRpm/BPACfgRpm.htm:		alert(js_passwd_req = <span class="hljs-string">&quot;Password is required.&quot;</span>);<br>web/userRpm/HttpDebugRpm.htm:	frames[<span class="hljs-string">&quot;frame1&quot;</span>].location.href = <span class="hljs-string">&quot;/userRpm/DebugResultRpm.htm?cmd=&quot;</span> + s + <span class="hljs-string">&quot;&amp;usr=&quot;</span> + document.getElementById(<span class="hljs-string">&quot;usr&quot;</span>).value + <span class="hljs-string">&quot;&amp;passwd=&quot;</span> + document.getElementById(<span class="hljs-string">&quot;passwd&quot;</span>).value;<br>web/userRpm/HttpDebugRpm.htm:            &lt;TD width=35%&gt;&lt;INPUT <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;password&quot;</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;passwd&quot;</span> name=<span class="hljs-string">&quot;passwd&quot;</span> size=<span class="hljs-string">&quot;40&quot;</span> value=<span class="hljs-string">&quot;&quot;</span> style=<span class="hljs-string">&quot;width:50%&quot;</span>&gt;&lt;/TD&gt;<br>web/userRpm/L2TPCfgRpm.htm:		alert(js_passwd_req = <span class="hljs-string">&quot;Password is required.&quot;</span>);<br>web/userRpm/PPPoECfgRpm.htm:		alert(js_passwd_req = <span class="hljs-string">&quot;Password is required.&quot;</span>);<br>web/userRpm/PPPoECfgRpm.htm:      &lt;TD class=Item <span class="hljs-built_in">id</span> = <span class="hljs-string">&quot;t_passwd&quot;</span>&gt;Password:&lt;/TD&gt;<br>web/userRpm/PPTPCfgRpm.htm:		alert(js_passwd_req = <span class="hljs-string">&quot;Password is required.&quot;</span>);<br>web/userRpm/WzdWlanRpm.htm:                alert(js_illegal_passwd = <span class="hljs-string">&quot;The password value contain illegal characters, please input another one!&quot;</span>);<br><br>-------------------- <span class="hljs-built_in">pwd</span> --------------------<br>etc/services:kpasswd		761/tcp		kpwd	<span class="hljs-comment"># BSD Kerberos `passwd&#x27;</span><br>web/userRpm/BPACfgRpm.htm:document.forms[0].pwd.value=bpaData[4];<br>web/userRpm/BPACfgRpm.htm:	element = document.forms[0].<span class="hljs-built_in">pwd</span>;<br>web/userRpm/BPACfgRpm.htm:        &lt;TD class=Item <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_pwd&quot;</span>&gt;Password:&lt;/TD&gt;<br>web/userRpm/BPACfgRpm.htm:        &lt;TD&gt;&lt;INPUT name=<span class="hljs-string">&quot;pwd&quot;</span> <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;password&quot;</span> class=<span class="hljs-string">&quot;text&quot;</span> value=<span class="hljs-string">&quot;&quot;</span> size=<span class="hljs-string">&quot;25&quot;</span> maxlength=<span class="hljs-string">&quot;15&quot;</span> onFocus=<span class="hljs-string">&quot;doClick();&quot;</span>&gt;&lt;/TD&gt;<br>web/userRpm/ChangeLoginPwdRpm.htm:		alert(js_bad_conf_pwd=<span class="hljs-string">&quot;The confirm password must accord with the new password!&quot;</span>);<br>web/userRpm/ChangeLoginPwdRpm.htm:&lt;BODY onLoad=<span class="hljs-string">&quot;LoadHelp(&#x27;ChangeLoginPwdHelpRpm.htm&#x27;);setTagStr(document,&#x27;ntw_change_login_pwd&#x27;); resize(this);&quot;</span> onResize=<span class="hljs-string">&quot;resize(this);&quot;</span>&gt;<br>web/userRpm/ChangeLoginPwdRpm.htm:        &lt;TD class=Item <span class="hljs-built_in">id</span> =<span class="hljs-string">&quot;t_conf_new_pwd&quot;</span>&gt;Confirm New Password:&lt;/TD&gt;<br>web/userRpm/ChangeLoginPwdRpm.htm:        &lt;TD class=Item <span class="hljs-built_in">id</span> =<span class="hljs-string">&quot;t_new_pwd&quot;</span>&gt;New Password:&lt;/TD&gt;<br>web/userRpm/ChangeLoginPwdRpm.htm:        &lt;TD class=Item <span class="hljs-built_in">id</span> =<span class="hljs-string">&quot;t_old_pwd&quot;</span>&gt;Old Password:&lt;/TD&gt;<br>web/userRpm/CmxDdnsRpm.htm:document.forms[0].pwd.value = serInf[2];<br>web/userRpm/CmxDdnsRpm.htm:document.getElementById(<span class="hljs-string">&quot;connectStatus&quot;</span>).innerHTML = <span class="hljs-string">&quot;&lt;span id = \&quot;t_pwd_error\&quot;&gt;User Name or Password error!&lt;/span&gt;&quot;</span>;<br>web/userRpm/CmxDdnsRpm.htm:&lt;TR&gt;&lt;TD class=Item <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_pwd&quot;</span>&gt;Password:&lt;/TD&gt;&lt;TD&gt;&lt;input name=<span class="hljs-string">&quot;pwd&quot;</span> value=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;password&quot;</span> class=<span class="hljs-string">&quot;text&quot;</span> size=<span class="hljs-string">&quot;15&quot;</span> maxlength=<span class="hljs-string">&quot;63&quot;</span> onFocus=<span class="hljs-string">&quot;doFocus();&quot;</span>&gt;&lt;/TD&gt;&lt;/TR&gt;<br>web/userRpm/DynDdnsRpm.htm:		document.forms[0].pwd.value=<span class="hljs-string">&quot;&quot;</span>;<br>web/userRpm/DynDdnsRpm.htm:		document.forms[0].pwd.value = serInf[1];<br>web/userRpm/DynDdnsRpm.htm:document.getElementById(<span class="hljs-string">&quot;connectStatus&quot;</span>).innerHTML = <span class="hljs-string">&quot;&lt;span id = \&quot;t_pwd_err\&quot;&gt;User Name or Password error!&lt;/span&gt;&quot;</span>;<br>web/userRpm/DynDdnsRpm.htm:        &lt;TD&gt;&lt;INPUT name=<span class="hljs-string">&quot;pwd&quot;</span> value=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;password&quot;</span> class=<span class="hljs-string">&quot;text&quot;</span> size=<span class="hljs-string">&quot;15&quot;</span> maxlength=<span class="hljs-string">&quot;63&quot;</span> onFocus=<span class="hljs-string">&quot;stopRefresh();&quot;</span> onblur = <span class="hljs-string">&quot;startRefresh()&quot;</span>&gt;&lt;/TD&gt;<br>web/userRpm/NoipDdnsRpm.htm:    document.forms[0].pwd.value=<span class="hljs-string">&quot;&quot;</span>;<br>web/userRpm/NoipDdnsRpm.htm:	document.forms[0].pwd.value = serInf[1];<br>web/userRpm/NoipDdnsRpm.htm:        &lt;TD class=Item <span class="hljs-built_in">id</span> = <span class="hljs-string">&quot;t_pwd&quot;</span>&gt;Password:&lt;/TD&gt;<br>web/userRpm/NoipDdnsRpm.htm:        &lt;TD&gt;&lt;INPUT name=<span class="hljs-string">&quot;pwd&quot;</span> value=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;password&quot;</span> class=<span class="hljs-string">&quot;text&quot;</span> size=<span class="hljs-string">&quot;15&quot;</span> maxlength=<span class="hljs-string">&quot;63&quot;</span> onFocus=<span class="hljs-string">&quot;stopRefresh();&quot;</span>&gt;&lt;/TD&gt;<br>web/userRpm/WlanSecurityRpm.htm:            chr = pwd.charAt(i);<br>web/userRpm/WlanSecurityRpm.htm:        <span class="hljs-keyword">for</span>(var i = 0; i &lt; pwd.length; i++)<br>web/userRpm/WlanSecurityRpm.htm:        <span class="hljs-keyword">for</span>(var i =0; i &lt; pwd.length; i++)<br>web/userRpm/WlanSecurityRpm.htm:<span class="hljs-keyword">function</span> checkpwd()<br>web/userRpm/WlanSecurityRpm.htm:    <span class="hljs-keyword">if</span>( !checkpwd() )<br>web/userRpm/WlanSecurityRpm.htm:        <span class="hljs-built_in">pwd</span> = obj.pskSecret.value;<br>web/userRpm/WlanSecurityRpm.htm:        <span class="hljs-built_in">pwd</span> = obj.radiusSecret.value;<br>web/userRpm/WlanSecurityRpm.htm:        &lt;TD class=Item style=<span class="hljs-string">&quot;padding-left:60px&quot;</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_psk_pwd&quot;</span>&gt;PSK Password:&lt;/TD&gt;<br>web/userRpm/WlanSecurityRpm.htm:        &lt;TD class=Item style=<span class="hljs-string">&quot;padding-left:60px&quot;</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_radius_pwd&quot;</span>&gt;Radius Password:&lt;/TD&gt;<br>web/userRpm/WlanSecurityRpm.htm:    var <span class="hljs-built_in">pwd</span>;<br>web/userRpm/WzdPPPoERpm.htm:		alert(js_input_pwd=<span class="hljs-string">&quot;Please input a Password!&quot;</span>);<br>web/userRpm/WzdPPPoERpm.htm:          &lt;TD class=Item <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_pwd&quot;</span>&gt;Password: &lt;/TD&gt;<br>web/userRpm/WzdWlanRpm.htm:            chr = pwd.charAt(i);<br>web/userRpm/WzdWlanRpm.htm:        <span class="hljs-keyword">for</span>(var i = 0; i &lt; pwd.length; i++)<br>web/userRpm/WzdWlanRpm.htm:<span class="hljs-keyword">function</span> checkpwd()<br>web/userRpm/WzdWlanRpm.htm:	<span class="hljs-keyword">if</span> (!checkpwd())<br>web/userRpm/WzdWlanRpm.htm:        <span class="hljs-built_in">pwd</span> = obj.pskSecret.value;<br>web/userRpm/WzdWlanRpm.htm:      &lt;TD class= <span class="hljs-string">&quot;Item&quot;</span> <span class="hljs-built_in">id</span>=<span class="hljs-string">&quot;t_psk_pwd&quot;</span>&gt;PSK Password:&lt;/TD&gt;<br>web/userRpm/WzdWlanRpm.htm:    var <span class="hljs-built_in">pwd</span>;<br><br>-------------------- ssl --------------------<br>web/help/WlanNetworkHelpRpm.htm:&lt;p&gt;&lt;B&gt;Note&lt;/B&gt;: Failure to follow these guidelines can result <span class="hljs-keyword">in</span> significant performance degradation or inability to wirelessly connect to the Router.<br><br>-------------------- private key --------------------<br><br>-------------------- telnet --------------------<br>etc/services:rtelnet		107/tcp		<span class="hljs-comment"># Remote Telnet</span><br>etc/services:rtelnet		107/udp<br>etc/services:telnet		23/tcp<br>-------------------- cmd= --------------------<br>web/userRpm/HttpDebugRpm.htm:	frames[<span class="hljs-string">&quot;frame1&quot;</span>].location.href = <span class="hljs-string">&quot;/userRpm/DebugResultRpm.htm?cmd=&quot;</span> + s + <span class="hljs-string">&quot;&amp;usr=&quot;</span> + document.getElementById(<span class="hljs-string">&quot;usr&quot;</span>).value + <span class="hljs-string">&quot;&amp;passwd=&quot;</span> + document.getElementById(<span class="hljs-string">&quot;passwd&quot;</span>).value;<br>***Search <span class="hljs-keyword">for</span> web servers***<br><span class="hljs-comment">##################################### search for web servers</span><br><span class="hljs-comment">##################################### httpd</span><br>usr/bin/httpd<br><br>***.conf***<br><span class="hljs-comment">##################################### conf</span><br>etc/nsswitch.conf:# /etc/nsswitch.conf<br>web/userRpm/PPPoECfgRpm.htm:document.forms[0].conf<br>web/userRpm/PPPoECfgRpm.htm:	var confirm_psw = document.forms[0].conf<br>web/userRpm/WlanNetworkRpm.htm:				var bContinue = window.conf<br>web/userRpm/WzdPPPoERpm.htm:document.forms[0].conf<br>web/userRpm/WzdPPPoERpm.htm:	var confirm = document.forms[0].conf<br>web/userRpm/WzdWlanRpm.htm:				var bContinue = window.conf<br></code></pre></td></tr></table></figure>
+
+<p>根据枚举信息，web由httpd启动，并且web页面大多在web&#x2F;userRpm&#x2F;目录下</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163116259.png" srcset="/img/loading.gif" lazyload alt="image-20240730163116259"></p>
+<p>找到二进制文件httpd，打开IDA分析</p>
+<p>搜索字符串userRpm</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730162724725.png" srcset="/img/loading.gif" lazyload alt="image-20240730162724725"></p>
+<p>看到两个和其他结构不一样的字符串，并且刚才包含firmwalker扫描到的cmd关键字</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730162853004.png" srcset="/img/loading.gif" lazyload alt="image-20240730162853004"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163429255.png" srcset="/img/loading.gif" lazyload alt="image-20240730163429255"></p>
+<p>这里包含了三个url</p>
+<p>查看引用后发现，这是一个包含cmd的debug页面，并且在相关函数中发现了疑似硬编码的用户名密码</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163229873.png" srcset="/img/loading.gif" lazyload alt="image-20240730163229873"></p>
+<p>启动项分析</p>
+<p>rcS</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/sh</span><br><br><span class="hljs-comment"># 当系统启动过程中执行时运行此脚本。</span><br><span class="hljs-comment"># 挂载/etc/fstab中列出的所有文件系统</span><br><br>mount -a  // 挂载/etc/fstab中列出的所有文件系统<br><br><span class="hljs-comment">#mount -o remount +w /  // 此行被注释掉了</span><br><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># 将RAM文件系统挂载到/tmp和/var</span><br><span class="hljs-comment">#</span><br><br>mount -t ramfs -n none /tmp  // 将基于RAM的文件系统挂载到/tmp<br><br>mount -t ramfs -n none /var  // 将基于RAM的文件系统挂载到/var<br><br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/etc/ath  // 将/etc/ath添加到PATH环境变量中<br><br><span class="hljs-comment">#insmod /lib/modules/2.6.15/net/ag7100_mod.ko  // 插入一个内核模块（已被注释掉）</span><br><span class="hljs-comment">#insmod /lib/modules/2.6.15/net/ag7240_mod.ko  // 插入另一个内核模块（已被注释掉）</span><br><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># 设置lo（回环）接口为启动状态</span><br><span class="hljs-comment">#</span><br>ifconfig lo 127.0.0.1 up  // 配置并启动回环接口<br><br><span class="hljs-comment">#ifconfig eth1 up  // 此行被注释掉</span><br><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># 加载netfilter/iptables模块</span><br><span class="hljs-comment">#</span><br><br>/etc/rc.d/rc.modules  // 执行rc.modules脚本以加载netfilter/iptables模块<br><br><br><br>/usr/bin/httpd &amp;  // 启动httpdWeb服务，并放到后台运行<br><br><span class="hljs-built_in">echo</span> 524288 &gt; /proc/sys/net/ipv4/ipfrag_high_thresh  // 设置IP内核参数<br></code></pre></td></tr></table></figure>
+
+<p>rc.modules</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/sh</span><br><br>// 检查是否存在/lib/modules/2.6.31目录<br><span class="hljs-built_in">test</span> -d /lib/modules/2.6.31<br><br>// 将结果保存在变量kver_is_2615中<br>kver_is_2615=$?<br><br>// 如果系统使用2.6.15版本的内核<br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$kver_is_2615</span> -eq 1 ]<br><span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;This board use 2.6.15&quot;</span><br><br>    // 依次加载iptables相关的内核模块<br>    insmod /lib/modules/2.6.15/kernel/ip_tables.ko<br>    insmod /lib/modules/2.6.15/kernel/ip_conntrack.ko<br>    insmod /lib/modules/2.6.15/kernel/ip_nat.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_MASQUERADE.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_comment.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_conntrack.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_iprange.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_mac.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_multiport.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_state.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_string.ko<br>    insmod /lib/modules/2.6.15/kernel/iptable_nat.ko<br>    insmod /lib/modules/2.6.15/kernel/iptable_filter.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_time.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_TRIGGER.ko<br>    insmod /lib/modules/2.6.15/kernel/ip_conntrack_pptp.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_TCPMSS.ko<br>    insmod /lib/modules/2.6.15/kernel/statistics.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_multiurl.ko<br>    insmod /lib/modules/2.6.15/kernel/ip_conntrack_h323.ko<br>    insmod /lib/modules/2.6.15/kernel/ipt_MARK.ko<br>    insmod /lib/modules/2.6.15/kernel/sch_htb.ko<br>    insmod /lib/modules/2.6.15/kernel/sch_prio.ko<br>    insmod /lib/modules/2.6.15/kernel/sch_sfq.ko<br>    insmod /lib/modules/2.6.15/kernel/cls_basic.ko<br>    insmod /lib/modules/2.6.15/kernel/cls_fw.ko<br>    insmod /lib/modules/2.6.15/kernel/ts_kmp.ko<br>    insmod /lib/modules/2.6.15/kernel/flashid.ko<br>    insmod /lib/modules/2.6.15/kernel/br_filter.ko<br>    insmod /lib/modules/2.6.15/kernel/pppol2tp.ko<br>    insmod /lib/modules/2.6.15/kernel/pptp.ko<br>    insmod /lib/modules/2.6.15/kernel/harmony.ko<br>    insmod /lib/modules/2.6.15/kernel/wlan_warn.ko<br><br><span class="hljs-keyword">else</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;This Board use 2.6.31&quot;</span><br><span class="hljs-keyword">fi</span><br></code></pre></td></tr></table></figure>
+
+<p>固件使用FirmAE模拟:</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163352780.png" srcset="/img/loading.gif" lazyload alt="image-20240730163352780"></p>
+<p>PS查看进程</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730163600867.png" srcset="/img/loading.gif" lazyload alt="image-20240730163600867"></p>
+<h4 id="命令执行点"><a href="#命令执行点" class="headerlink" title="命令执行点"></a>命令执行点</h4><p>打开浏览器，依次访问IDA中找到的三个URL，最终定位到一个后门页面</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240730164110580.png" srcset="/img/loading.gif" lazyload alt="image-20240730164110580"></p>
+<p>输入IDA中找到的用户名密码即可命令执行</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>TP-Link_WR740N_固件分析</div>
+      <div>http://groundctl2majortom.github.io/2024/07/24/TP-Link-WR740N-固件分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/01/%E4%B8%80%E9%81%93ARM-PWN%E9%A2%98%E6%B5%85%E6%9E%90%E7%AC%A6%E5%8F%B7%E8%A1%A8%E6%81%A2%E5%A4%8D/" title="一道ARM_PWN题浅析符号表恢复">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">一道ARM_PWN题浅析符号表恢复</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/qemu%E5%9B%BA%E4%BB%B6%E6%A8%A1%E6%8B%9F%E7%BD%91%E5%8D%A1%E5%88%86%E6%9E%90-%E6%88%91%E4%B8%8Ebr0%E7%9A%84%E7%88%B1%E6%81%A8%E6%83%85%E4%BB%87/" title="qemu固件模拟网卡分析---我与br0的爱恨情仇">
+                        <span class="hidden-mobile">qemu固件模拟网卡分析---我与br0的爱恨情仇</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

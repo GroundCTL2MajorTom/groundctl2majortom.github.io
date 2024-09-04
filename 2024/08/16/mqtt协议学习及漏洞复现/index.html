@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="mqtt MQTT最大优点在于，用极少的代码和有限的带宽，为连接远程设备提供实时可靠的消息服务。 作为一种低开销、低带宽占用的即时通讯协议，使其在物联网、小型设备、移动应用等方面有较广泛的应用。  1234567891011121314151617181920212223242526272829303132MQTT（Message Queuing Telemetry Transport）协议是一种">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mqtt协议学习及漏洞复现">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/08/16/mqtt%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="mqtt MQTT最大优点在于，用极少的代码和有限的带宽，为连接远程设备提供实时可靠的消息服务。 作为一种低开销、低带宽占用的即时通讯协议，使其在物联网、小型设备、移动应用等方面有较广泛的应用。  1234567891011121314151617181920212223242526272829303132MQTT（Message Queuing Telemetry Transport）协议是一种">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111643162.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111807164.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111904966.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/866b7d10822d3660b7830a0ac5e316c.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/5b56abcbe0090b7209b5d385a8c4e6f.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240819202638142.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820134023892.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820155547822.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/16/mqtt%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/image-20240820155732290.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820155816184.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820160512580.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820165144641.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820192215504.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820192238791.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820193850949.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820182826415.png">
+<meta property="article:published_time" content="2024-08-16T07:25:33.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:57:35.883Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111643162.png">
+  
+  
+  
+  <title>mqtt协议学习及漏洞复现 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="mqtt协议学习及漏洞复现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-16 15:25" pubdate>
+          2024年8月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">mqtt协议学习及漏洞复现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h4 id="mqtt"><a href="#mqtt" class="headerlink" title="mqtt"></a>mqtt</h4><p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111643162.png" srcset="/img/loading.gif" lazyload alt="image-20240820111643162"></p>
+<p>MQTT最大优点在于，<strong>用极少的代码和有限的带宽，为连接远程设备提供实时可靠的消息服务</strong>。</p>
+<p>作为一种低开销、低带宽占用的即时通讯协议，使其在物联网、小型设备、移动应用等方面有较广泛的应用。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111807164.png" srcset="/img/loading.gif" lazyload alt="image-20240820111807164"></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs markdown">MQTT（Message Queuing Telemetry Transport）协议是一种轻量级的消息传输协议，专为资源有限的设备和网络环境设计。它主要用于物联网（IoT）应用中，具有以下几个核心特点：<br><br><span class="hljs-bullet">1.</span> 协议架构<br>客户端：与MQTT代理（Broker）通信的设备或应用程序，既可以是发布者也可以是订阅者。<br>代理（Broker）：中介服务器，负责接收客户端的消息并将其转发到相应的订阅者。<br><span class="hljs-bullet">2.</span> 发布/订阅模式<br>发布：客户端将消息发送到一个主题（Topic），这条消息会被代理转发给所有订阅了该主题的客户端。<br>订阅：客户端订阅感兴趣的主题，接收到相关的消息。<br><span class="hljs-bullet">3.</span> 服务质量（QoS）等级<br>MQTT支持三种服务质量等级：<br><br>QoS 0（至多一次）：消息可能会丢失，不会被重试。<br>QoS 1（至少一次）：确保消息至少到达一次，但可能会重复。<br>QoS 2（只有一次）：确保消息只到达一次，最严格的保证。<br><span class="hljs-bullet">4.</span> 保持连接（Keep Alive）<br>MQTT支持保持连接机制，通过心跳包（Ping）来维持和检测客户端与代理的连接，确保通信的持续性。<br><br><span class="hljs-bullet">5.</span> 遗嘱消息（Last Will and Testament）<br>客户端在连接时可以设置一条“遗嘱”消息，若客户端异常断开，代理会将遗嘱消息发布到指定主题，通知其他客户端。<br><br><span class="hljs-bullet">6.</span> 小型数据包<br>MQTT协议的数据包设计小巧高效，适合低带宽和高延迟的网络环境，尤其适合在资源受限的设备和网络中使用。<br><br><span class="hljs-bullet">7.</span> 安全性<br>虽然MQTT协议本身并不提供安全机制，但它可以与TLS/SSL等安全层一起使用，以确保数据传输的安全性。<br><br>使用场景<br>MQTT广泛应用于各种物联网（IoT）应用场景，如：<br><br>智能家居：智能灯光、温控设备等。<br>工业监控：设备状态监测、故障报警等。<br>车联网：车辆数据传输、实时监控等。<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820111904966.png" srcset="/img/loading.gif" lazyload alt="image-20240820111904966"></p>
+<h5 id="mqtt客户端测试"><a href="#mqtt客户端测试" class="headerlink" title="mqtt客户端测试"></a>mqtt客户端测试</h5><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/thomasnordquist/</span>MQTT-Explorer<br></code></pre></td></tr></table></figure>
+
+<h5 id="mqtt的两种模式"><a href="#mqtt的两种模式" class="headerlink" title="mqtt的两种模式"></a>mqtt的两种模式</h5><h6 id="发布订阅模式"><a href="#发布订阅模式" class="headerlink" title="发布订阅模式:"></a>发布订阅模式:</h6><p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/866b7d10822d3660b7830a0ac5e316c.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"><br>客户端只需要订阅这个主题，当有其他客户端向这个服务端发布消息时，这个客户端就可以收到这个消息</p>
+<h6 id="请求响应模式"><a href="#请求响应模式" class="headerlink" title="请求响应模式"></a>请求响应模式</h6><p>请求响应模式: 客户端向服务端发送请求，服务端收到请求后，向客户端返回响应<br><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/5b56abcbe0090b7209b5d385a8c4e6f.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></p>
+<h5 id="MQTT协议主要特性"><a href="#MQTT协议主要特性" class="headerlink" title="MQTT协议主要特性"></a>MQTT协议主要特性</h5><ol>
+<li><p>开放消息协议，简单易实现。</p>
+</li>
+<li><p>使用发布&#x2F;订阅消息模式，提供一对多的消息发布，解除应用程序耦合。</p>
+</li>
+<li><p>对负载（协议携带的应用数据）内容屏蔽的消息传输。</p>
+</li>
+<li><p><strong>基于TCP&#x2F;IP网络连接,提供有序，无损，双向连接。主流的MQTT是基于TCP连接进行数据推送的，但是同样有基于UDP的版本，叫做MQTT-SN。这两种版本由于基于不同的连接方式，优缺点自然也就各有不同了。由于基于不同的连接方式，优缺点自然也就各有不同了。</strong></p>
+</li>
+<li><p>消息服务质量(QoS）支持，可靠传输保证;有三种消息发布服务质量:<br>QoS0:“至多一次”，消息发布完全依赖底层TCP&#x2F;IP网络。会发生消息丢失或重复。这一级别可用于如下情况，环境传感器数据，丢失一次读记录无所谓，因为不久后还会有第二次发送。这一种方式主要普通APP的推送，倘若你的智能设备在消息推送时未联网，推送过去没收到，再次联网也就收不到了。</p>
+<p>QoS1:“至少—次”，确保消息到达，但消息重复可能会发生。</p>
+<p>QoS2:“只有一次”，确保消息到达一次。在一些要求比较严格的计费系统中，可以使用此级别。在计费系统中，消息重复或丢失会导致不正确的结果。这种最高质量的消息发布服务还可以用于即时通讯类的APP的推送，确保用户收到且只会收到一次。</p>
+</li>
+<li><p>1字节固定报头，2字节心跳报文，最小化传输开销和协议交换，有效减少网络流量。<br>这就是为什么在介绍里说它非常适合”在物联网领域，传感器与服务器的通信，信息的收集，要知道嵌入式设备的运算能力和带宽都相对薄弱，使用这种协议来传递消息再适合不过了。</p>
+</li>
+<li><p>在线状态感知:使用Last Will和Testament特性通知有关各方客户端异常中断的机制。<br>Last Will:即遗言机制，用于通知同一主题下的其他设备，发送遗言的设备已经断开了连接。<br>Testament:遗嘱机制，功能类似于Last Will。</p>
+</li>
+</ol>
+<h5 id="MQTT的发布-订阅、主题、会话"><a href="#MQTT的发布-订阅、主题、会话" class="headerlink" title="MQTT的发布&#x2F;订阅、主题、会话"></a>MQTT的发布&#x2F;订阅、主题、会话</h5><p>MQTT是基于<strong>发布(Publish)</strong>&#x2F;<strong>订阅(Subscribe)模式来进行通信及数据交换的，与HTTP的请求(Request)</strong>&#x2F;**应答(Response)**的模式有本质的不同<br>订阅者(Subscriber)会向消息服务器(Broker)订阅一个主题(Topic)。成功订阅后，消息服务器会将该主题下的消息转发给所有订阅者<br>主题(Topic)以’&#x2F;‘为分隔符区分不同的层级，包含通配符’+’ 或 ‘#’的主题又称为主题过滤器(Topic Filters); 不含通配符的成为主题名(Topic Names) 例如:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">sensor<span class="hljs-regexp">/10/</span>temperature<br>sensor<span class="hljs-regexp">/+/</span>temperature<br><span class="hljs-variable">$SYS</span><span class="hljs-regexp">/broker/m</span>etrics<span class="hljs-regexp">/packets/</span>received<br><span class="hljs-variable">$SYS</span><span class="hljs-regexp">/broker/m</span>etrics/<span class="hljs-comment">#</span><br><br><span class="hljs-string">&#x27;+&#x27;</span> : 表示通配一个层级， 例如a<span class="hljs-regexp">/+，匹配a/</span>x, a/y<br></code></pre></td></tr></table></figure>
+
+<p>发布者(Publisher)只能向主题名发布消息，订阅者(Subscriber)则可以通过订阅主题过滤器来通配多个主题名称</p>
+<h6 id="会话-Session"><a href="#会话-Session" class="headerlink" title="会话(Session)"></a><strong>会话(Session)</strong></h6><p>每个客户端与服务器建立连接后就是一个会话，客户端和服务器之间有状态交互。会话存在于一个网络之间，也可能在客户端和服务器之间跨越多个连续的网络连接。</p>
+<h5 id="MQTT协议中的方法"><a href="#MQTT协议中的方法" class="headerlink" title="MQTT协议中的方法"></a>MQTT协议中的方法</h5><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">MQTT协议中定义了一些方法(也被称为动作)，来于表示对确定资源所进行操作。这个资源可以代表预先存在的数据或动态生成数据，这取决于服务器的实现。通常来说，资源指服务器上的文件或输出。主要方法有:</span><br><br><span class="hljs-section">CONNECT: 客户端连接到服务器</span><br><span class="hljs-section">CONNACK: 连接确认</span><br><span class="hljs-section">PUBLISH: 发布消息</span><br><span class="hljs-section">PUBACK: 发布消息确认</span><br><span class="hljs-section">PUBREC: 发布的消息已接收</span><br><span class="hljs-section">PUBREL: 发布的消息已释放</span><br><span class="hljs-section">PUBCOMP: 发布完成</span><br><span class="hljs-section">SUBSCRIBE: 订阅请求</span><br><span class="hljs-section">SUBACK: 订阅确认</span><br><span class="hljs-section">UNSUBSCRIBE: 取消订阅</span><br><span class="hljs-section">UNSUBACK: 取消订阅确认</span><br><span class="hljs-section">PINGREQ: 客户端发送心跳</span><br><span class="hljs-section">PINGRESP: 服务端心跳响应</span><br><span class="hljs-section">DISCONNECT: 断开连接</span><br><span class="hljs-section">AUTH: 认证</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="数据包结构"><a href="#数据包结构" class="headerlink" title="数据包结构"></a>数据包结构</h5><p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240819202638142.png" srcset="/img/loading.gif" lazyload alt="image-20240819202638142"></p>
+<h6 id="固定头部（Fixed-Header）"><a href="#固定头部（Fixed-Header）" class="headerlink" title="固定头部（Fixed Header）"></a>固定头部（Fixed Header）</h6><p>固定头部是 MQTT 数据包的必有部分，它包含了数据包的类型和控制标志位。固定头部的结构如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown">固定头部 (1 byte)：<br><span class="hljs-code">    7     6     5     4     3     2     1     0</span><br><span class="hljs-code">+-----+-----+-----+-----+-----+-----+-----+-----+</span><br><span class="hljs-code">|                数据包类型（4 bits）              |</span><br><span class="hljs-code">+-----+-----+-----+-----+-----+-----+-----+-----+</span><br><span class="hljs-code">|               控制标志位（4 bits）               |</span><br><span class="hljs-code">+-----+-----+-----+-----+-----+-----+-----+-----+</span><br></code></pre></td></tr></table></figure>
+
+<p>其中，数据包类型占据了固定头部的前 4 个字节，用于表示数据包的类型。而控制标志位占据了固定头部的后 4 个字节，用于传递与数据包类型相关的标志信息。</p>
+<h6 id="可变头部（Variable-Header）"><a href="#可变头部（Variable-Header）" class="headerlink" title="可变头部（Variable Header）"></a>可变头部（Variable Header）</h6><p>可变头部是 MQTT 数据包类型特定的部分，它的长度和内容取决于数据包的类型。可变头部的结构如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs markdown">可变头部 (不定长)：<br><span class="hljs-code">    根据数据包类型和协议规定</span><br></code></pre></td></tr></table></figure>
+
+<p>可变头部的长度和内容根据具体的数据包类型和协议规定而有所不同。例如，在 CONNECT 数据包中，可变头部包含了与连接相关的参数，如协议版本号、客户端标识符等。而在 PUBLISH 数据包中，可变头部则包含了消息的 QoS 等级、是否保留、主题名称等信息。</p>
+<h6 id="有效载荷（Payload）"><a href="#有效载荷（Payload）" class="headerlink" title="有效载荷（Payload）"></a>有效载荷（Payload）</h6><p>有效载荷是 MQTT 数据包类型特定的数据部分，它携带了实际的消息内容。有效载荷的结构如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs markdown">有效载荷 (不定长)：<br><span class="hljs-code">    根据数据包类型和协议规定</span><br></code></pre></td></tr></table></figure>
+
+<p>有效载荷的长度和内容也根据具体的数据包类型和协议规定而有所不同。在 PUBLISH 数据包中，有效载荷就是要发布的消息内容。</p>
+<h6 id="数据包交互"><a href="#数据包交互" class="headerlink" title="数据包交互"></a>数据包交互</h6><p>MQTT 数据包通过客户端和服务端之间的交互来实现消息的传递。典型的 MQTT 数据包交互流程如下：</p>
+<ol>
+<li>客户端发送 CONNECT 数据包到服务端，用于建立连接。</li>
+<li>服务端发送 CONNACK 数据包作为连接确认回复。</li>
+<li>客户端发送 PUBLISH 数据包发布消息。</li>
+<li>服务端根据消息的 QoS 等级发送相应的确认数据包（PUBACK、PUBREC、PUBREL、PUBCOMP）。</li>
+<li>客户端根据需要发送订阅（SUBSCRIBE）或取消订阅（UNSUBSCRIBE）数据包。</li>
+<li>服务端发送 SUBACK 或 UNSUBACK 数据包作为订阅或取消订阅的确认回复。</li>
+<li>客户端和服务端通过 PINGREQ 和 PINGRESP 数据包进行心跳保持。</li>
+<li>最后，客户端发送 DISCONNECT 数据包断开连接。</li>
+</ol>
+<h5 id="安装mqtt服务"><a href="#安装mqtt服务" class="headerlink" title="安装mqtt服务"></a>安装mqtt服务</h5><p>sudo apt-get install mosquitto mosquitto-clients -y</p>
+<p>sudo vim &#x2F;etc&#x2F;mosquitto&#x2F;mosquitto.conf</p>
+<p>在配置文件中添加这三行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">listener 1883<br>allow_anonymous <span class="hljs-literal">true</span><br>password_file /etc/mosquitto/pwfile.example<br>listener是MQTT监听的端口号，可以自行修改。<br>allow_anonymous是匿名访问漏洞的罪魁祸首，当为<span class="hljs-literal">true</span>时，便支持匿名访问，为<span class="hljs-literal">false</span>则禁止匿名访问。<br>password_file是存放MQTT账号密码的文件参数。<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820134023892.png" srcset="/img/loading.gif" lazyload alt="image-20240820134023892"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart mosquitto<br></code></pre></td></tr></table></figure>
+
+<p>创建password_file空文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">touch</span> /etc/mosquitto/pwfile.example<br></code></pre></td></tr></table></figure>
+
+<p>创建test用户和密码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> mosquitto_passwd /etc/mosquitto/pwfile.example <span class="hljs-built_in">test</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820155547822.png" srcset="/img/loading.gif" lazyload alt="image-20240820155547822"></p>
+<p>客户端订阅（像是监听）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> mosquitto_sub -t testtopic -u <span class="hljs-built_in">test</span> -P 123456<br></code></pre></td></tr></table></figure>
+
+<p>客户端发布 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> mosquitto_pub -t testtopic -u <span class="hljs-built_in">test</span> -P 123456 -m testmessage<br></code></pre></td></tr></table></figure>
+
+<img src="image-20240820155732290.png" srcset="/img/loading.gif" lazyload alt="image-20240820155732290" style="zoom:50%;" />
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820155816184.png" srcset="/img/loading.gif" lazyload alt="image-20240820155816184"></p>
+<p>订阅端功收到testmessage</p>
+<p>wireshark抓包看一下</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820160512580.png" srcset="/img/loading.gif" lazyload alt="image-20240820160512580"></p>
+<h5 id="mqtt-pwn"><a href="#mqtt-pwn" class="headerlink" title="mqtt-pwn"></a>mqtt-pwn</h5><p>docker安装</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/spmonkey/p/17919346.html">记录一次对MQTT协议的渗透测试经历 - spmonkey - 博客园 (cnblogs.com)</a></p>
+<p>测试</p>
+<p>ubuntu18 conda</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">conda <span class="hljs-built_in">activate</span> mqtt-pwn<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">cd</span> ~/tool/mqtt-pwn<br><span class="hljs-keyword">python</span> run.<span class="hljs-keyword">py</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820165144641.png" srcset="/img/loading.gif" lazyload alt="image-20240820165144641"></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino">connect -o <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> <span class="hljs-comment">//连接mqtt的ip和端口，输入system_info验证是否连接成功</span><br></code></pre></td></tr></table></figure>
+
+<p>出现MQTT协议基础信息，证明存在MQTT匿名访问漏洞。</p>
+<p>输入discovery进行扫描</p>
+<p>等到finish后再执行scans查看</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">scans</span> -i <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>&#x2F;&#x2F;ps:类似于</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">nmap</span> -sV -sC -p1883 -v <span class="hljs-number">127.0.0.1</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>执行topic查看所有话题</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820192215504.png" srcset="/img/loading.gif" lazyload alt="image-20240820192215504"></p>
+<p>执行messages查看所有消息</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820192238791.png" srcset="/img/loading.gif" lazyload alt="image-20240820192238791"></p>
+<p>抓到了自己发的message</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820193850949.png" srcset="/img/loading.gif" lazyload alt="image-20240820193850949"></p>
+<p><strong>暴力破解</strong></p>
+<p>把mosquitto.conf 中的allow_anomonys 设置为false ，重启服务</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs elixir">iot<span class="hljs-variable">@research</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>sudo vi /etc/mosquitto/mosquitto.conf <br>iot<span class="hljs-variable">@research</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>systemctl restart mosquitto.service <br></code></pre></td></tr></table></figure>
+
+<p>进入到mqtt-pwn  默认为1883</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-meta prompt_">&gt;&gt;</span> bruteforce --host <span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240820182826415.png" srcset="/img/loading.gif" lazyload alt="image-20240820182826415"></p>
+<p>破解成功</p>
+<p>UpNp协议在物联网中与mqtt的作用相似，都是用于设备之间的交互，发送命令。</p>
+<h5 id="mqtt的安全建议"><a href="#mqtt的安全建议" class="headerlink" title="mqtt的安全建议"></a>mqtt的安全建议</h5><ol>
+<li><strong>使用加密</strong></li>
+</ol>
+<ul>
+<li><strong>TLS&#x2F;SSL 加密</strong>：确保 MQTT 服务器和客户端之间的通信通过 TLS（Transport Layer Security）或 SSL（Secure Sockets Layer）加密。这可以防止数据在传输过程中被窃听或篡改。</li>
+<li><strong>证书管理</strong>：使用有效的数字证书来验证服务器的身份，并确保客户端能够验证服务器的证书。</li>
+</ul>
+<ol start="2">
+<li><strong>身份验证和授权</strong></li>
+</ol>
+<ul>
+<li><strong>用户名和密码</strong>：要求 MQTT 客户端在连接时提供用户名和密码。虽然这不是最强的安全措施，但它是一个基本的身份验证步骤。</li>
+<li><strong>更强的认证机制</strong>：可以使用更复杂的认证机制，如基于令牌的认证或集成 OAuth 2.0。</li>
+<li><strong>访问控制</strong>：设置细粒度的权限控制，确保客户端只能访问和操作其被授权的主题和资源。</li>
+</ul>
+<ol start="3">
+<li><strong>确保 MQTT 代理的安全配置</strong></li>
+</ol>
+<ul>
+<li><strong>限制连接</strong>：仅允许可信的客户端连接到 MQTT 代理。可以通过 IP 白名单或防火墙规则实现。</li>
+<li><strong>防止匿名访问</strong>：禁用匿名连接，确保所有客户端都经过身份验证。</li>
+</ul>
+<ol start="4">
+<li><strong>消息加密</strong></li>
+</ol>
+<ul>
+<li><strong>应用层加密</strong>：对于高安全需求的应用，考虑对消息本身进行加密，确保即使数据被拦截，攻击者也无法解读消息内容。</li>
+</ul>
+<ol start="5">
+<li><strong>定期更新和维护</strong></li>
+</ol>
+<ul>
+<li><strong>软件更新</strong>：定期更新 MQTT 代理和客户端软件，以修补已知的安全漏洞。</li>
+<li><strong>监控和日志</strong>：启用监控和日志记录，以便可以追踪和分析安全事件。</li>
+</ul>
+<ol start="6">
+<li><strong>使用安全的 MQTT 代理</strong></li>
+</ol>
+<ul>
+<li><strong>选择可靠的 MQTT 代理</strong>：使用经过安全性验证和审查的 MQTT 代理，如 Eclipse Mosquitto、HiveMQ 或其他商业解决方案，确保其具备强大的安全功能。</li>
+</ul>
+<ol start="7">
+<li><strong>防御 DDoS 攻击</strong></li>
+</ol>
+<ul>
+<li><strong>流量控制</strong>：配置流量限制和连接限制，以防止分布式拒绝服务（DDoS）攻击。</li>
+<li><strong>资源隔离</strong>：使用专用的资源和服务实例来隔离不同的 MQTT 客户端和流量，以减少攻击对系统的影响。</li>
+</ul>
+<ol start="8">
+<li><strong>数据保护</strong></li>
+</ol>
+<ul>
+<li><strong>数据隐私</strong>：确保遵守相关的数据保护法律和法规，尤其是在处理敏感信息时。</li>
+<li><strong>备份和恢复</strong>：定期备份 MQTT 数据，并测试数据恢复过程，以防数据丢失或系统故障。</li>
+</ul>
+<ol start="9">
+<li><strong>防止中间人攻击</strong></li>
+</ol>
+<ul>
+<li><strong>证书验证</strong>：确保客户端和服务器都验证对方的证书，防止中间人攻击。</li>
+<li><strong>固定客户端身份</strong>：使用客户端证书或其他方法确保每个客户端都有唯一标识，并且能够验证其真实性。</li>
+</ul>
+<p>通过实施这些安全措施，可以显著提高 MQTT 系统的安全性，保护数据传输的隐私性和完整性。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>mqtt协议学习及漏洞复现</div>
+      <div>http://groundctl2majortom.github.io/2024/08/16/mqtt协议学习及漏洞复现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="upnp协议学习及漏洞复现">
+                        <span class="hidden-mobile">upnp协议学习及漏洞复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

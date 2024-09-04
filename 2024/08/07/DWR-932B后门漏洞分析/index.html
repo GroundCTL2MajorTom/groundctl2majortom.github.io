@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="DWR-932B后门漏洞分析 ftp:&#x2F;&#x2F;ftp.dlink.eu&#x2F;Products&#x2F;dwr&#x2F;dwr-932&#x2F;driver_software&#x2F;  解密fcrackzipzip文件有密码的情况，破解zip密码 （有的情况下需要先binwalk 解包进去，然后找到文件夹里面的数字.zip破解，否则在外面破解会报错，要注意指定的zip类型，默认是2。拿到密码以后到目录外面的zip输入密码） 1fcrac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DWR-932B后门漏洞分析">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/08/07/DWR-932B%E5%90%8E%E9%97%A8%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="DWR-932B后门漏洞分析 ftp:&#x2F;&#x2F;ftp.dlink.eu&#x2F;Products&#x2F;dwr&#x2F;dwr-932&#x2F;driver_software&#x2F;  解密fcrackzipzip文件有密码的情况，破解zip密码 （有的情况下需要先binwalk 解包进去，然后找到文件夹里面的数字.zip破解，否则在外面破解会报错，要注意指定的zip类型，默认是2。拿到密码以后到目录外面的zip输入密码） 1fcrac">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/569d60a76018e18a81f4eb9d8fb769d.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240828114707067.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240828114810215.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240828114841776.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829101338488.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829101555402.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829101715277.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829102037532.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829102603291.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829104644262.png">
+<meta property="article:published_time" content="2024-08-07T05:01:12.000Z">
+<meta property="article:modified_time" content="2024-09-04T06:38:52.893Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/569d60a76018e18a81f4eb9d8fb769d.png">
+  
+  
+  
+  <title>DWR-932B后门漏洞分析 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DWR-932B后门漏洞分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-07 13:01" pubdate>
+          2024年8月7日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">DWR-932B后门漏洞分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="DWR-932B后门漏洞分析"><a href="#DWR-932B后门漏洞分析" class="headerlink" title="DWR-932B后门漏洞分析"></a>DWR-932B后门漏洞分析</h2><ul>
+<li><a href="ftp://ftp.dlink.eu/Products/dwr/dwr-932/driver_software/">ftp://ftp.dlink.eu/Products/dwr/dwr-932/driver_software/</a></li>
+</ul>
+<h4 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h4><h4 id="fcrackzip"><a href="#fcrackzip" class="headerlink" title="fcrackzip"></a>fcrackzip</h4><p>zip文件有密码的情况，破解zip密码</p>
+<p>（有的情况下需要先binwalk 解包进去，然后找到文件夹里面的数字.zip破解，否则在外面破解会报错，要注意指定的zip类型，默认是2。拿到密码以后到目录外面的zip输入密码）</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">fcrackzip</span> -b -m zip1 -u -v <span class="hljs-number">40</span>.zip<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/569d60a76018e18a81f4eb9d8fb769d.png" srcset="/img/loading.gif" lazyload alt="569d60a76018e18a81f4eb9d8fb769d"></p>
+<p>解压后出现2K-mdm-image-mdm9625.yaffs2文件，用binwalk解包</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240828114707067.png" srcset="/img/loading.gif" lazyload alt="image-20240828114707067"></p>
+<h4 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h4><p>firmwalker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs bash">***Firmware Directory***<br>-------------------- password --------------------<br>/etc/inadyn-mt.conf:--password 641021<br>-------------------- telnet --------------------<br>/etc/busybox.links:/bin/telnet<br>/etc/busybox.links:/sbin/telnetd<br>/etc/default/rcS:# Set to no <span class="hljs-keyword">if</span> you want to be able to login over telnet/rlogin<br>/etc/init.d/start_appmgr:#<span class="hljs-keyword">if</span> [ -e /config2/telnetd ]; <span class="hljs-keyword">then</span><br>/etc/init.d/start_appmgr:#Sandro &#123; <span class="hljs-keyword">for</span> telnetd debug...<br>/etc/init.d/start_appmgr:	start-stop-daemon -S -b -a /sbin/telnetd<br>/etc/rc0.d/K30start_appmgr:#<span class="hljs-keyword">if</span> [ -e /config2/telnetd ]; <span class="hljs-keyword">then</span><br>/etc/rc0.d/K30start_appmgr:#Sandro &#123; <span class="hljs-keyword">for</span> telnetd debug...<br>/etc/rc0.d/K30start_appmgr:	start-stop-daemon -S -b -a /sbin/telnetd<br>/etc/rc1.d/K30start_appmgr:#<span class="hljs-keyword">if</span> [ -e /config2/telnetd ]; <span class="hljs-keyword">then</span><br>/etc/rc1.d/K30start_appmgr:#Sandro &#123; <span class="hljs-keyword">for</span> telnetd debug...<br>/etc/rc1.d/K30start_appmgr:	start-stop-daemon -S -b -a /sbin/telnetd<br>/etc/rc6.d/K30start_appmgr:#<span class="hljs-keyword">if</span> [ -e /config2/telnetd ]; <span class="hljs-keyword">then</span><br>/etc/rc6.d/K30start_appmgr:#Sandro &#123; <span class="hljs-keyword">for</span> telnetd debug...<br>/etc/rc6.d/K30start_appmgr:	start-stop-daemon -S -b -a /sbin/telnetd<br>/etc/rcS.d/S50start_appmgr:#<span class="hljs-keyword">if</span> [ -e /config2/telnetd ]; <span class="hljs-keyword">then</span><br>/etc/rcS.d/S50start_appmgr:#Sandro &#123; <span class="hljs-keyword">for</span> telnetd debug...<br>/etc/rcS.d/S50start_appmgr:	start-stop-daemon -S -b -a /sbin/telnetd<br>/etc/services:rtelnet		107/tcp				<span class="hljs-comment"># Remote Telnet</span><br>/etc/services:rtelnet		107/udp<br>/etc/services:telnet		23/tcp<br>/etc/services:telnets		992/tcp				<span class="hljs-comment"># Telnet over SSL</span><br>/etc/services:telnets		992/udp<br>/etc/services:tfido		60177/tcp			<span class="hljs-comment"># fidonet EMSI over telnet</span><br>/var/lib/opkg/alternatives/telnet:/bin/telnet<br>/var/lib/opkg/alternatives/telnetd:/sbin/telnetd<br></code></pre></td></tr></table></figure>
+
+<p>枚举到硬编码的密码</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240828114810215.png" srcset="/img/loading.gif" lazyload alt="image-20240828114810215"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240828114841776.png" srcset="/img/loading.gif" lazyload alt="image-20240828114841776"></p>
+<h5 id="查看启动项"><a href="#查看启动项" class="headerlink" title="查看启动项"></a>查看启动项</h5><figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs tap">cd etc/init.d<br>ls -l<br>total 252<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2482 </span>Sep<span class="hljs-number"> 17 </span>03:55 adbd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 250 </span>Sep<span class="hljs-number"> 17 </span>03:55 alignment.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 4735 </span>Sep<span class="hljs-number"> 17 </span>03:55 avahi-daemon<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 4490 </span>Sep<span class="hljs-number"> 17 </span>03:55 avahi-dnsconfd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 492 </span>Sep<span class="hljs-number"> 17 </span>03:55 banner.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1529 </span>Sep<span class="hljs-number"> 17 </span>03:55 bootlogd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1680 </span>Sep<span class="hljs-number"> 17 </span>03:55 bootmisc.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 681 </span>Sep<span class="hljs-number"> 17 </span>03:55 busybox-cron<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 3229 </span>Sep<span class="hljs-number"> 17 </span>03:55 checkroot.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 151 </span>Sep<span class="hljs-number"> 17 </span>03:55 chgrp-diag<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1591 </span>Sep<span class="hljs-number"> 17 </span>03:55 data-init<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2781 </span>Sep<span class="hljs-number"> 17 </span>03:55 dbus-1<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 526 </span>Sep<span class="hljs-number"> 17 </span>03:55 devpts.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 408 </span>Sep<span class="hljs-number"> 17 </span>03:55 diagrebootapp<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2674 </span>Sep<span class="hljs-number"> 17 </span>03:55 dropbear<br>-rw-r--r--<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1123 </span>Sep<span class="hljs-number"> 17 </span>03:55 functions<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 510 </span>Sep<span class="hljs-number"> 17 </span>03:55 halt<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 270 </span>Sep<span class="hljs-number"> 17 </span>03:55 hostname.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2402 </span>Sep<span class="hljs-number"> 17 </span>03:55 hwclock.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 348 </span>Sep<span class="hljs-number"> 17 </span>03:55 keymap.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 169 </span>Sep<span class="hljs-number"> 17 </span>03:55 mdev<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 168 </span>Sep<span class="hljs-number"> 17 </span>03:55 modem-shutdown<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 878 </span>Sep<span class="hljs-number"> 17 </span>03:55 modutils.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 859 </span>Sep<span class="hljs-number"> 17 </span>03:55 mountall.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1399 </span>Sep<span class="hljs-number"> 17 </span>03:55 mountnfs.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 783 </span>Sep<span class="hljs-number"> 17 </span>03:55 netmgrd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1463 </span>Sep<span class="hljs-number"> 17 </span>03:55 networking<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 5114 </span>Sep<span class="hljs-number"> 17 </span>03:55 populate-volatile.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root<span class="hljs-number"> 10835 </span>Sep<span class="hljs-number"> 17 </span>03:55 power_config<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1136 </span>Sep<span class="hljs-number"> 17 </span>03:55 qmi_shutdown_modemd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 610 </span>Sep<span class="hljs-number"> 17 </span>03:55 qmuxd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 368 </span>Sep<span class="hljs-number"> 17 </span>03:55 qrngd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 4346 </span>Sep<span class="hljs-number"> 17 </span>03:55 rc<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 525 </span>Sep<span class="hljs-number"> 17 </span>03:55 rcS<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2015 </span>Sep<span class="hljs-number"> 17 </span>03:55 reboot<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 159 </span>Sep<span class="hljs-number"> 17 </span>03:55 reset_reboot_cookie<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 585 </span>Sep<span class="hljs-number"> 17 </span>03:55 rmnologin.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 609 </span>Sep<span class="hljs-number"> 17 </span>03:55 run-postinsts<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 321 </span>Sep<span class="hljs-number"> 17 </span>03:55 save-rtc.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 438 </span>Sep<span class="hljs-number"> 17 </span>03:55 sendsigs<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 978 </span>Sep<span class="hljs-number"> 17 </span>03:55 set-hwver.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1836 </span>Sep<span class="hljs-number"> 17 </span>03:55 shutdown<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 578 </span>Sep<span class="hljs-number"> 17 </span>03:55 single<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2178 </span>Sep<span class="hljs-number"> 17 </span>03:55 start_appmgr<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 2138 </span>Sep<span class="hljs-number"> 17 </span>03:55 start_ipacm_le<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 764 </span>Sep<span class="hljs-number"> 17 </span>03:55 start_QCMAP_ConnectionManager_le<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1001 </span>Sep<span class="hljs-number"> 17 </span>03:55 start_qti_le<br>lrwxrwxrwx<span class="hljs-number"> 1 </span>root root    <span class="hljs-number"> 8 </span>Sep<span class="hljs-number"> 17 </span>03:55 stop-bootlogd -&gt; bootlogd<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 540 </span>Sep<span class="hljs-number"> 17 </span>03:55 sysfs.sh<br>lrwxrwxrwx<span class="hljs-number"> 1 </span>root root   <span class="hljs-number"> 14 </span>Sep<span class="hljs-number"> 17 </span>03:55 syslog -&gt; syslog.busybox<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1559 </span>Sep<span class="hljs-number"> 17 </span>03:55 syslog.busybox<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 659 </span>Sep<span class="hljs-number"> 17 </span>03:55 thermal-engine<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 516 </span>Sep<span class="hljs-number"> 17 </span>03:55 umountfs<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root  <span class="hljs-number"> 686 </span>Sep<span class="hljs-number"> 17 </span>03:55 umountnfs.sh<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 1349 </span>Sep<span class="hljs-number"> 17 </span>03:55 urandom<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 5005 </span>Sep<span class="hljs-number"> 17 </span>03:55 usb<br>-rwxr-xr-x<span class="hljs-number"> 1 </span>root root <span class="hljs-number"> 8116 </span>Sep<span class="hljs-number"> 17 </span>03:55 wlan<br></code></pre></td></tr></table></figure>
+
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4><p>这里可以看一下 <code>start_appmgr</code> 脚本，mgr 一般就是主控程序的意思</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> start_appmgr<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#! /bin/sh</span><br><span class="hljs-comment">#</span><br><br><span class="hljs-comment"># appmgr init.d script to start router daemon</span><br><span class="hljs-built_in">export</span> KERNEL=`<span class="hljs-built_in">uname</span> -r`<br><span class="hljs-built_in">export</span> MODULE_BASE=/lib/modules/<span class="hljs-variable">$KERNEL</span>/updates<br><span class="hljs-built_in">export</span> RETRY_LIMIT=3<br><span class="hljs-built_in">export</span> SDCC_SLOT=3<br><span class="hljs-built_in">export</span> SDCC_SLOT2=2<br><br><span class="hljs-comment">#Vince &#123;</span><br>BOOT_MODE=`<span class="hljs-built_in">cat</span> /proc/cmdline | sed -n <span class="hljs-string">&#x27;s/.*boot_mode=\(........\) .*/\1/p&#x27;</span>`<br><br><span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;x<span class="hljs-variable">$&#123;BOOT_MODE&#125;</span>&quot;</span> == <span class="hljs-string">&quot;xcharging&quot;</span> ]; <span class="hljs-keyword">then</span><br>	start-stop-daemon -S -b -a /bin/pfcharging<br>	<span class="hljs-built_in">exit</span> 0<br><span class="hljs-keyword">fi</span><br><span class="hljs-comment">#Vince &#125;</span><br><br><span class="hljs-comment">#Sandro &#123; for telnetd debug...</span><br>start-stop-daemon -S -b -a /bin/logmaster<br><span class="hljs-comment">#if [ -e /config2/telnetd ]; then</span><br>	start-stop-daemon -S -b -a /sbin/telnetd<br><span class="hljs-comment">#fi</span><br><span class="hljs-comment">#Sandro &#125;</span><br><br><span class="hljs-comment">#Sandro set hw id start</span><br><span class="hljs-keyword">if</span> [ -e /etc/init.d/set-hwver.sh ]; <span class="hljs-keyword">then</span><br>	/etc/init.d/set-hwver.sh<br><span class="hljs-keyword">fi</span><br><span class="hljs-comment">#Sandro set hw id end</span><br><br><span class="hljs-keyword">if</span> [ ! -e /etc/versions ]; <span class="hljs-keyword">then</span><br>	<span class="hljs-keyword">if</span> [ -e /usr/etc/versions ]; <span class="hljs-keyword">then</span><br>		<span class="hljs-built_in">ln</span> -nsf /usr/etc/versions /etc/versions<br>	<span class="hljs-keyword">fi</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [ ! -e /etc/qrcfg ]; <span class="hljs-keyword">then</span><br>	<span class="hljs-keyword">if</span> [ -d /usr/etc/qrcfg ]; <span class="hljs-keyword">then</span><br>		<span class="hljs-built_in">ln</span> -nsf /usr/etc/qrcfg /etc/qrcfg<br>	<span class="hljs-keyword">fi</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [ ! -e /www ]; <span class="hljs-keyword">then</span><br>	<span class="hljs-keyword">if</span> [ -d /usr/www ]; <span class="hljs-keyword">then</span><br>		<span class="hljs-built_in">ln</span> -sf /usr/www /www<br>	<span class="hljs-keyword">fi</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [  -f /sbin/netcfg ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> -n <span class="hljs-string">&quot;chmod 777 netcfg&quot;</span><br>        <span class="hljs-built_in">chmod</span> 777 /sbin/netcfg<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-keyword">if</span> [  -f /bin/QNetCfg ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> -n <span class="hljs-string">&quot;chmod 777 QNetCfg&quot;</span><br>        <span class="hljs-built_in">chmod</span> 777 /bin/QNetCfg<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment">#if [ ! -e /data ]; then</span><br><span class="hljs-comment">#        mkdir -p /data</span><br><span class="hljs-comment">#        mount -t yaffs2 /dev/mtdblock12 /data</span><br><span class="hljs-comment">#fi</span><br><br><span class="hljs-comment"># Get the vendor_id, [Generic|Pure]</span><br>VENDOR_ID=$(grep vendor_id /etc/versions 2&gt;/dev/null | awk -F<span class="hljs-string">&quot;=&quot;</span> <span class="hljs-string">&#x27;&#123;print $2&#125;&#x27;</span>)<br><br><span class="hljs-keyword">case</span> <span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span> <span class="hljs-keyword">in</span><br>    start)<br>        <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$VENDOR_ID</span>&quot;</span> = <span class="hljs-string">&quot;Pure&quot;</span> ]; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> -n <span class="hljs-string">&quot;Starting btnd: &quot;</span><br>            start-stop-daemon -S -b -a /bin/btnd<br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;done&quot;</span><br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-built_in">echo</span> -n <span class="hljs-string">&quot;Starting appmgr: &quot;</span><br>            start-stop-daemon -S -b -a /bin/appmgr<br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;done&quot;</span><br>        <span class="hljs-keyword">fi</span><br>        ;;<br>    stop)<br>        <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$VENDOR_ID</span>&quot;</span> = <span class="hljs-string">&quot;Pure&quot;</span> ]; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> -n <span class="hljs-string">&quot;Stopping btnd: &quot;</span><br>            start-stop-daemon -K -n btnd<br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;done&quot;</span><br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-built_in">echo</span> -n <span class="hljs-string">&quot;Stopping appmgr: &quot;</span><br>            start-stop-daemon -K -n appmgr<br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;done&quot;</span><br>        <span class="hljs-keyword">fi</span><br>        ;;<br>    restart)<br>        <span class="hljs-variable">$0</span> stop<br>        <span class="hljs-variable">$0</span> start<br>        ;;<br>    *)<br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Usage appmgr &#123; start | stop | restart&#125;&quot;</span> &gt;&amp;2<br>        <span class="hljs-built_in">exit</span> 1<br>        ;;<br><span class="hljs-keyword">esac</span><br><br><br><span class="hljs-built_in">exit</span> 0<br></code></pre></td></tr></table></figure>
+
+<p>该脚本会在开机的时候以服务的形式运行 <code>/bin/appmgr</code> 程序。</p>
+<p>同时该脚本还会开启 telnet 服务</p>
+<h4 id="-1"><a href="#-1" class="headerlink" title=""></a><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829101338488.png" srcset="/img/loading.gif" lazyload alt="image-20240829101338488"></h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs cpp">......<br>              <span class="hljs-keyword">if</span> ( (((<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)v<span class="hljs-number">63.</span>__fds_bits[(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span>)dword_<span class="hljs-number">7E174</span> &gt;&gt; <span class="hljs-number">5</span>] &gt;&gt; (dword_<span class="hljs-number">7E174</span> &amp; <span class="hljs-number">0x1F</span>)) &amp; <span class="hljs-number">1</span>) != <span class="hljs-number">0</span> )<br>              &#123;<br>                <span class="hljs-built_in">memset</span>(&amp;v64, <span class="hljs-number">0</span>, <span class="hljs-number">0x80u</span>);<br>                addr_len[<span class="hljs-number">0</span>] = <span class="hljs-number">16</span>;<br>                <span class="hljs-keyword">if</span> ( dword_<span class="hljs-number">7E174</span> &gt;= <span class="hljs-number">0</span> )<br>                &#123;<br>                  <span class="hljs-keyword">while</span> ( <span class="hljs-built_in">recvfrom</span>(dword_<span class="hljs-number">7E174</span>, &amp;v64, <span class="hljs-number">0x200u</span>, <span class="hljs-number">0</span>, &amp;stru_8411C, addr_len) &gt; <span class="hljs-number">0</span> )<br>                  &#123;<br>                    <span class="hljs-keyword">if</span> ( !<span class="hljs-built_in">strncmp</span>(<span class="hljs-string">&quot;HELODBG&quot;</span>, (<span class="hljs-type">const</span> <span class="hljs-type">char</span> *)&amp;v64, <span class="hljs-number">7u</span>) )<br>                    &#123;<br>                      dword_<span class="hljs-number">7E178</span> = <span class="hljs-number">1</span>;<br>                      <span class="hljs-built_in">strcpy</span>((<span class="hljs-type">char</span> *)&amp;v64, <span class="hljs-string">&quot;Hello\n&quot;</span>);<br>                      v37 = <span class="hljs-built_in">strlen</span>((<span class="hljs-type">const</span> <span class="hljs-type">char</span> *)&amp;v64);<br>                      <span class="hljs-built_in">sendto</span>(dword_<span class="hljs-number">7E174</span>, &amp;v64, v37 + <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, &amp;stru_8411C, addr_len[<span class="hljs-number">0</span>]);<br>                      <span class="hljs-keyword">if</span> ( !unk_84138 )<br>                      &#123;<br>                        unk_84138 = <span class="hljs-number">1</span>;<br>                        <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;/sbin/telnetd -l /bin/sh&quot;</span>);<br>                      &#125;<br>                    &#125;<br>                    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( !<span class="hljs-built_in">strncmp</span>(<span class="hljs-string">&quot;BYEDBG&quot;</span>, (<span class="hljs-type">const</span> <span class="hljs-type">char</span> *)&amp;v64, <span class="hljs-number">6u</span>) )<br>                    &#123;<br>                      dword_<span class="hljs-number">7E178</span> = <span class="hljs-number">0</span>;<br>                    &#125;<br>                    <span class="hljs-built_in">LOBYTE</span>(v<span class="hljs-number">64.</span>sa_family) = <span class="hljs-number">0</span>;<br>                  &#125;<br>                &#125;<br>              &#125;<br>              <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( (v61 &amp; v<span class="hljs-number">63.</span>__fds_bits[v60]) != <span class="hljs-number">0</span> )<br>              &#123;<br>                <span class="hljs-built_in">qfmon_evt_handle</span>(&amp;gFmonHdl, &amp;v63);<br>              &#125;<br>........<br></code></pre></td></tr></table></figure>
+
+<p>这段代码实现了一个简单的网络服务，它监听一个特定的端口，并处理来自客户端的连接。当客户端发送 “HELODBG” 消息时，服务端会发送 “Hello\n” 回复，并启动 telnetd 守护进程，允许用户通过 telnet 连接到设备。当客户端发送 “BYEDBG” 消息时，服务端会关闭 telnetd 守护进程。此外，代码还处理其他事件，例如来自其他文件描述符的事件。</p>
+<p><strong>安全问题：</strong></p>
+<p>这段代码存在潜在的安全问题：</p>
+<ul>
+<li><strong>未经身份验证的 telnetd：</strong> telnetd 守护进程没有进行身份验证，任何人都可以通过 telnet 连接到设备，并获取 root 权限。</li>
+<li><strong>数据处理漏洞：</strong> 代码没有对接收到的数据进行充分的验证和过滤，可能会导致缓冲区溢出或其他安全问题。</li>
+</ul>
+<h4 id="后门一"><a href="#后门一" class="headerlink" title="后门一"></a>后门一</h4><p>默认admin账号</p>
+<p>搜索admin字符串</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829101555402.png" srcset="/img/loading.gif" lazyload alt="image-20240829101555402"></p>
+<p>管理员账号。设备的管理员账号默认为“admin”，而密码同样也是“admin”。</p>
+<h4 id="后门二"><a href="#后门二" class="headerlink" title="后门二"></a>后门二</h4><p>搜索WPS字符串</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829101715277.png" srcset="/img/loading.gif" lazyload alt="image-20240829101715277"></p>
+<p>WPS系统的PIN为<em>28296607</em>，任何人用PIN都连接到你的无线网络</p>
+<h4 id="后门三"><a href="#后门三" class="headerlink" title="后门三"></a>后门三</h4><p>&#x2F;etc&#x2F;shadow中保存了root用户默认密码</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829102037532.png" srcset="/img/loading.gif" lazyload alt="image-20240829102037532"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829102603291.png" srcset="/img/loading.gif" lazyload alt="image-20240829102603291"></p>
+<p>用john解出来是root:1234</p>
+<h4 id="fotad硬编码"><a href="#fotad硬编码" class="headerlink" title="fotad硬编码"></a>fotad硬编码</h4><p>路由器与 FOTA 服务器进行通信时的凭证数据硬编码在 <code>/sbin/fotad</code> 代码中</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mathematica"><span class="hljs-variable">FOTA</span> 是 <span class="hljs-variable">Firmware</span> <span class="hljs-built_in">Over</span><span class="hljs-operator">-</span><span class="hljs-variable">The</span><span class="hljs-operator">-</span><span class="hljs-variable">Air</span> 的缩写，指的是 空中固件升级。<span class="hljs-variable">FOTA</span> 服务器就是提供固件升级服务的服务器。<br></code></pre></td></tr></table></figure>
+
+<p>漏洞存在于fotad的sub_CAAC函数中</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/image-20240829104644262.png" srcset="/img/loading.gif" lazyload alt="image-20240829104644262"></p>
+<p>用户&#x2F;密码如下</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">cWRwYzpxZHBj        qdpc:qdpc<br>cWRwZTpxZHBl        qdpe:qdpe<br><span class="hljs-attribute">cWRwOnFkcA</span>==        qdp:qdp<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DWR-932B后门漏洞分析</div>
+      <div>http://groundctl2majortom.github.io/2024/08/07/DWR-932B后门漏洞分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/10/dir-601%E5%9B%BA%E4%BB%B6%E5%88%86%E6%9E%90/" title="dir-601固件分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">dir-601固件分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/01/%E4%B8%80%E9%81%93ARM-PWN%E9%A2%98%E6%B5%85%E6%9E%90%E7%AC%A6%E5%8F%B7%E8%A1%A8%E6%81%A2%E5%A4%8D/" title="一道ARM_PWN题浅析符号表恢复">
+                        <span class="hidden-mobile">一道ARM_PWN题浅析符号表恢复</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
