@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="OWASP Top 10 - 20211234567891011Broken Access Control    访问控制Cryptographic Failures   加密失败Injection Insecure Design    不安全的设计Security Misconfiguration    安全配置错误Vulnerable and Outdated Components    易受">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OWASP_Top_10-2021_总结">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2023/10/09/OWASP-Top-10-2021-%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="OWASP Top 10 - 20211234567891011Broken Access Control    访问控制Cryptographic Failures   加密失败Injection Insecure Design    不安全的设计Security Misconfiguration    安全配置错误Vulnerable and Outdated Components    易受">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/21-%E6%80%BB%E7%BB%93/image-20231106222320145.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/21-%E6%80%BB%E7%BB%93/image-20231106224144037.png">
+<meta property="article:published_time" content="2023-10-09T11:24:37.000Z">
+<meta property="article:modified_time" content="2024-09-07T11:25:22.374Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/21-%E6%80%BB%E7%BB%93/image-20231106222320145.png">
+  
+  
+  
+  <title>OWASP_Top_10-2021_总结 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="OWASP_Top_10-2021_总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-09 19:24" pubdate>
+          2023年10月9日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">OWASP_Top_10-2021_总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="OWASP-Top-10-2021"><a href="#OWASP-Top-10-2021" class="headerlink" title="OWASP Top 10 - 2021"></a>OWASP Top 10 - 2021</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">Broken </span>Access Control    访问控制<br>Cryptographic Failures   加密失败<br>Injection <br><span class="hljs-keyword">Insecure </span>Design    不安全的设计<br>Security Misconfiguration    安全配置错误<br>Vulnerable <span class="hljs-keyword">and </span>Outdated Components    易受攻击和过时的组件<br>Identification <span class="hljs-keyword">and </span>Authentication Failures    标识和身份验证失败<br>Software <span class="hljs-keyword">and </span>Data Integrity Failures     软件和数据完整性故障<br>Security Logging &amp; Monitoring Failures    安全日志记录和监视失败<br>Server-Side Request Forgery (SSRF)     服务器端请求伪造 （SSRF）<br><br></code></pre></td></tr></table></figure>
+
+<h4 id="访问控制失败"><a href="#访问控制失败" class="headerlink" title="访问控制失败"></a>访问控制失败</h4><p>不安全的直接对象引用（Insecure direct object references，IDOR）</p>
+<p>例子：yotube私密视频读取逐帧 拼成视频</p>
+<h4 id="加密失败"><a href="#加密失败" class="headerlink" title="加密失败"></a>加密失败</h4><p>加密故障漏洞是指滥用（或不使用）加密算法来保护敏感信息的漏洞。</p>
+<p>通常会导致 Web 应用意外泄露敏感数据。这通常是与客户直接相关的数据（例如姓名、出生日期、财务信息），但也可能是更具技术性的信息，例如用户名和密码。</p>
+<p>在更复杂的级别上，利用某些加密故障通常涉及诸如“中间人攻击”之类的技术，攻击者会强制用户通过他们控制的设备进行连接。</p>
+<p>当我们加密客户端和服务器之间的网络流量时，将其称为<strong>加密传输中的数据</strong></p>
+<p>电子邮件在存储在服务器上时也可能被加密。这称为<strong>静态加密数据</strong></p>
+<p>hash破解网站  <a target="_blank" rel="noopener" href="https://crackstation.net/">https://crackstation.net/</a></p>
+<p>.db文件的使用</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">得到一个webapp.db<br><span class="hljs-comment">#file webapp.db </span><br>webapp.db: SQLite 3.x database, last written using SQLite version 3022000, file counter 255, database pages 7, 1st free page 5, free pages 1, cookie 0x6, schema 4, UTF-8, version-valid-for 255<br><span class="hljs-comment"># sqlite3 webapp.db </span><br>SQLite version 3.40.1 2022-12-28 14:03:47<br>Enter <span class="hljs-string">&quot;.help&quot;</span> for usage hints.<br>sqlite&gt; .tables<br>sessions  users   <br>sqlite&gt; PRAGMA table_info(users);<br>0|<span class="hljs-string">userID</span>|<span class="hljs-string">TEXT</span>|<span class="hljs-string">1</span>||1<br>1|<span class="hljs-string">username</span>|<span class="hljs-string">TEXT</span>|<span class="hljs-string">1</span>||0<br>2|<span class="hljs-string">password</span>|<span class="hljs-string">TEXT</span>|<span class="hljs-string">1</span>||0<br>3|<span class="hljs-string">admin</span>|<span class="hljs-string">INT</span>|<span class="hljs-string">1</span>||0<br>sqlite&gt; SELECT <span class="hljs-symbol">*</span> FROM users;<br>4413096d9c933359b898b6202288a650|<span class="hljs-string">admin</span>|<span class="hljs-string">6eea9b7ef19179a06954edd0f6c05ceb</span>|1<br>23023b67a32488588db1e28579ced7ec|<span class="hljs-string">Bob</span>|<span class="hljs-string">ad0234829205b9033196ba818f7a872b</span>|1<br>4e8423b514eef575394ff78caed3254d|<span class="hljs-string">Alice</span>|<span class="hljs-string">268b38ca7b84f44fa0a6cdc86e6301e0</span>|0<br></code></pre></td></tr></table></figure>
+
+<h4 id="注入"><a href="#注入" class="headerlink" title="注入"></a>注入</h4><ul>
+<li><p>SQL <strong>注入：</strong>当用户控制的输入传递给 SQL 查询时，会发生这种情况。因此，攻击者可以传入 SQL 查询来操纵此类查询的结果。当此输入传递到数据库查询时，这可能允许攻击者访问、修改和删除数据库中的信息。这意味着攻击者可以窃取敏感信息，例如个人详细信息和凭据。</p>
+</li>
+<li><p><strong>命令注入：</strong>当用户输入传递给系统命令时，会发生这种情况。因此，攻击者可以在应用程序服务器上执行任意系统命令，从而可能允许它们访问用户的系统。</p>
+<h6 id="注入的防护"><a href="#注入的防护" class="headerlink" title="注入的防护"></a>注入的防护</h6><ul>
+<li><strong>使用允许输入的列表：</strong>当输入发送到服务器时，此输入将与安全输入或字符列表进行比较。如果输入被标记为安全，则对其进行处理。否则，它将被拒绝，并且应用程序将引发错误。</li>
+<li><strong>去除输入：</strong> 如果输入包含危险字符，则在处理之前会删除这些字符。</li>
+</ul>
+</li>
+</ul>
+<h4 id="不安全的设计"><a href="#不安全的设计" class="headerlink" title="不安全的设计"></a>不安全的设计</h4><p>e.g.不安全的密码重置</p>
+<p>逻辑漏洞</p>
+<h4 id="安全配置错误"><a href="#安全配置错误" class="headerlink" title="安全配置错误"></a>安全配置错误</h4><p>安全配置错误与其他前 10 大漏洞不同，因为它们发生在安全性本可以适当配置但未正确配置的情况下。即使您下载了最新的软件，糟糕的配置也可能使您的安装容易受到攻击。</p>
+<p>安全错误配置包括：</p>
+<ul>
+<li>云服务（如 S3 存储桶）的权限配置不当。</li>
+<li>启用不必要的功能，例如服务、页面、帐户或权限。</li>
+<li>密码未更改的默认帐户。</li>
+<li>错误消息过于详细，允许攻击者了解有关系统的更多信息。</li>
+<li>不使用 <a target="_blank" rel="noopener" href="https://owasp.org/www-project-secure-headers/">HTTP 安全标头</a>。</li>
+</ul>
+<p>此漏洞通常会导致更多漏洞，例如允许您访问敏感数据的默认凭据、XML 外部实体 （XXE） 或管理页面上的命令注入。</p>
+<h4 id="易受攻击和过时的组件"><a href="#易受攻击和过时的组件" class="headerlink" title="易受攻击和过时的组件"></a>易受攻击和过时的组件</h4><p>通用组件漏洞</p>
+<h4 id="识别和身份验证失败"><a href="#识别和身份验证失败" class="headerlink" title="识别和身份验证失败"></a>识别和身份验证失败</h4><p>如果攻击者能够发现身份验证机制中的缺陷，他们可能会成功访问其他用户的帐户。这将允许攻击者访问敏感数据。</p>
+<p>身份验证机制中的一些常见缺陷包括：</p>
+<ul>
+<li><strong>暴力攻击：</strong>如果 Web 应用程序使用用户名和密码，攻击者可以尝试发起暴力攻击，允许他们使用多次身份验证尝试来猜测用户名和密码。</li>
+<li><strong>使用弱凭据：</strong>Web 应用程序应设置强密码策略。如果应用程序允许用户设置密码（如“password1”）或常用密码，则攻击者可以很容易地猜到它们并访问用户帐户。</li>
+<li><strong>弱会话 Cookie：</strong>会话 cookie 是服务器跟踪用户的方式。如果会话 Cookie 包含可预测的值，攻击者可以设置自己的会话 Cookie 并访问用户帐户。</li>
+</ul>
+<h4 id="软件和数据完整性故障"><a href="#软件和数据完整性故障" class="headerlink" title="软件和数据完整性故障"></a>软件和数据完整性故障</h4><h6 id="软件完整性"><a href="#软件完整性" class="headerlink" title="软件完整性"></a>软件完整性</h6><p>假设您有一个网站，它使用第三方库</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://code.jquery.com/jquery-3.6.1.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>当用户导航到您的网站时，其浏览器将读取其 HTML 代码并从指定的外部源下载 jQuery。</p>
+<p>如果攻击者以某种方式入侵jQuery官方存储库，他们可能会更改内容以注入恶意代码。因此，任何访问您网站的人现在都会在不知不觉中提取恶意代码并将其执行到他们的浏览器中。这是一个软件完整性失败，因为您的网站没有对第三方库进行检查以查看它是否已更改。现代浏览器允许您沿库的 URL 指定哈希值，以便仅当下载文件的哈希值与预期值匹配时才执行库代码。这种安全机制称为子资源完整性 （SRI）</p>
+<p>在 HTML 代码中插入库的正确方法是使用 SRI 并包含完整性哈希，这样，如果攻击者能够以某种方式修改库，则浏览您网站的任何客户端都不会执行修改后的版本。以下是它在 HTML 中的样子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://code.jquery.com/jquery-3.6.1.min.js&quot;</span> <span class="hljs-attr">integrity</span>=<span class="hljs-string">&quot;sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=&quot;</span> <span class="hljs-attr">crossorigin</span>=<span class="hljs-string">&quot;anonymous&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>可以转到 <a target="_blank" rel="noopener" href="https://www.srihash.org/">https://www.srihash.org/</a> 为任何库生成哈希值。</p>
+<h6 id="数据完整性"><a href="#数据完整性" class="headerlink" title="数据完整性"></a>数据完整性</h6><p>如果用户篡改 cookie 并更改用户名，他们可能会冒充其他人并阅读他们的信息！此应用程序将遭受数据完整性故障，因为它信任攻击者可以篡改的数据。</p>
+<p><strong>JWT</strong>！！！</p>
+<p>一种解决方案是使用某种完整性机制来保证用户未更改 cookie——<strong>JSON Web 令牌 （JWT）。</strong></p>
+<p>jwt安全原理：您可以生成令牌，您可以向用户提供这些令牌，以确保他们无法更改键值对并通过完整性检查。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/21-%E6%80%BB%E7%BB%93/image-20231106222320145.png" srcset="/img/loading.gif" lazyload alt="image-20231106222320145"></p>
+<p>Header包含元数据，指示这是 JWT，并且使用的签名算法是 HS256。payload包含键值对，其中包含 Web 应用程序希望客户端存储的数据。Signature类似于哈希，用于验证payload的完整性。</p>
+<p>如果更改payload，Web 应用程序可以验证Signature是否与payload不匹配，并知道您篡改了 JWT。与简单的哈希不同，此签名仅涉及使用服务器持有的密钥，这意味着<strong>如果您更改payload，除非您知道密钥，否则您将无法生成匹配的Signature。</strong></p>
+<p>请注意，令牌的 3 个部分中的每一个都只是使用 base64 编码的纯文本</p>
+<p>JWT也有漏洞，e.g.允许攻击者通过更改 JWT 中的以下两项内容来绕过签名验证：</p>
+<ol>
+<li><p>修改jwt的Header部分，以便标头包含值 。<code>alg none</code></p>
+</li>
+<li><p>删除签名部分。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/21-%E6%80%BB%E7%BB%93/image-20231106224144037.png" srcset="/img/loading.gif" lazyload alt="image-20231106224144037"></p>
+</li>
+</ol>
+<h4 id="安全日志监控和记录失败"><a href="#安全日志监控和记录失败" class="headerlink" title="安全日志监控和记录失败"></a>安全日志监控和记录失败</h4><p>如果没有日志记录，就无法判断攻击者在获得对特定 Web 应用程序的访问权限时执行了哪些操作。这些更显著的影响包括：</p>
+<ul>
+<li><strong>监管损害：</strong>如果攻击者获得了对个人身份用户信息的访问权限，并且没有这方面的记录，则最终用户会受到影响，并且应用程序所有者可能会受到罚款或更严厉的处罚，具体取决于法规。</li>
+<li><strong>进一步攻击的风险：</strong>如果不进行日志记录，攻击者的存在可能无法检测到。这可能允许攻击者通过窃取凭据、攻击基础设施等方式对 Web 应用程序所有者发起进一步攻击。</li>
+</ul>
+<p>日志中存储的信息应包括以下内容：</p>
+<ul>
+<li>HTTP 状态代码</li>
+<li>时间戳</li>
+<li>用户名</li>
+<li>API 端点&#x2F;页面位置</li>
+<li>IP 地址</li>
+</ul>
+<p>这些日志包含一些敏感信息，因此请务必确保它们安全存储，并且这些日志的多个副本存储在不同的位置。</p>
+<h4 id="服务器端请求伪造-（SSRF）"><a href="#服务器端请求伪造-（SSRF）" class="headerlink" title="服务器端请求伪造 （SSRF）"></a>服务器端请求伪造 （SSRF）</h4><p>当攻击者可以强制 Web 应用程序代表他们向任意目标发送请求，同时控制请求本身的内容时，就会发生此类漏洞。SSRF 漏洞通常源于我们的 Web 应用程序需要使用第三方服务的实现。</p>
+<p>危害场景</p>
+<p>​        使用外部 API 向其客户端发送短信通知的 Web 应用程序。对于每封电子邮件，网站需要向 SMS 提供商的服务器发出 Web 请求，以发送要发送的消息内容。由于 SMS 提供商按消息收费，因此他们要求您添加一个密钥，该密钥是他们预先分配给您的，用于您向其 API 发出的每个请求。API 密钥用作身份验证令牌，并允许提供商知道向谁收取每条消息的费用。该应用程序将像这样工作：</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>OWASP_Top_10-2021_总结</div>
+      <div>http://groundctl2majortom.github.io/2023/10/09/OWASP-Top-10-2021-总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/17/tryhackme-John-Hammond/" title="tryhackme_John_Hammond">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">tryhackme_John_Hammond</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/01/tryhackme-wordpress-5-6-2/" title="tryhackme_wordpress_5.6.2">
+                        <span class="hidden-mobile">tryhackme_wordpress_5.6.2</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

